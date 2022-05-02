@@ -72,7 +72,7 @@ fn choose_format(options: &Vec<TempFormat>) -> TempFormat {
             "f" | "fahrenheit" => Fahrenheit,
             "k" | "kelvin" => Kelvin,
             _ => {
-                println!("You need to choose either Celsius, Fahrenheit or Kelvin.");
+                println!("You need to choose a valid unit of temperature.");
                 continue;
             }
         };

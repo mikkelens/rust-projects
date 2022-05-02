@@ -1,5 +1,5 @@
 [package]
-name = "practices_c3"
+name = "practice_temperature"
 version = "0.1.0"
 edition = "2021"
 
