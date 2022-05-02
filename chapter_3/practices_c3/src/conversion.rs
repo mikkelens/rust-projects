@@ -72,7 +72,7 @@ fn choose_format(options: &Vec<TempFormat>) -> TempFormat {
             "f" | "fahrenheit" => Fahrenheit,
             "k" | "kelvin" => Kelvin,
             _ => {
-                println!("You need to choose either Celsius, Fahrenheit or Kelvin");
+                println!("You need to choose either Celsius, Fahrenheit or Kelvin.");
                 continue;
             }
         };
@@ -83,7 +83,7 @@ fn choose_format(options: &Vec<TempFormat>) -> TempFormat {
                 return choice;
             }
         }
-        println!("You can only convert from one unit to another.")
+        println!("You can only convert from one unit to a different unit.")
         // try again
     }
 }
