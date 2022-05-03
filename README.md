@@ -1,2 +1,3 @@
 # rust-projects
-for testing out rust as a language
+my (very small) projects for learning to code in rust.
+currently following the book on rust.
