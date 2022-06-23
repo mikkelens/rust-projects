@@ -1,6 +1,7 @@
 use yew::prelude::*;
+use serde::Deserialize;
 
-#[derive(Clone, PartialEq)]
+#[derive(Clone, PartialEq, Deserialize)]
 pub struct Video {
     pub id: usize,
     pub title: String,
@@ -11,11 +12,40 @@ pub struct Video {
 #[derive(Properties, PartialEq)]
 pub struct VideoListProps {
     pub videos: Vec<Video>,
+    pub on_click: Callback<Video>,
 }
 
 #[function_component(VideosList)]
-pub fn videos_list(VideoListProps { videos }: &VideoListProps) -> Html {
-    videos.iter().map(|video| html! {
-        <p>{format!("{}: {}", video.speaker, video.title)}</p>
+pub fn videos_list(VideoListProps { videos, on_click }: &VideoListProps) -> Html {
+    videos
+        .iter()
+        .map(
+            |video| {
+                let on_video_select = {
+                    let on_click = on_click.clone();
+                    let video = video.clone();
+                    Callback::from(move |_| {
+                        on_click.emit(video.clone())
+                    })
+                };
+
+        html! {
+            <p onclick={on_video_select}>{format!("{}: {}", video.speaker, video.title)}</p>
+        }
     }).collect()
+}
+
+#[derive(Clone, Properties, PartialEq)]
+pub struct VideosDetailsProps {
+    pub video: Video,
+}
+
+#[function_component(VideoDetails)]
+pub fn video_details(VideosDetailsProps { video }: &VideosDetailsProps) -> Html {
+    return html! {
+        <div>
+            <h3>{ video.title.clone() }</h3>
+            <img src="https://via.placeholder.com/640x360.png?text=Video+Player+Placeholder" alt="video thumbnail" />
+        </div>
+    }
 }
