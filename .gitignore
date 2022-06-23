@@ -12,3 +12,4 @@
 # MSVC Windows builds of rustc generate these, which store debugging information
 # note: I dont think it does anything
 **/*.pdb
+yew-app/dist
