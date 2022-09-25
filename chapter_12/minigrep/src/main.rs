@@ -3,6 +3,7 @@ extern crate core;
 // mod lib;
 
 use std::{env, fs, process};
+use std::error::Error;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -15,10 +16,13 @@ fn main() {
     println!("Searching for '{}'", config.query);
     println!("In file '{}'", config.file_path);
 
-    let contents = fs::read_to_string(config.file_path)
-        .expect("Invalid file path?");
+    run(config);
+}
 
-    println!("Text content: \n{contents}");
+fn run(config: Config) -> Result<(), Box<dyn Error>> {
+    let contents = fs::read_to_string(config.file_path)?;
+    println!("With text:\n{contents}");
+    Ok(())
 }
 
 struct Config {
