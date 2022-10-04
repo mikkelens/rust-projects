@@ -16,7 +16,10 @@ fn main() {
     println!("Searching for '{}'", config.query);
     println!("In file '{}'", config.file_path);
 
-    run(config);
+    if let Err(e) = run(config) {
+        println!("Application error: {e}");
+        process::exit(1);
+    }
 }
 
 fn run(config: Config) -> Result<(), Box<dyn Error>> {
