@@ -1,6 +1,8 @@
 mod chatgpt;
 mod dalle;
 
+use std::str::FromStr;
+
 use anyhow::Result;
 use linefeed::DefaultTerminal;
 use linefeed::Interface;
@@ -12,19 +14,31 @@ async fn main() -> Result<()> {
 	reader.set_prompt("> ")?;
 
 	while let Some(c) = ask_type(&reader) {
-		match c {
-			AIType::DallE => dalle::gen_image(&reader).await,
-			AIType::ChatGPT => chatgpt::talk(&reader).await
+        println!();
+        match c {
+            AIType::DallE => dalle::gen_image(&reader).await,
+            AIType::ChatGPT => chatgpt::talk(&reader).await
 		}?;
 	} // runs untill we exit
+    
+    println!("Finished using OpenAI tool.");
 
 	Ok(())
 }
 
 enum AIType {
-	DallE,
-	ChatGPT,
+    DallE,
+    ChatGPT,
 }
+
+impl FromStr for Option<AIType> {
+    type Err = ();
+
+    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+        todo!()
+    }
+}
+
 fn ask_type(reader: &Interface<DefaultTerminal>) -> Option<AIType> { 
 	let ReadResult::Input(user_input) = reader.read_line().ok()? else {
 		return None;

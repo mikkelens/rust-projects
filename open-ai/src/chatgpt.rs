@@ -28,12 +28,17 @@ pub async fn talk(reader: &Interface<DefaultTerminal>) -> Result<()> {
     
     while let Some(user_input) = parse_exitable(reader.read_line()) {
         messages.push(ChatCompletionRequestMessage { role: Role::User, content: user_input, name: None });
-        let request = request_args.messages(messages.clone()).build()?;
-        let response = chat.create(request).await?;
-        // let message = response.choices.first()?;
-        messages.push(ChatCompletionRequestMessage { role: Role::Assistant, content: message, name: None });
-        
+        let request = request_args.messages(messages.clone()).build().expect("Build failed?");
+        let response = chat.create(request).await.expect("Never returned anything?");
+        let Some(choice) = response.choices.first() else { panic!("Didn't receive a answer/choice when we assumed that would happen.") };
+        let message = choice.message.clone();
+        let role = message.role;
+        let content = message.content;
+        println!("Response: '{}'", &content);
+        messages.push(ChatCompletionRequestMessage { role, content, name: None });
     } // run untill we should exit
+    
+    print!("Finished ChatGPT conversation.");
     
     Ok(())
 }
