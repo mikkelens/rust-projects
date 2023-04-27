@@ -1,39 +1,41 @@
-use async_openai::{
-    types::{CreateImageRequestArgs, ImageSize, ResponseFormat},
-    Client,
-};
-use linefeed::{Interface, ReadResult};
-use std::error::Error;
+mod chatgpt;
+mod dalle;
+
+use anyhow::Result;
+use linefeed::DefaultTerminal;
+use linefeed::Interface;
+use linefeed::ReadResult;
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn Error>> {
-    let reader = Interface::new("my-application")?;
-    reader.set_prompt("> ")?;
-    
-    println!("Give an image prompt.");
-    let input: String = match reader.read_line()? {
-        ReadResult::Input(string) => string,
-        _ => panic!("Invalid input!")
-    };
+async fn main() -> Result<()> {
+	let reader = Interface::new("my-application")?;
+	reader.set_prompt("> ")?;
 
-    let client = Client::new();
-    let request = CreateImageRequestArgs::default()
-        .prompt(input)
-        .n(1)
-        .response_format(ResponseFormat::Url)
-        .size(ImageSize::S256x256)
-        .user("async-openai")
-        .build()?;
-    
-    let response = client.images().create(request).await?;
-    let paths = response.save("./data").await?;
+	while let Some(c) = ask_type(&reader) {
+		match c {
+			AIType::DallE => dalle::gen_image(&reader).await,
+			AIType::ChatGPT => chatgpt::talk(&reader).await
+		}?;
+	} // runs untill we exit
 
-    paths
-        .iter()
-        .for_each(|path| {
-            println!("Image file path: {}", path.display());
-            open::that(path).ok();
-        });
+	Ok(())
+}
 
-    Ok(())
+enum AIType {
+	DallE,
+	ChatGPT,
+}
+fn ask_type(reader: &Interface<DefaultTerminal>) -> Option<AIType> { 
+	let ReadResult::Input(user_input) = reader.read_line().ok()? else {
+		return None;
+	};
+	
+	if user_input.contains("chat") {
+		return Some(AIType::ChatGPT);
+	}
+	if user_input.contains("dall") {
+		return Some(AIType::DallE);
+	}
+	
+	None
 }
