@@ -16,5 +16,5 @@ members = [
     "open-ai",
     "wanna-jam-game",
 ]
-nested = true
-name = "projects"
+# nested = true
+# name = "projects"
