@@ -1,0 +1,19 @@
+[workspace]
+members = [
+    "chapter_1/first-program",
+    "chapter_1/hello_cargo",
+    "chapter_1/hello-rust",
+    "chapter_2/guessing_game",
+    "chapter_3/branches",
+    "chapter_3/functions",
+    "chapter_3/loops",
+    "chapter_3/practice_fibonacci",
+    "chapter_3/practice_lyrics",
+    "chapter_3/variables",
+    "yew-app",
+    "snake",
+    "snake_game",
+    "open-ai",
+]
+nested = true
+name = "projects"
