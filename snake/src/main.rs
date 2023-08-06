@@ -1,7 +1,7 @@
 use console_engine::{pixel, KeyCode};
 
 // enum
-
+#[allow(clippy::cast_possible_wrap)]
 fn main() {
 	let mut engine = console_engine::ConsoleEngine::init_fill_require(50, 20, 5).unwrap();
 

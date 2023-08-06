@@ -10,13 +10,13 @@ pub struct Video {
 }
 
 #[derive(Properties, PartialEq)]
-pub struct VideoListProps {
+pub struct ListProps {
 	pub videos:   Vec<Video>,
 	pub on_click: Callback<Video>
 }
 
 #[function_component(VideosList)]
-pub fn videos_list(VideoListProps { videos, on_click }: &VideoListProps) -> Html {
+pub fn videos_list(ListProps { videos, on_click }: &ListProps) -> Html {
 	videos
 		.iter()
 		.map(|video| {

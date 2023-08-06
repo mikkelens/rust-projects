@@ -12,7 +12,7 @@ fn main() {
 			// counting down
 			if day == 0 {
 				// first gift alone
-				println!("{}.", NEW_DAY_GIFTS[lyric])
+				println!("{}.", NEW_DAY_GIFTS[lyric]);
 			} else if lyric > 0 {
 				// most days
 				println!("{},", NEW_DAY_GIFTS[lyric]);

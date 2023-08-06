@@ -3187,6 +3187,10 @@ dependencies = [
 ]
 
 [[package]]
+name = "wanna-jam-game"
+version = "0.1.0"
+
+[[package]]
 name = "want"
 version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"

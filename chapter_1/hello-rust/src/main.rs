@@ -1,10 +1,13 @@
+use std::{
+	io::{stdout, BufWriter},
+	ops::Add
+};
+
 use ferris_says::say;
-use std::io::{stdout, BufWriter};
-use std::ops::Add;
 
 fn main() {
-    let _stdout = stdout();
-    let megamind = r"
+	let stdout = stdout();
+	let megamind = r"
  ⣞⢽⢪⢣⢣⢣⢫⡺⡵⣝⡮⣗⢷⢽⢽⢽⣮⡷⡽⣜⣜⢮⢺⣜⢷⢽⢝⡽⣝
 ⠸⡸⠜⠕⠕⠁⢁⢇⢏⢽⢺⣪⡳⡝⣎⣏⢯⢞⡿⣟⣷⣳⢯⡷⣽⢽⢯⣳⣫⠇
 ⠀⠀⢀⢀⢄⢬⢪⡪⡎⣆⡈⠚⠜⠕⠇⠗⠝⢕⢯⢫⣞⣯⣿⣻⡽⣏⢗⣗⠏⠀
@@ -18,11 +21,10 @@ fn main() {
 ⠀⠀⠀⣴⣿⣾⣿⣿⣿⡿⡽⡑⢌⠪⡢⡣⣣⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⡟⡾⣿⢿⢿⢵⣽⣾⣼⣘⢸⢸⣞⡟⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 ⠀⠀⠀⠀⠁⠇⠡⠩⡫⢿⣝⡻⡮⣒⢽⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀";
-    let message = String::from("no bitches??").add(megamind);
+	let message = String::from("no bitches??").add(megamind);
 
+	let width = message.chars().count();
 
-    let width = message.chars().count();
-
-    let mut writer = BufWriter::new(_stdout.lock());
-    say(message.as_bytes(), width, &mut writer).unwrap();
+	let mut writer = BufWriter::new(stdout.lock());
+	say(message.as_bytes(), width, &mut writer).unwrap();
 }

@@ -1,6 +1,7 @@
 mod video;
 
 use reqwasm::http::Request;
+#[allow(clippy::wildcard_imports)]
 use video::*;
 use yew::prelude::*;
 

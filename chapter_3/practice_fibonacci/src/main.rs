@@ -31,14 +31,10 @@ fn read_input() -> String {
 
 fn read_number() -> usize {
 	loop {
-		let input = match read_input().trim().parse() {
-			Ok(num) => num,
-			Err(_) => {
-				println!("You have to use a number.");
-				continue;
-			}
+		if let Ok(input) = read_input().trim().parse() {
+			return input;
 		};
-		return input;
+		println!("You have to use a number.");
 	}
 }
 
