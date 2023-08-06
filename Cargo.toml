@@ -16,5 +16,6 @@ members = [
     "open-ai",
     "wanna-jam-game",
 ]
+resolver = "2" # needed for bevy
 # nested = true
 # name = "projects"
