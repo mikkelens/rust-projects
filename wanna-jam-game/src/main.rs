@@ -1,6 +1,9 @@
 #![allow(clippy::needless_pass_by_value)] // disables unhelpful Query reference lint
 
-use bevy::prelude::*;
+use bevy::{
+	prelude::{App, Commands, Component, Query, Startup, Update, With},
+	DefaultPlugins
+};
 
 fn main() {
 	App::new()
