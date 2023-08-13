@@ -7,10 +7,12 @@ use bevy::{
 
 use super::components::*;
 use crate::{
-	enemy::{components::Enemy, *},
 	events::GameOver,
-	score::resources::*,
-	star::{components::Star, *},
+	game::{
+		enemy::{components::Enemy, *},
+		score::resources::*,
+		star::{components::Star, *}
+	},
 	utils::Vec3Representable
 };
 
@@ -32,6 +34,12 @@ pub fn spawn_player(
 		Player
 	));
 }
+pub fn despawn_player(mut commands: Commands, player_query: Query<Entity, With<Player>>) {
+	if let Ok(player_entity) = player_query.get_single() {
+		commands.entity(player_entity).despawn();
+	}
+}
+
 pub fn player_movement(
 	keyboard_input: Res<Input<KeyCode>>,
 	mut player_query: Query<&mut Transform, With<Player>>,

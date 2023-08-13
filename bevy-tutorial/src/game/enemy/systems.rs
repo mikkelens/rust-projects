@@ -8,7 +8,7 @@ use rand::random;
 use super::{components::*, *};
 use crate::utils::Vec3Representable;
 
-pub fn spawn_enemies(
+pub fn spawn_enemies_start(
 	mut commands: Commands,
 	window_query: Query<&Window, With<PrimaryWindow>>,
 	asset_server: Res<AssetServer>
@@ -36,6 +36,13 @@ pub fn spawn_enemies(
 		));
 	}
 }
+
+pub fn despawn_enemies(mut commands: Commands, enemy_query: Query<Entity, With<Enemy>>) {
+	for enemy_entity in &enemy_query {
+		commands.entity(enemy_entity).despawn();
+	}
+}
+
 pub fn enemy_movement(mut enemy_query: Query<(&mut Transform, &Enemy)>, time: Res<Time>) {
 	for (mut transform, enemy) in enemy_query.iter_mut() {
 		transform.translation += enemy.direction.to_vec3() * ENEMY_SPEED * time.delta_seconds();

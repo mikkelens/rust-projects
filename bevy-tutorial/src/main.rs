@@ -5,48 +5,40 @@
 )]
 
 use bevy::prelude::*;
+use game::GamePlugin;
+use main_menu::MainMenuPlugin;
 
-pub mod enemy;
 pub mod events;
-mod player;
-pub mod score;
-mod star;
-pub mod system_sets;
 mod systems;
 pub mod utils;
 
-use enemy::EnemyPlugin;
-use player::PlayerPlugin;
-use score::ScorePlugin;
-use star::StarPlugin;
+use self::systems::*;
 
-use self::{events::*, system_sets::*, systems::*};
+mod game;
+mod main_menu;
 
 fn main() {
 	App::new()
-		.configure_set(Startup, SpawningSystemSet)
-		.configure_sets(
-			Update,
-			(
-				MovementSystemSet,
-				HitSystemSet,
-				ScoreSystemSet,
-				EvaluateStateSystemSet
-			)
-				.chain()
-		)
-		.add_event::<GameOver>()
-		.add_plugins((
-			DefaultPlugins,
-			EnemyPlugin,
-			PlayerPlugin,
-			ScorePlugin,
-			StarPlugin
-		))
-		.add_systems(Startup, spawn_camera.in_set(SpawningSystemSet))
+		.add_plugins(DefaultPlugins)
+		.add_state::<AppState>()
+		.add_plugins((MainMenuPlugin, GamePlugin))
+		.add_systems(PreStartup, spawn_camera)
 		.add_systems(
-			Update,
-			(exit_game, handle_game_over).in_set(EvaluateStateSystemSet)
+			PostUpdate,
+			(
+				exit_game,
+				handle_game_over,
+				transition_to_game_state,
+				transition_to_main_menu_state
+			)
 		)
 		.run();
+}
+
+#[derive(States, Debug, Clone, Copy, PartialEq, Eq, Hash, Default)]
+pub enum AppState {
+	#[default]
+	MainMenu,
+	Game,
+	GameOver
 }

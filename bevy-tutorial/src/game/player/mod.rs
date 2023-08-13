@@ -1,7 +1,8 @@
 use bevy::prelude::*;
 
 use self::systems::*;
-use crate::system_sets::*;
+use super::SimulationState;
+use crate::{game::system_sets::*, AppState};
 
 pub mod components;
 pub mod resources;
@@ -10,7 +11,13 @@ mod systems;
 pub struct PlayerPlugin;
 impl Plugin for PlayerPlugin {
 	fn build(&self, app: &mut App) {
-		app.add_systems(Startup, spawn_player.in_set(SpawningSystemSet))
+		app
+			// enter
+			.add_systems(
+				OnEnter(AppState::Game),
+				spawn_player.in_set(SpawningSystemSet)
+			)
+			// running
 			.add_systems(
 				Update,
 				(
@@ -21,6 +28,10 @@ impl Plugin for PlayerPlugin {
 						.chain()
 						.in_set(HitSystemSet)
 				)
-			);
+					.run_if(in_state(AppState::Game))
+					.run_if(in_state(SimulationState::Running))
+			)
+			// exit
+			.add_systems(OnExit(AppState::Game), despawn_player);
 	}
 }

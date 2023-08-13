@@ -1,7 +1,8 @@
 use bevy::prelude::*;
 
 use self::{resources::*, systems::*};
-use crate::system_sets::SpawningSystemSet;
+use super::SimulationState;
+use crate::{game::system_sets::SpawningSystemSet, AppState};
 
 pub mod components;
 pub mod resources;
@@ -14,12 +15,21 @@ pub struct StarPlugin;
 impl Plugin for StarPlugin {
 	fn build(&self, app: &mut bevy::prelude::App) {
 		app.init_resource::<StarSpawnTimer>()
-			.add_systems(Startup, spawn_stars.in_set(SpawningSystemSet))
+			// enter
+			.add_systems(
+				OnEnter(AppState::Game),
+				spawn_stars.in_set(SpawningSystemSet)
+			)
+			// running
 			.add_systems(
 				Update,
 				(tick_star_spawn_timers, spawn_stars_over_time)
 					.chain()
 					.in_set(SpawningSystemSet)
-			);
+					.run_if(in_state(AppState::Game))
+					.run_if(in_state(SimulationState::Running))
+			)
+			// exit
+			.add_systems(OnExit(AppState::Game), despawn_stars);
 	}
 }

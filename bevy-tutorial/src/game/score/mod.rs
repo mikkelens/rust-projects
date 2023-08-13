@@ -1,7 +1,8 @@
 use bevy::prelude::*;
 
 use self::{resources::*, systems::*};
-use crate::system_sets::ScoreSystemSet;
+use super::SimulationState;
+use crate::{game::system_sets::ScoreSystemSet, AppState};
 
 pub mod components;
 pub mod resources;
@@ -10,8 +11,12 @@ mod systems;
 pub struct ScorePlugin;
 impl Plugin for ScorePlugin {
 	fn build(&self, app: &mut App) {
-		app.init_resource::<HighScores>()
-			.init_resource::<Score>()
+		app
+			// init
+			.init_resource::<HighScores>()
+			// enter
+			.add_systems(OnEnter(AppState::Game), insert_score)
+			// running
 			.add_systems(
 				Update,
 				(
@@ -21,6 +26,10 @@ impl Plugin for ScorePlugin {
 				)
 					.chain()
 					.in_set(ScoreSystemSet)
-			);
+					.run_if(in_state(AppState::Game))
+					.run_if(in_state(SimulationState::Running))
+			)
+			// exit
+			.add_systems(OnExit(AppState::Game), remove_score);
 	}
 }
