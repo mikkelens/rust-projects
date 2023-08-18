@@ -4,7 +4,10 @@ mod components;
 mod styles;
 mod systems;
 
-use systems::layout::*;
+use systems::{
+	interactions::{interact_with_play_button, interact_with_quit_button},
+	layout::*
+};
 
 use crate::AppState;
 
@@ -14,6 +17,12 @@ impl Plugin for MainMenuPlugin {
 		app
 			// enter
 			.add_systems(OnEnter(AppState::MainMenu), spawn_main_menu)
+			// systems
+			.add_systems(
+				Update,
+				(interact_with_play_button, interact_with_quit_button)
+					.run_if(in_state(AppState::MainMenu))
+			)
 			// exit
 			.add_systems(OnExit(AppState::MainMenu), despawn_main_menu);
 	}

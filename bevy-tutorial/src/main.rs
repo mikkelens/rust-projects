@@ -1,7 +1,8 @@
 #![allow(
 	clippy::needless_pass_by_value,
 	clippy::wildcard_imports,
-	clippy::module_name_repetitions
+	clippy::module_name_repetitions,
+	clippy::type_complexity
 )]
 
 use bevy::prelude::*;
