@@ -1,0 +1,24 @@
+[package]
+name = "minesweeper-thing"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+# project is using inspiration/guidance from https://dev.to/qongzi/series/16975 (minesweeper tutorial series in bevy)
+
+[features]
+default = ["debug"]
+debug = []
+
+[profile.dev]
+opt-level = 1
+
+[profile.dev.package."*"]
+opt-level = 3
+
+[dependencies]
+bevy = { version = "0.11.2", features = ["serialize", "dynamic_linking"] }
+lazy_static = "1.4.0"
+rand = "0.8.5"
+bevy-inspector-egui = "0.19"
