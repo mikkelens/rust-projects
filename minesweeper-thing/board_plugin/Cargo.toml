@@ -1,3 +1,9 @@
+[package]
+name = "board_plugin"
+version = "0.1.0"
+# authors = ["Felix de Maneville <felix.maneville@gmail.com>"]
+edition = "2021"
+
 [features]
 default = []
 debug = ["colored", "bevy-inspector-egui"]
