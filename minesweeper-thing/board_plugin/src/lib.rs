@@ -63,6 +63,9 @@ impl BoardPlugin {
 			)
 		};
 
+		#[cfg(feature = "debug")]
+		log::info!("{}", tile_size);
+
 		// We deduce the size of the complete board
 		let board_size = Vec2::new(
 			f32::from(tile_map.width()) * tile_size,
@@ -73,16 +76,21 @@ impl BoardPlugin {
 		// We define the board anchor position (bottom left)
 		let board_position = match options.position {
 			BoardPosition::Centered { offset } => {
-				Vec3::new(-(board_size.x / 2.), -(board_size.y / 2.), 0.) + offset
+				Vec3::new(board_size.x / 2.0, board_size.y / 2.0, 0.0) + offset
 			},
 			BoardPosition::Custom(p) => p
 		};
 
+		#[cfg(feature = "debug")]
+		log::info!("board position: {}", board_position);
+
 		commands
 			.spawn((
 				Name::new("Board"),
-				Transform::from_translation(board_position),
-				GlobalTransform::default()
+				Transform::default(),
+				GlobalTransform::default(),
+				Visibility::default(),
+				ComputedVisibility::default()
 			))
 			.with_children(|parent| {
 				// We spawn the board background sprite at the center of the board, since the
@@ -92,10 +100,10 @@ impl BoardPlugin {
 						sprite: Sprite {
 							color: Color::WHITE,
 							custom_size: Some(board_size),
-							..Default::default()
+							..default()
 						},
-						transform: Transform::from_xyz(board_size.x / 2., board_size.y / 2., 0.),
-						..Default::default()
+						transform: Transform::from_xyz(board_size.x / 2.0, board_size.y / 2.0, 0.0),
+						..default()
 					},
 					Name::new("Background")
 				));
@@ -129,17 +137,16 @@ impl BoardPlugin {
 				let mut cmd = parent.spawn((
 					SpriteBundle {
 						sprite: Sprite {
-							// color: Color::GRAY,
-							color: Color::RED,
+							color: Color::GRAY,
 							custom_size: Some(Vec2::splat(size - padding)),
-							..Default::default()
+							..default()
 						},
 						transform: Transform::from_xyz(
 							(x as f32 * size) + (size / 2.0),
 							(y as f32 * size) + (size / 2.0),
 							1.0
 						),
-						..Default::default()
+						..default()
 					},
 					Name::new(format!("Tile ({}, {})", x, y)),
 					// We add the `Coordinates` component to our tile entity
@@ -153,11 +160,11 @@ impl BoardPlugin {
 							parent.spawn(SpriteBundle {
 								sprite: Sprite {
 									custom_size: Some(Vec2::splat(size - padding)),
-									..Default::default()
+									..default()
 								},
-								transform: Transform::from_xyz(0., 0., 1.),
+								transform: Transform::from_xyz(0.0, 0.0, 1.0),
 								texture: bomb_image.clone(),
-								..Default::default()
+								..default()
 							});
 						});
 					},
@@ -169,7 +176,7 @@ impl BoardPlugin {
 							parent.spawn(Self::bomb_count_text_bundle(*v, size - padding));
 						});
 					},
-					Tile::Empty => ()
+					Tile::Empty => {}
 				}
 			}
 		}

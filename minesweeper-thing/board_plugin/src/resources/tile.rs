@@ -14,10 +14,10 @@ pub enum Tile {
 
 impl Tile {
 	/// Is the tile a bomb?
-	pub const fn is_bomb(&self) -> bool { matches!(self, Self::Bomb) }
+	pub const fn is_bomb(self) -> bool { matches!(self, Self::Bomb) }
 
 	#[cfg(feature = "debug")]
-	pub fn console_output(&self) -> String {
+	pub fn console_output(self) -> String {
 		format!("{}", match self {
 			Tile::Bomb => "*".bright_red(),
 			Tile::BombNeighbor(v) => match v {

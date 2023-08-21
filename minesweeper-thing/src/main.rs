@@ -1,6 +1,6 @@
 #![allow(clippy::needless_pass_by_value, clippy::module_name_repetitions)]
 
-use bevy::prelude::*;
+use bevy::{prelude::*, window::PrimaryWindow};
 #[cfg(feature = "debug")]
 use bevy_inspector_egui::quick::WorldInspectorPlugin;
 use board_plugin::{components::Coordinates, resources::BoardOptions, BoardPlugin};
@@ -28,12 +28,19 @@ fn main() {
 		..default()
 	});
 
+	app.add_systems(Startup, spawn_camera);
 	app.add_plugins(BoardPlugin);
 	app.register_type::<Coordinates>();
-	app.add_systems(Startup, spawn_camera);
 
 	// Run the app
 	app.run();
 }
 
-pub fn spawn_camera(mut commands: Commands) { commands.spawn(Camera2dBundle::default()); }
+pub fn spawn_camera(mut commands: Commands, window_query: Query<&Window, With<PrimaryWindow>>) {
+	let window = window_query.get_single().expect("No primary window?");
+
+	commands.spawn(Camera2dBundle {
+		transform: Transform::from_xyz(window.width() / 2.0, window.height() / 2.0, 10.0),
+		..default()
+	});
+}

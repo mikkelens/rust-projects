@@ -47,6 +47,11 @@ impl Sub for Coordinates {
 impl Add<(i8, i8)> for Coordinates {
 	type Output = Self;
 
+	#[allow(
+		clippy::cast_sign_loss,
+		clippy::cast_lossless,
+		clippy::cast_possible_wrap
+	)]
 	fn add(self, (x, y): (i8, i8)) -> Self::Output {
 		let x = ((self.x as i16) + x as i16) as u16;
 		let y = ((self.y as i16) + y as i16) as u16;
