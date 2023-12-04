@@ -54,7 +54,7 @@ impl TileMap {
 	// Getter for `bomb_count`
 	pub fn bomb_count(&self) -> u16 { self.bomb_count }
 
-	pub fn safe_square_at(coordinates: Coordinates) -> impl Iterator<Item = Coordinates> {
+	pub fn safe_square_at(&self, coordinates: Coordinates) -> impl Iterator<Item = Coordinates> {
 		SQUARE_COORDINATES
 			.iter()
 			.copied()
@@ -73,7 +73,7 @@ impl TileMap {
 		if self.is_bomb_at(coordinates) {
 			return 0;
 		}
-		Self::safe_square_at(coordinates)
+		self.safe_square_at(coordinates)
 			.filter(|coord| self.is_bomb_at(*coord))
 			.count() as u8
 	}

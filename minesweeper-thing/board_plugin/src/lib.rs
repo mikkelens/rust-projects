@@ -3,8 +3,13 @@
 pub mod components;
 pub mod resources;
 
-use bevy::{log, prelude::*, window::PrimaryWindow};
-use resources::{tile::Tile, tile_map::TileMap, BoardOptions};
+mod bounds;
+mod events;
+mod systems;
+
+use bevy::{log, math::Vec3Swizzles, prelude::*, utils::HashMap, window::PrimaryWindow};
+use bounds::Bounds2;
+use resources::{board::Board, tile::Tile, tile_map::TileMap, BoardOptions};
 
 use self::{
 	components::{Bomb, BombNeighbor, Coordinates, Uncover},
@@ -15,7 +20,8 @@ pub struct BoardPlugin;
 
 impl Plugin for BoardPlugin {
 	fn build(&self, app: &mut App) {
-		app.add_systems(Startup, Self::create_board);
+		app.add_systems(Startup, Self::create_board)
+			.add_systems(PreUpdate, systems::input::input_handling);
 		log::info!("Loaded Board Plugin");
 
 		#[cfg(feature = "debug")]
@@ -49,6 +55,9 @@ impl BoardPlugin {
 		// Tilemap generation
 		let mut tile_map = TileMap::empty(options.map_size.0, options.map_size.1);
 		tile_map.set_bombs(options.bomb_count);
+
+		let mut covered_tiles =
+			HashMap::with_capacity((tile_map.width() * tile_map.height()).into());
 
 		// Tilemap debugging
 		#[cfg(feature = "debug")]
@@ -114,18 +123,32 @@ impl BoardPlugin {
 					tile_size,
 					options.tile_padding,
 					Color::GRAY,
-					bomb_image
+					bomb_image,
+					Color::DARK_GRAY,
+					&mut covered_tiles
 				);
 			});
+		commands.insert_resource(Board {
+			tile_map,
+			bounds: Bounds2 {
+				position: board_position.xy(),
+				size:     board_size
+			},
+			tile_size,
+			covered_tiles
+		});
 	}
 
+	#[allow(clippy::too_many_arguments)]
 	fn spawn_tiles(
 		parent: &mut ChildBuilder,
 		tile_map: &TileMap,
 		size: f32,
 		padding: f32,
 		_color: Color,
-		bomb_image: Handle<Image>
+		bomb_image: Handle<Image>,
+		covered_tile_color: Color,
+		covered_tiles: &mut HashMap<Coordinates, Entity>
 	) {
 		// Tiles
 		for (y, line) in tile_map.iter().enumerate() {
@@ -152,6 +175,22 @@ impl BoardPlugin {
 					// We add the `Coordinates` component to our tile entity
 					coordinates
 				));
+				// We add the cover sprites
+				cmd.with_children(|parent| {
+					let entity = parent
+						.spawn(SpriteBundle {
+							sprite: Sprite {
+								custom_size: Some(Vec2::splat(size - padding)),
+								color: covered_tile_color,
+								..Default::default()
+							},
+							transform: Transform::from_xyz(0., 0., 2.),
+							..Default::default()
+						})
+						.insert(Name::new("Tile Cover"))
+						.id();
+					covered_tiles.insert(coordinates, entity);
+				});
 				match tile {
 					// If the tile is a bomb we add the matching component and a sprite child
 					Tile::Bomb => {
