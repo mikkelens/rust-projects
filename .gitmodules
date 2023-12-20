@@ -1,3 +1,0 @@
-[submodule "proc-macro-workshop"]
-	path = proc-macro-workshop
-	url = https://github.com/dtolnay/proc-macro-workshop
