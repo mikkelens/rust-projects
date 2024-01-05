@@ -1,0 +1,2788 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title type="text">Factorio Blog</title>
+  <id>https://www.factorio.com/blog/rss</id>
+  <updated>2023-12-29T00:00:00+00:00</updated>
+  <link href="https://www.factorio.com/" />
+  <link href="https://www.factorio.com/blog/rss" rel="self" />
+  <generator>Werkzeug</generator>
+  <entry xml:base="https://www.factorio.com/blog/rss">
+    <title type="text">Friday Facts #391 - 2023 recap</title>
+    <id>https://www.factorio.com/blog/post/fff-391</id>
+    <updated>2023-12-29T00:00:00Z</updated>
+    <link href="https://www.factorio.com/blog/post/fff-391" />
+    <author>
+      <name>Vinzenz, raiguard</name>
+    </author>
+    <content type="html">&lt;p&gt;
+  Hello,&lt;br /&gt;
+  Another year has come to an end, from all of us here we wish you good fortune in the year to come.
+&lt;/p&gt;
+
+&lt;h3&gt;Mod portal recap 2023&lt;author&gt;Vinzenz&lt;/author&gt;&lt;/h3&gt;
+
+&lt;p&gt;
+Hey it&#39;s the end of 2023 and surprise surprise we&#39;re still counting mod downloads. While most of those downloads are via the built-in mod manager, some of you like to automate your Factorio installs with download scripts or Docker containers.
+&lt;/p&gt;
+
+&lt;p&gt;
+Some of them crash when updating their mods, then restart, download all the mods again, crash, restart and after a short while it&#39;s very likely that the Factorio auth server starts ignoring the download script. So maybe this festive season is the time you&#39;ll remember your poor mini-PC sitting in a forgotten closet, mindlessly downloading &#39;Power Armor MK3&#39; over and over again.
+&lt;/p&gt;
+
+&lt;p&gt;
+In 2023 we had:
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;676 651 engineers&lt;/strong&gt; downloading &lt;strong&gt;44 954 072 mods&lt;/strong&gt;.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;2 043 new mods&lt;/strong&gt; and &lt;strong&gt;7 832 mod updates&lt;/strong&gt;.&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;1 368 active mod creators&lt;/strong&gt;, supported by &lt;strong&gt;105 collaborators&lt;/strong&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+If you want to see a few stats about your personal mod portal usage you can visit your &lt;a href=&#34;https://mods.factorio.com/profile/recap/2023&#34;&gt;personal recap here&lt;/a&gt;.
+&lt;/p&gt;
+
+&lt;p&gt;
+Last year we looked at how many different mods people usually download.
+For this year I&#39;d like to show you a bit about the diversity of mod uploads this year.
+The first chart shows the different categories of mods released in 2023.
+&lt;/p&gt;
+&lt;p&gt;
+The second chart shows all the 2023 player downloads grouped by mod category.
+It confirms the cliché that people are only here for the Content and I should&#39;ve prepared these chart for mod tags instead.
+&lt;/p&gt;
+
+&lt;div class=&#34;flex mt12 mb12&#34;&gt;
+  &lt;div class=&#34;panel-inset w50p fs0&#34;&gt;
+    &lt;img src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-391-mod-releases-per-category.png&#34;
+      style=&#34;display: block; margin: auto; padding: 0px; box-shadow: none; max-width: 100%&#34;&gt;
+  &lt;/div&gt;
+  &lt;div class=&#34;panel-inset w50p fs0&#34;&gt;
+    &lt;img src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-391-downloads-per-category.png&#34;
+      style=&#34;display: block; margin: auto; padding: 0px; box-shadow: none; max-width: 100%&#34;&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+
+&lt;hr&gt;
+&lt;h3&gt;Mod portal changelog 2023&lt;author&gt;Vinzenz&lt;/author&gt;&lt;/h3&gt;
+
+&lt;p&gt;
+This year we continued our quest of improving ✨ discoverability ✨. First we added the automagical &lt;a href=&#34;https://mods.factorio.com/highlights&#34;&gt;Highlights page&lt;/a&gt;, every week it tries to be smart about picking an interesting selection of mods. It works okay but is still in a &#34;experimental&#34; stage where we haven&#39;t decided where to take it next.
+&lt;/p&gt;
+
+&lt;p&gt;
+A bit later we reworked the mod portal search and launched the &lt;a href=&#34;https://mods.factorio.com/explore&#34;&gt;Explore page&lt;/a&gt;. It provides a fast, search-as-you type experience with faceting.
+&lt;/p&gt;
+
+&lt;p&gt;
+We also did quite a bit of behind the scenes work, some of which I want to highlight here:
+&lt;ul&gt;
+  &lt;li&gt;When Imgur &lt;a href=&#34;https://arstechnica.com/gadgets/2023/04/hosting-site-imgur-will-remove-explicit-and-anonymous-content-next-month/&#34;&gt;started deleting images&lt;/a&gt; in April, Sanqui built a system which automatically rehosts external images posted on mod pages or discussions. Thus preserving old screenshots and improving load times.&lt;/li&gt;
+  &lt;li&gt;To reduce costs we migrated the Explore page from Algolia to Meilisearch&lt;/li&gt;
+  &lt;li&gt;We changed our mod storage from a sftp based solution to a s3-like object storage, this should improve the &lt;a href=&#34;https://forums.factorio.com/viewtopic.php?f=189&amp;t=104732&#34;&gt;availability of the mod upload endpoint&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;Mod manager improvements&lt;author&gt;raiguard&lt;/author&gt;&lt;/h3&gt;
+
+&lt;p&gt;
+Modding is an integral part of Factorio and we have put tremendous effort into providing a good mod management experience.
+However, third-party mods have always been secondary to base game work, so while the experience is &#34;good&#34;, it is not &#34;great&#34;, and there are many points of friction that have remained unsolved.
+Starting with 2.0, we will ship the game with multiple built-in mods, so the mod manager and dependency management have now fallen under the &#34;base game experience&#34; umbrella.
+Due to my &lt;a href=&#34;https://mods.factorio.com/user/raiguard&#34;&gt;extensive modding experience&lt;/a&gt;, I have a personal interest in improving mod management for both users and modders, and I am intimately familiar with the pain points of the current system.
+I created a laundry list of my biggest wishes and frustrations and took it upon myself to begin solving them.
+&lt;/p&gt;
+
+&lt;h4&gt;Mod dependency errors&lt;/h4&gt;
+
+&lt;p&gt;
+Picture this: You have just configured your mod list for a new playthrough of Krastorio 2, and you start a new game.
+Unbeknownst to you, you accidentally enabled the Power Armor MK3 mod, which Krastorio 2 has marked as incompatible.
+It takes until an hour into the playthrough for you to realize that the Krastorio 2 content is missing, and now you have to throw out the save and start over from scratch.
+&lt;/p&gt;
+
+&lt;p&gt;
+This is a situation that I have personally experienced numerous times both as a player and as a mod author.
+In 1.1, the game does not inform you when conflicts occur, but instead just silently loads the mods that it can and carries on.
+This has caused many mod authors to shy away from requiring dependencies altogether, and users to complain when a mod has a lot of dependencies.
+Issues surrounding this are so commonplace that Space Exploration implemented their own dependency errors system that informs users which mods are missing.
+&lt;/p&gt;
+
+&lt;p&gt;
+Factorio 2.0 will inform you when dependency errors occur, and will not allow the game to load until they are resolved.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img alt=&#34;Space Exploration is missing one graphics mod and has the wrong version of another graphics mod.&#34;
+    title=&#34;Space Exploration is missing one graphics mod and has the wrong version of another graphics mod.&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-391-mod-dependency-errors.png&#34;&gt;
+&lt;/p&gt;
+
+&lt;h4&gt;Configure -&gt; restart -&gt; configure -&gt; restart&lt;/h4&gt;
+
+&lt;p&gt;
+Now that we have proper dependency errors, we need to improve the workflow for resolving them.
+In 1.1, you are given two options when an error occurs: disable the affected mods, or disable all mods.
+If resolving the issue requires enabling mods, changing active mod versions, or updating mods, then you first need to disable mods to allow the game to load before you can access the mod manager GUI to resolve them.
+This was so annoying for my modding workflow that I wrote a &lt;a href=&#34;https://github.com/raiguard/fmm&#34;&gt;command-line mod manager&lt;/a&gt; to avoid the constant game restarts.
+&lt;/p&gt;
+
+&lt;p&gt;
+The solution was simple: In 2.0, I added a new &lt;code&gt;Manage mods&lt;/code&gt; button that allows full access to the mod manager GUI, including all mod portal functionality.
+You can see it in the screenshot above.
+&lt;/p&gt;
+
+&lt;h4&gt;Installing mods&lt;/h4&gt;
+
+&lt;p&gt;
+In 1.1, the install tab of the mod manager is relatively simple: you have a list of mods with some basic sorting/filtering options and an info pane to show mod details.
+The game fetches the &lt;i&gt;entire&lt;/i&gt; mod list and creates the entire table at once, leading to noticeable performance issues and nigh-unusable performance when the game is in debug mode.
+&lt;/p&gt;
+
+&lt;p&gt;
+With the advent of the new &lt;a href=&#34;https://mods.factorio.com/explore&#34;&gt;explore page&lt;/a&gt; on the mod portal website, the usability difference between the mod portal website and the in-game mod browser has grown even larger.
+I have settled into a workflow of searching for a mod on the website and only searching for it in-game after I have found the mod I need.
+Wouldn&#39;t it be nice if the game had the same experience, with all of the same searching and filtering capabilities?
+&lt;/p&gt;
+
+&lt;p&gt;
+2.0 features an all-new explore tab that does just that.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;video autoplay muted loop playsinline style=&#34;box-shadow: inset 0px 0px 3px 0px #000000, 0px -2px 2px -1px #000000, -2px 0px 2px -2px #0f0d0c, 2px 0px 2px -2px #0f0d0c, 0px 2px 2px -2px #ebe6e4;&#34;&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-391-mod-manager-explore.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    Mp4 playback not supported on your device.
+  &lt;/video&gt;
+  &lt;/br&gt;&lt;i&gt;Note: Filtering by bookmarked mods has not been implemented in the new GUI, but will be there for the 2.0 release.&lt;/i&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+There were several considerations I had to make when implementing this new interface.
+The 1.1 method of fetching the entire mod list every time was not a great solution for performance and network usage reasons, and would involve re-implementing the complex search algorithms client-side in C++.
+This would lead to inevitable differences between the website search and in-game search, which would not make for a great user experience.
+On the other hand, implementing a mod portal search API would ensure parity between the website and in-game search results.
+&lt;/p&gt;
+
+&lt;p&gt;
+We went with the server-side approach.
+To get the project up and running quicker, I chose to implement a mock server in &lt;a href=&#34;https://go.dev&#34;&gt;Go&lt;/a&gt; that would fetch data from existing mod portal APIs and serve it in the new format.
+Thanks to Go&#39;s built-in HTTP libraries and very easy-to-use JSON parsing, it only took a few hours to get this server up and running on my laptop.
+As I implemented the explore GUI, I was able to freely adjust the API as needed without taking up any DevOps time.
+This allowed me to take my time doing some much-needed cleanup and refactoring of the mod manager GUI to make the explore tab easier to implement and pave the way for more changes in the future.
+&lt;/p&gt;
+
+&lt;p&gt;
+Once the client-side implementation was complete, it was up to Vinzenz to implement the real API.
+Thanks to the robustness of the mock server, only a few issues were found during testing against the real API, and merging the feature went relatively smoothly.
+&lt;/p&gt;
+
+&lt;h4&gt;Future plans&lt;/h4&gt;
+
+&lt;p&gt;
+I feel that these changes have fixed my largest grievances with mod management.
+My laundry list is far from complete, but in the interest of getting 2.0 out to you all as soon as possible, the majority of my plans will have to wait until later versions.
+Stay tuned for more to come!
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;p&gt;
+As always, send POST requests with your feedback to the usual places.
+&lt;/p&gt;
+</content>
+  </entry>
+  <entry xml:base="https://www.factorio.com/blog/rss">
+    <title type="text">Friday Facts #390 - Noise expressions 2.0</title>
+    <id>https://www.factorio.com/blog/post/fff-390</id>
+    <updated>2023-12-22T00:00:00Z</updated>
+    <link href="https://www.factorio.com/blog/post/fff-390" />
+    <author>
+      <name>Earendel, Genhis</name>
+    </author>
+    <content type="html">&lt;p&gt;
+  Hello,&lt;br/&gt;
+  We&#39;ve had a lot of requests to talk about map generation. It&#39;s difficult to talk about map generation without first
+  explaining noise expressions.
+  From time to time we need to talk about noise expressions anyway because they are a critical part of the game, but I
+  don&#39;t think we&#39;ve ever done a good job of explaining what they actually are at a high level.
+  We will a closer look at planet mapgen again in the future, but for now this will introduce the basic concepts and act
+  as a &lt;span title=&#34;Do you also like films about time travel?&#34;&gt;primer&lt;/span&gt; for later.
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;What are noise expressions?&lt;author&gt;Earendel&lt;/author&gt;&lt;/h3&gt;
+
+&lt;h4&gt;The &#34;expression&#34; part&lt;/h4&gt;
+
+&lt;p&gt;
+  When making a game world in Factorio you need to decide what gets placed where. All you really have to work with is the X and Y
+  position. The terrain generator can&#39;t know anything about what is already placed. Somehow you need some code that
+  converts X and Y into the type of tile to place, and which trees, rocks, resources, decoratives, cliffs, or enemies to
+  place.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img alt=&#34;Trying to make &#39;something&#39; that brings all the assets together.&#34;
+    title=&#34;Trying to make &#39;something&#39; that brings all the assets together.&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-390-do-something.png&#34;&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  The middle of the map where X and Y are both 0 is the origin and the starting position. We always want this to be land otherwise you&#39;re stuck in water.
+  We can calculate the distance from the origin to get a distance &#34;cone&#34; and use it to make a circular island where
+  everything above some value is land, otherwise it is water.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img alt=&#34;Steps to make a circular island.&#34; title=&#34;Steps to make a circular island.&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-390-noise-expressions-circle.png&#34;&gt;
+  &lt;i&gt;(Images above are not to scale.)&lt;/i&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  Although, we don&#39;t always need to change the probability of both tiles at once, we only need to make sure that the
+  tile we want has the most influence where we want it. For example, land could always have a &#34;weight&#34; of 1, and then
+  water could just have a weight higher than 1 when we want water to appear.
+&lt;/p&gt;
+
+&lt;p&gt;
+  If we can add values to the X and Y coordinates before it goes into the distance function then it shifts the cone to a
+  different position. Offset cones could be used to make new islands, add a section to the existing island, or invert
+  the new cone to take chunks out of an island.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img alt=&#34;Offset circles&#34; title=&#34;Offset circles&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-390-cutouts.png&#34;&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  We also have most of the arithmetic operators, like absolute value, modulo, exponents, and trigonometry functions. The
+  trigonometric functions can be used to rotate positions instead of just using offsets, and that&#39;s the main trick to the
+  starting area of Vulcanus.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img alt=&#34;The Vulcanus starting area again.&#34; title=&#34;The Vulcanus starting area again.&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-390-vulcanus-again.png&#34;&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  The core part of the expressions is that we can chain these operations together for things like: test_1 = A + B * C.
+  But we can also make one noise expression reference the output of another one, e.g: test_doubler = test_1 * 2.
+&lt;/p&gt;
+
+&lt;p&gt;
+  So all of this is great, you could make an interesting crop circle pattern with this if you wanted to, but it&#39;s not
+  great for a natural landscape. For that we want some noise.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img alt=&#34;Crop circles as islands.&#34; title=&#34;Crop circles as islands.&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-390-cropcircles.png&#34;&gt;
+&lt;/p&gt;
+
+&lt;h4&gt;The &#34;noise&#34; part&lt;/h4&gt;
+
+&lt;p&gt;
+  In terrain generation noise does not mean sound, it just means just random numbers.
+&lt;/p&gt;
+
+&lt;p&gt;
+  When making random numbers, your most basic setup is to generate completely random numbers every time you need one.
+  This is called incoherent noise and no point has any relation to any other point. If you zoom in you just get more
+  complete randomness so the usefulness is quite limited.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img alt=&#34;White noise.&#34; title=&#34;White noise.&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-390-white-noise.png&#34;&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  Coherent noise is different. It makes good use of the X and Y coordinates so that nearby positions can have similar
+  values. This means that as you move over the landscape things change smoothly and coherently.
+&lt;/p&gt;
+
+&lt;p&gt;
+  The main coherent noise we use is basis noise (a Perlin style noise)
+  from &lt;a href=&#34;https://factorio.com/blog/post/fff-112&#34;&gt;FFF-112&lt;/a&gt;. The output values end up with an approximate
+  feature size. If you zoom out it&#39;s indistinguishable from incoherent noise, but if you zoom in (making the features
+  larger) then everything keeps smoothing out until it is almost flat.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img alt=&#34;Basis noise at 3 scales.&#34; title=&#34;Basis noise at 3 scales.&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-390-basis-zoomin.png&#34;&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  This is great because we can use some noise with a huge feature size for continents, a medium size for islands and
+  bays, and a smaller noise to break up the coastline a bit more. This is the basic idea behind fractal noise. Multiple
+  levels of different sizes are added together with smaller layers having progressively less impact as they add smaller
+  details to certain areas.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img alt=&#34;Adding fractal octaves to a coastline.&#34; title=&#34;Adding fractal octaves to a coastline.&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-390-fractal.png&#34;&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  The next type of noise is spot noise. It creates a number of spots on the landscape with a certain amount of spacing.
+  This is what we usually use for resource placement. Each spot is actually a cone, so we can have higher richness in
+  the middle of each patch. The resource cone is then perturbed by adding some basis noise so it&#39;s not such a clean
+  circle.
+  If you want to read more about spot noise, I recommend checking out &lt;a href=&#34;https://factorio.com/blog/post/fff-258&#34;&gt;FFF-258&lt;/a&gt;.
+&lt;/p&gt;
+
+&lt;div class=&#34;panel-inset p0&#34; style=&#34;text-align: center; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;div class=&#34;juxtapose&#34;&gt;
+    &lt;img alt=&#34;Nauvis resource cones.&#34; title=&#34;Nauvis resource cones.&#34;
+      src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-390-spot-noise-values-thin.png&#34;&gt;
+    &lt;img alt=&#34;Nauvis map.&#34; title=&#34;Nauvis map.&#34;
+      src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-390-spot-noise-result-thin.png&#34;&gt;
+  &lt;/div&gt;
+  &lt;p style=&#34;margin: 10px&#34;&gt;
+    &lt;i&gt;
+      Left: Nauvis resource cones before the added noise to break up the circle.
+      &lt;br/&gt;
+      Right: Nauvis map as you&#39;d normally see it.
+    &lt;/i&gt;
+  &lt;/p&gt;
+&lt;/div&gt;
+
+&lt;h4&gt;Putting it all together&lt;/h4&gt;
+
+&lt;p&gt;
+  The real power comes from artistic control over these things and finding the maths required to do it efficiently.
+  Here&#39;s a couple of examples:
+&lt;/p&gt;
+
+&lt;p&gt;
+  Spot noise is not just for resources, it can also be used for volcanoes. We add huge spot cones to the elevation to
+  make the main volcano body. We can also invert the cone and &#34;min&#34; the tip to invert the mountain peak for a lava pit.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img alt=&#34;Steps to invert a mountain peak.&#34; title=&#34;Steps to invert a mountain peak.&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-390-mountain-inversion.png&#34;&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  These sorts of inversions are critical for some things. If you want to have a mostly water map you can just reduce the
+  elevation, but this will tend to make islands. What if you want a mostly water map but still have most of the land
+  connected?
+&lt;/p&gt;
+
+&lt;p&gt;
+  For this we can use absolute value and bounce any negative value to be positive. If we then invert it, all of the
+  values are negative, but a small addition bumps a narrow band into the positive region. This makes a series of narrow
+  land paths that almost always connect. We use this sort of pattern in the Vulcanus lava area to make sure that there&#39;s
+  a way through the maze.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img alt=&#34;Steps to make ridge noise and adjust elevation.&#34; title=&#34;Steps to make ridge noise and adjust elevation.&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-390-sin-example.png&#34;&gt;
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;Noise tools&lt;author&gt;Earendel&lt;/author&gt;&lt;/h3&gt;
+
+&lt;p&gt;
+  Before joining Wube I was working on new planets for my Space Exploration mod (and still am). In Space Exploration
+  each planet type will have unique map generation a bit like the planets in Space Age. Making just 1 completely new
+  planet is a huge amount of work, so when embarking on making 14+ new types, I decided to invest in making some new
+  tools to make the process easier. This resulted in my own set of Noise Tools, that do a number of things:
+&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Autoplace cleaning so that testing is much faster.&lt;/li&gt;
+  &lt;li&gt;Planet-switching presets to be able to preview other planets.&lt;/li&gt;
+  &lt;li&gt;A convenient inline way to add temporary debug sliders so that noise expression values can be adjusted from the
+    map preview screen.&lt;/li&gt;
+  &lt;li&gt;And last but not least, the ability to use the map preview to visualise noise expression output directly.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;
+  The last one about noise visualisation is the one that is really difficult to do without. Without it you are very
+  detached from the output of the system. Let&#39;s say for example, you add some new code that is supposed to make some of
+  the existing sand on the map go from a yellow version to a red version. You load up the game, wander around, but you
+  don&#39;t see any red sand. What went wrong? It could be any number of things. Maybe it is actually working but
+  coincidentally the areas that should be red happened to be under water and grass instead of sand. More likely though,
+  if you&#39;ve explored a large area and still didn&#39;t find any then it is broken somewhere, but where?
+&lt;/p&gt;
+
+&lt;p&gt;
+  The noise visualiser lets me choose a specific noise expression and convert that to an image in the preview screen.
+  That way I can see things like the distribution and output values of expressions to say things like, the scale is way
+  larger than I thought so you&#39;d need to go 10km to find any difference, or the output range is too low and it&#39;s never
+  strong enough to make a change, or maybe one value accidentally goes negative, multiplies with another negative and
+  causes some other unexpected problems.
+&lt;/p&gt;
+
+&lt;div class=&#34;panel-inset p0&#34; style=&#34;text-align: center; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;div class=&#34;juxtapose&#34;&gt;
+    &lt;img alt=&#34;Nauvis map.&#34; title=&#34;Nauvis map.&#34;
+      src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-390-nauvis-actual.png&#34;&gt;
+    &lt;img alt=&#34;Nauvis elevation.&#34; title=&#34;Nauvis elevation.&#34;
+      src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-390-nauvis-elevation.png&#34;&gt;
+  &lt;/div&gt;
+  &lt;p style=&#34;margin: 10px&#34;&gt;
+    &lt;i&gt;
+      Left: Nauvis map as you&#39;d normally see it.
+      &lt;br/&gt;
+      Right: Nauvis elevation. Blue is elevation below zero with darker values being deeper. Yellow is high, green is
+      very high. Used for water and cliffs.
+    &lt;/i&gt;
+  &lt;/p&gt;
+&lt;/div&gt;
+
+&lt;p&gt;
+  This really shines when working on things like multiple biomes. Usually if you just rely on tile change as an
+  indicator, you can see that a change happened when going from one biome to another, but you can&#39;t tell what the rate
+  of change is like. Often a soft rate of change is better so vegetation can fade out as things get drier, but usually
+  there&#39;s no way to see that ahead of time. With the visualiser you can tell if the biome transition is hard or soft
+  because it can display up to 255 different values and show you the gradient.
+&lt;/p&gt;
+
+&lt;div class=&#34;panel-inset p0&#34; style=&#34;text-align: center; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;div class=&#34;juxtapose&#34;&gt;
+    &lt;img alt=&#34;Vulcanus elevation.&#34; title=&#34;Vulcanus elevation.&#34;
+      src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-390-vulcanus-elevation.png&#34;&gt;
+    &lt;img alt=&#34;Vulcanus temperature.&#34; title=&#34;Vulcanus temperature.&#34;
+      src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-390-vulcanus-temperature.png&#34;&gt;
+  &lt;/div&gt;
+  &lt;p style=&#34;margin: 10px&#34;&gt;
+    &lt;i&gt;
+      Left: Vulcanus elevation. Blue is elevation below zero with darker values being deeper. Yellow is high, green is
+      very high.
+      &lt;br/&gt;
+      Right: Vulcanus temperature. Black is cool, red is warm, yellow is hot. Used to place hot tilesets.
+    &lt;/i&gt;
+  &lt;/p&gt;
+&lt;/div&gt;
+
+&lt;p&gt;
+  The way it works is still a bit hacky because it runs as a mod and not part of the game engine. Essentially it gets all
+  the tiles in the game, changes their map colours to different values from black to white, or blues &gt; reds &gt; greens,
+  and then it reassigns those tiles to only appear somewhere based on the noise expression you are trying to visualise.
+  Using blue for values below zero and other hues above zero is very useful for elevation because that makes the zero
+  line transition very clear, and that is important because that tends to be our coastline. You can&#39;t really play the
+  game like this but it&#39;s invaluable in the early stages of a new planet, or when trying to debug something.
+&lt;/p&gt;
+
+&lt;p&gt;
+  So naturally, when I started making planets at Wube I updated my tools
+  so I could use them for Space Age. I&#39;m pretty confident in saying that with these tools I can work on
+  planets about 10x faster.
+&lt;/p&gt;
+
+&lt;p&gt;
+  Not only that, but Genhis and I have been working on some fancy new noise functions that we&#39;ll reveal along with a new
+  planet later. The new functions have a lot of settings and trying to get them to all work without my noise tools would
+  not have been fun. In fact, I have my doubts that we would have been able to finish all the features of the new system
+  without some way of seeing what we were doing.
+&lt;/p&gt;
+
+&lt;p&gt;
+  I&#39;ll release Noise Tools for 2.0 when the expansion is released.
+&lt;/p&gt;
+
+
+&lt;hr&gt;
+&lt;h3 id=&#34;map-generation-in-cpp&#34;&gt;Map generation in C++&lt;author&gt;Genhis&lt;/author&gt;&lt;/h3&gt;
+
+&lt;p&gt;
+  When the first Vulcanus map generation overhaul was merged, we noticed a significant slowdown as we launched the game
+  and generated the planet terrain.
+  This would have been a mild inconvenience for players, but launching the debug version many times a day made it very
+  noticeable.
+  So, we would either have to give up on fancy map generation or spend some time to make it faster.
+&lt;/p&gt;
+
+&lt;p&gt;
+  Map generation already runs in multiple threads where possible and we try to optimise the code for SIMD execution
+  (single instruction, multiple data).
+  Runtime map generation is therefore efficient enough which generally matched what we observed about Vulcanus. The
+  issue had to be somewhere else.
+  As I dived deeper and deeper into noise expressions, I found some areas for improvement.
+&lt;/p&gt;
+
+&lt;p&gt;
+  In C++, noise expressions represent an abstract syntax tree (AST) of mathematical operations.
+  Each noise expression is a class instance storing its children.
+  If you don&#39;t know what that means, just think of it as a bag that can contain other bags.
+  They can be combined and nested up to hardware limits. The structure is fully built from its
+  &lt;a href=&#34;https://lua-api.factorio.com/1.1.100/types/NoiseExpression.html&#34;&gt;Lua counterpart&lt;/a&gt;.
+  When a surface is created, noise expressions are compiled to a noise program.
+  In general, each &lt;a href=&#34;https://lua-api.factorio.com/1.1.100/prototypes/NamedNoiseExpression.html&#34;&gt;NamedNoiseExpression&lt;/a&gt;
+  is a procedure in the program.
+  Procedures are useful because we can reuse data for multiple steps.
+  The procedure contains a linear sequence of noise operations with already resolved dependencies, so it is guaranteed
+  that children of a later operation have already been computed.
+  This structure is optimised for fast computation when you need all data, so changes like
+  &lt;a href=&#34;https://forums.factorio.com/103364&#34;&gt;short-circuiting if statements&lt;/a&gt; can&#39;t easily be done.
+  Additionally, before noise expressions are compiled, they are recursively simplified &amp;ndash; if all their children are
+  constant, they can be folded into a constant as well.
+  This step can&#39;t be done sooner because some variables depend on map settings.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img alt=&#34;Noise expressions lifecycle (old)&#34; title=&#34;Noise expressions lifecycle (old)&#34;
+    style=&#34;box-shadow: none&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-390-noise-expressions-lifecycle-old.png&#34; /&gt;
+  &lt;br/&gt;&lt;i&gt;Noise expressions lifecycle in 1.1&lt;/i&gt;
+&lt;/p&gt;
+
+&lt;h4&gt;Optimising the internal structure&lt;/h4&gt;
+
+&lt;p&gt;
+  The system wasn&#39;t expected to be pushed to its limits, so the code didn&#39;t deduplicate identical expressions and
+  allocated them separately.
+  Base game allocated 31&#39;000 objects and Vulcanus even more, 280&#39;000.
+  I added a global storage which cached expressions based on their hash and could retrieve one without constructing
+  the full object first. It reduced the number of objects to 5&#39;300 and saved us 125 MB of RAM.
+&lt;/p&gt;
+
+&lt;p&gt;
+  Having so many duplicate expressions surely means there are other places which don&#39;t reuse things, right?
+  For example, the simplification step. When it found an opportunity to apply constant folding, the whole branch of
+  the AST had to be re-created to replace one expression with a constant.
+  This step created many temporary objects &amp;ndash;
+  almost as many as the number of permanently allocated expressions (200&#39;000 for Vulcanus).
+  I wanted to merge this into the compilation step and simplify expressions &#34;just in time&#34;. My attempt was successful and
+  creating the Vulcanus surface from the inefficient noise expression tree became 15x faster.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img alt=&#34;Noise expressions lifecycle (deduplicated)&#34; title=&#34;Noise expressions lifecycle (deduplicated)&#34;
+    style=&#34;box-shadow: none&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-390-noise-expressions-lifecycle-deduplicated.png&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  I continued the refactoring having in mind that writing optimal noise expressions is hard.
+  My goal was to make the compiler aid modders with the optimisation step.
+  Therefore, I tried to deduplicate expressions used in multiple procedures.
+  The new system would extract them to separate procedures, so that their result could be reused at runtime.
+  You don&#39;t need to call `noise.delimit_procedure()` anymore, it&#39;s automatic!
+&lt;/p&gt;
+
+&lt;p&gt;
+  However, it turns out that figuring out which expressions are used by multiple procedures is not easy and issues
+  started popping up.
+  I would have to sacrifice compilation performance if I wanted to fully deduplicate it.
+  Not only that, but requesting to run a procedure would be more expensive because cross-procedural dependencies were computed
+  on demand.
+  I guess it wouldn&#39;t matter because it was still insignificant, but why do something inefficiently when we can optimise
+  it and make the code simpler?
+&lt;/p&gt;
+
+&lt;p&gt;
+  So I decided to remove procedures altogether. Instead of one noise program per surface we now have three (tiles,
+  cliffs, entities + decoratives).
+  These parts were run separately and didn&#39;t reuse procedure results anyway. Runtime map generation saw up to 20%
+  improvement and noise program compilation was up to 50% faster,
+  although results varied depending on complexity of noise expressions.
+&lt;/p&gt;
+
+&lt;p&gt;
+  Now you can think of a noise program as one procedure with multiple outputs, which has its advantages. There are no
+  dependencies and everything is inlined.
+  If an intermediate result is not needed anymore, the memory is assigned to another noise operation. So it&#39;s like a long C++
+  function with stack variables being optimised away, although a somewhat simpler version.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img alt=&#34;Removed procedures from noise programs&#34; title=&#34;Removed procedures from noise programs&#34;
+    style=&#34;box-shadow: none&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-390-noise-expressions-procedureless.png&#34; /&gt;
+&lt;/p&gt;
+
+&lt;h4&gt;Problems with the Lua format&lt;/h4&gt;
+
+&lt;p&gt;
+  The Lua noise expressions format was introduced in &lt;a href=&#34;https://www.factorio.com/blog/post/fff-207&#34;&gt;FFF-207&lt;/a&gt;.
+  Although many people claim it is pure magic and hard to work with, it offers great flexibility to modders and allows
+  them to create unique and atmospheric maps. Despite this, it has some issues.
+  When you dump the `data.raw` prototype table, you will notice that a significant portion is taken by noise expressions.
+  This is because the format is very verbose with each AST node being a Lua table.
+  Creating so many individual strings and tables also impacts performance.
+&lt;/p&gt;
+
+&lt;p&gt;
+  If we didn&#39;t use Lua functions and metatables provided by the noise library, the format would look like this
+  just to compute &#34;x + 5&#34;.
+&lt;/p&gt;
+
+&lt;pre&gt;&lt;code class=&#34;language-lua&#34; style=&#34;padding: 0.5em; font-size: 10pt&#34;&gt;{
+  type = &#34;function-application&#34;,
+  function_name = &#34;add&#34;,
+  source_location = {filename = ..., line_number = ...}, -- debug symbols, optional
+  arguments =
+  {
+    {
+      type = &#34;variable&#34;,
+      variable_name = &#34;x&#34;,
+      source_location = {filename = ..., line_number = ...}
+    },
+    {
+      type = &#34;literal-number&#34;,
+      literal_value = 5,
+      source_location = {filename = ..., line_number = ...}
+    }
+  }
+}&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;
+  Not readable, is it? Imagine chaining it 100x with other functions and operations.
+  The noise library hides this away, but the performance penalty and &#34;mangled&#34; output are still there.
+  So we decided to change it.
+&lt;/p&gt;
+
+&lt;p&gt;
+  I was tasked with making the format read like math.
+  That is, to create a parser which could process string expressions into AST.
+  At first, I was fixated on saving as much performance as possible which resulted in a monolithic design.
+  Functional, but hard to test, maintain and expand further. Then, I started reading about how other parsers do it.
+  I even considered using an external grammar tool which would generate the parser, but I didn&#39;t think it would be worth
+  the time to learn using it and the produced code would likely be suboptimal.
+  In the end, I decided to go for an in-house solution.
+&lt;/p&gt;
+
+&lt;p&gt;
+  The parser was split into three logical parts.
+&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;
+    &lt;strong&gt;Tokenizer&lt;/strong&gt;, which processes a stream of characters and categorises individual character groups to token types.
+    The operator character set is based on Lua with a few exceptions where both C++ and Lua syntax are supported.
+    Apart from regular numbers, it supports scientific notation, and other formats can be added as needed.
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;strong&gt;PostfixTokenizer&lt;/strong&gt;, which converts infix tokens to postfix (reverse Polish) notation.
+    This step is responsible for following operator precedence rules and for making sure that resulting expressions are
+    unambiguous.
+    It uses a modified version of the &lt;a href=&#34;https://en.wikipedia.org/wiki/Shunting_yard_algorithm&#34;&gt;shunting yard algorithm&lt;/a&gt;
+    to process data.
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;strong&gt;NoiseExpressionParser&lt;/strong&gt;, which takes postfix tokens and converts them to a noise expression tree (AST).
+  &lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p style=&#34;text-align: center&#34;&gt;
+  &lt;img alt=&#34;Noise expression parser lifecycle&#34; title=&#34;Noise expression parser lifecycle&#34;
+    style=&#34;box-shadow: none&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-390-noise-expressions-parser-lifecycle.png&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  I wanted to move as much stuff to C++ as possible to avoid expensive Lua string concatenation. Therefore, I extended
+  noise expressions and allowed defining named noise functions as prototypes.
+  I also added support for local noise functions and expressions which aren&#39;t exposed to the global prototype table.
+  There is more I could say about these improvements, but it would better fit a modding documentation and wouldn&#39;t make
+  an interesting blog post.
+&lt;/p&gt;
+
+&lt;p&gt;
+  So now all noise expressions are parsed from string, and the legacy format which uses Lua tables is removed for 2.0.
+  Regarding the original issue this was all done for, noise expressions take 50% less time during prototype
+  initialization and the prototypes now load 20% faster as a result.
+&lt;/p&gt;
+
+&lt;h4&gt;Further work&lt;/h4&gt;
+
+&lt;p&gt;
+  My journey to improve map generation doesn&#39;t end here. The introduction of prototype-defined noise functions meant
+  that AST contained constants which didn&#39;t have any effect on the result and were quite frequent.
+  I implemented partial constant folding using arithmetic identities, so expressions like &#34;1*x + 0&#34; are folded into &#34;x&#34;
+  and aren&#39;t evaluated for every chunk.
+&lt;/p&gt;
+
+&lt;p&gt;
+  In addition, I noticed we hadn&#39;t been using basis noise (our Perlin-like noise function) efficiently.
+  Its special case (x=x, y=y) is optimised because we know we work on a grid.
+  We can reuse intermediate tile values, so it is 5x faster than the generic implementation.
+  When we wanted to offset the grid using x and y parameters, it would no longer be interpreted as the special case.
+  Adding separate offset parameters improved the performance further.
+&lt;/p&gt;
+
+&lt;p&gt;
+  I did more work around map generation, but not everything fit into the blog post.
+  For example, I removed noise layer prototypes, added more noise functions, and made a few other tweaks. However, I had
+  to make some compromises. Some noise functions were removed, including
+  &lt;a href=&#34;https://lua-api.factorio.com/1.1.100/types/NoiseArrayConstruction.html&#34;&gt;array construction&lt;/a&gt;.
+  It is possible to add array support to the new parser if requested, although there are more pressing issues right now.
+&lt;/p&gt;
+
+&lt;h4&gt;The results&lt;/h4&gt;
+
+&lt;p&gt;
+  Several iterations have passed since the first Vulcanus generation prototype.
+  Its individual noise expressions have been optimised as well.
+  Together with C++ improvements, what took &lt;strong&gt;18.35 ms per chunk now takes 2.83 ms&lt;/strong&gt;.
+  This is a result we are quite happy with.
+&lt;/p&gt;
+
+&lt;p&gt;
+  I am sure you want to know how all this compares to 1.1:
+  &lt;ul&gt;
+    &lt;li&gt;Base game initialises prototypes 7% faster and 87% less time is spent on noise expression prototypes.&lt;/li&gt;
+    &lt;li&gt;Nauvis noise programs are compiled 85% faster.&lt;/li&gt;
+    &lt;li&gt;Thanks to procedures removal, there are fewer noise operations (6&#39;016 &amp;rarr; 2&#39;233).&lt;/li&gt;
+    &lt;li&gt;This brings us 25% faster chunk generation on average (4.8 ms &amp;rarr; 3.58 ms).&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  All in all, around 90% of the noise expression engine was rewritten from scratch. I estimate I spent around 4 months
+  working on the C++ side of map generation.
+  It was well worth it, because not only do we have a faster system, but also it is more maintainable and we can easily
+  add new noise expression types as we need them.
+  Designing it was a fun challenge.
+  The system may be a bit over-engineered just for map generation, but at least we have a solid
+  foundation which we could reuse in other projects if we wanted to.
+&lt;/p&gt;
+
+
+&lt;hr&gt;
+&lt;h3&gt;It&#39;s that time of year again&lt;author&gt;Earendel&lt;/author&gt;
+&lt;/h3&gt;
+
+&lt;p&gt;
+  Well done, you made it to the end. Merry Cogmas.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-390-frozen-xmas.png&#34;&gt;
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;p&gt;
+  Make some noise and express yourself in the usual places.
+&lt;/p&gt;
+
+&lt;!-- juxtapose.js --&gt;
+&lt;script src=&#34;https://cdn.knightlab.com/libs/juxtapose/latest/js/juxtapose.min.js&#34;&gt;&lt;/script&gt;
+&lt;link rel=&#34;stylesheet&#34; href=&#34;https://cdn.knightlab.com/libs/juxtapose/latest/css/juxtapose.css&#34;&gt;
+
+&lt;!-- highlight.js --&gt;
+
+&lt;link rel=&#34;stylesheet&#34; href=&#34;https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css&#34;&gt;
+&lt;script src=&#34;https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/lua.min.js&#34;&gt;&lt;/script&gt;
+&lt;style&gt;.hljs {background: none;}&lt;/style&gt;
+
+&lt;script&gt;hljs.highlightAll();&lt;/script&gt;</content>
+  </entry>
+  <entry xml:base="https://www.factorio.com/blog/rss">
+    <title type="text">Friday Facts #389 - Train control improvements</title>
+    <id>https://www.factorio.com/blog/post/fff-389</id>
+    <updated>2023-12-15T00:00:00Z</updated>
+    <link href="https://www.factorio.com/blog/post/fff-389" />
+    <author>
+      <name>kovarex, Klonan</name>
+    </author>
+    <content type="html">&lt;p&gt;
+  Hello,&lt;br/&gt;
+  trains are one of our most favorite parts of the game. We already talked about the ways we improved rails (&lt;a href=&#34;https://factorio.com/blog/post/fff-377&#34;&gt;FFF-377&lt;/a&gt;), so its time to talk about how we improved the way you can control the trains that ride on them.
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;Train Schedule Interrupts&lt;/h3&gt;
+&lt;p&gt;
+  The way you control the trains is very static at the moment. You have a list of stops to visit, and the train just goes through them one by one and thats it. The only dynamic part is the wait time at each of the stops.&lt;br/&gt;
+  There is no way to just go somewhere else dynamically based on what is going on.
+&lt;/p&gt;
+
+&lt;p&gt;
+  The most obvious annoyance caused by this limitation is the problem with how to refuel trains. In 1.1, you need to make sure that every schedule has a stop which also refuels the locomotives.
+  For example, the Iron drop-off station at the main base also has an inserter for loading fuel. But the more distinct routes you have, the more refueling stops you need.
+&lt;/p&gt;
+
+&lt;p&gt;
+  It is kind of boring and repetitive, and even more annoying when you want to change the type of fuel. The alternative is to have a dedicated refueling station and just put it into every schedule, but it feels very wasteful.
+&lt;/p&gt;
+
+&lt;p&gt;
+  The actual logic of what we would like the train to do is pretty simple:
+&lt;br/&gt;&lt;i&gt;&#34;Do your stuff, and only when you are running low on fuel, go to the dedicated refueling station&#34;.&lt;/i&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  Since this feels very natural, we implemented a new feature in the game which allows exactly this kind of logic very easily, we call them &lt;strong&gt;Schedule interrupts&lt;/strong&gt;.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-389-refuel-interrupt.png&#34;&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  The interrupts are very simple, you specify a list of conditions to trigger the interrupt, and a list of target stations + wait conditions that will be added to the schedule.
+  Whenever the train wants to leave the current station, it checks all the interrupts one by one, evaluating the interrupt conditions. If the conditions are fulfilled,
+  the interrupt is activated and the targets are pasted into the current schedule as temporary stops.
+&lt;/p&gt;
+
+&lt;p&gt;
+  The available conditions are mostly the familiar set from the wait conditions (full/empty cargo, circuit condition, item/fluid count, etc.), with some special additions that only make sense for interrupts.
+&lt;/p&gt;
+
+&lt;p&gt;
+  It was very convenient that we had already implemented the concept of temporary stations, which was used only for manually sending the train somewhere.&lt;br/&gt;
+  For those who don&#39;t know, the temporary station is something like a one-time order, once train leaves the temporary station, the entry is removed from the schedule.&lt;br/&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  The refueling example was the original motivation, but the way it works obviously has a much wider range of applications.
+&lt;/p&gt;
+
+&lt;h4&gt;The generic trains&lt;/h4&gt;
+&lt;p&gt;
+  Since the interrupt can have a cargo condition, we can make an interrupt for each type of cargo, saying where it should be delivered.
+&lt;/p&gt;
+
+&lt;p&gt;
+  For example: if you have Iron ore, go to Iron ore drop, if you have Copper ore, go to Copper ore drop, etc.&lt;br/&gt;
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-389-item-interrupt.png&#34;&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  This means, that the train with these kinds of interrupts is now able to deal with whatever cargo you throw at it,
+  so it doesn&#39;t really care if it should pick up iron or copper or whatever you support with the interrupts.
+  At this point, there is no reason to distinguish different loading stations, and as long as you use the train stop limits,
+  you can name all the loading stations the same, and just use the one schedule to manage all the things.
+&lt;/p&gt;
+
+&lt;p&gt;
+  One of the big advantages of this system, is that all your trains are shared between all of the possible routes,
+  so you don&#39;t have to think about &#34;Copper trains are running low&#34; or &#34;I don&#39;t have enough circuit trains&#34; etc.
+  There is just one big bag of trains, and you either have enough or not.
+&lt;/p&gt;
+
+&lt;h4&gt;The depot problem&lt;/h4&gt;
+&lt;p&gt;
+  This is all very nice, but it kind of created a new problem, and its the fluctuation of trains availability based
+  on all the unloading stations being backed up or not. This can lead to an excess of trains in the system when some of the resources or
+  production is running low, and we need a way to deal with it.
+&lt;/p&gt;
+
+&lt;p&gt;
+  So we just added a special interrupt condition called &#34;Destination full&#34;, which allows us to make an interrupt to send a
+  train to a depot if all the item inputs are occupied, so it doesn&#39;t block the current station.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-389-depot-interrupt.png&#34;&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  Some people noticed a row of depot stations in some of our screenshots, this is what they were for.
+&lt;/p&gt;
+
+&lt;h4&gt;Interrupts are global&lt;/h4&gt;
+&lt;p&gt;
+  Initially interrupts were specific to each schedule, but we eventually realized, that it is a really good idea to be able to share
+  the same interrupt between different schedules. We had the problem where once we wanted to upgrade our fuel from coal to rocket fuel
+  for instance, we would have to go through each schedule and update the interrupt, which was not only a big hassle, but often resulted in some trains not being updated.
+&lt;/p&gt;
+
+&lt;p&gt;
+  So we made it that interrupts are shared globally (identified by their name), and when you edit an interrupt it changes for all the trains
+  with that interrupt. This made it much more convenient and less error prone.
+&lt;/p&gt;
+
+&lt;h4&gt;Interrupt in interrupt&lt;/h4&gt;
+&lt;p&gt;
+  Normally, when an interrupt is activated, other interrupts won&#39;t be able to interfere until it is finished. But in some specific cases,
+  this is too limiting, so we added a another special interrupt condition, called &#34;In interrupt&#34;. This allows the interrupt to trigger while another
+  interrupt is in progress, which clears the original interrupt and replaces it with the new interrupt targets.
+&lt;/p&gt;
+
+&lt;p&gt;
+  There is some very specific case where this is a crucial thing to have, but it is on a planet we didn&#39;t reveal yet, so
+  more on that later :) .
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;Reservation upgrade&lt;/h3&gt;
+&lt;p&gt;
+  All the more advanced interrupt schedule systems heavily depends on the train stop reservation limit. This is what prevents all the trains in your system trying to go to one stop.&lt;br/&gt;
+  But there was one little problem with the system, which could even cause traffic jams/deadlocks, and which was made much more important with the generic schedules.
+&lt;/p&gt;
+
+&lt;p&gt;
+  The problem is that once the train decides to leave the station, it instantly clears the reservation of the train limit, while still physically blocking the stop. This lets another train start its journey toward the stop, while there might not be enough space to wait without blocking the mainline.
+&lt;/p&gt;
+
+&lt;p&gt;
+  So we fixed it, so the train will only give up its reservation once it leaves the block with the train stop. I would be interested to know if other people encountered this problem in 1.1 as well.
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;Train groups&lt;/h3&gt;
+
+&lt;p&gt;
+  The lack of train groups and the inability to edit multiple schedules all at once was annoying, but wasn&#39;t that important before interrupts, because you didn&#39;t really need to update/tweak the existing schedules that much.
+&lt;/p&gt;
+
+&lt;p&gt;
+  But with interrupts and more generic trains, you need to update the schedules/interrupts of existing trains all the time, so this obviously had to be done. The approach is similar to what we did with other grouping changes in the 2.0 update (&lt;a href=&#34;https://factorio.com/blog/post/fff-382&#34;&gt;logistic groups&lt;/a&gt; and interrupts).
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-389-train-group.png&#34;&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  So any changes to the schedule of one member of the group will update the whole group. Importantly, this ignores the temporary stops, as they are part of the state of the individual trains (so hijacking a train to chauffeur you somewhere won&#39;t break anything).
+&lt;/p&gt;
+
+&lt;p&gt;
+  It only makes sense to show the groups in the train overview.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-389-train-overview.png&#34;&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  So now you can just place down a new train, set it to the group you want, and off it goes. If you have too many of one type, you can just reassign the train&#39;s group and turn it from an Iron train to a Copper train without hunting down an existing train to copy-paste from.
+&lt;/p&gt;
+
+&lt;p&gt;
+  When you add a new interrupt (to handle a new item type), it will be added to all in the group and everything will &#39;just work&#39; without any needless train/schedule bureaucracy.
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;Auto color based on destination&lt;/h3&gt;
+
+&lt;p&gt;
+  This is another thing teased and noticed in previous FFFs. We like to color our trains based on what they deliver, but with the generic system, any train can carry anything and static coloring just won&#39;t do the trick.
+&lt;/p&gt;
+
+&lt;p&gt;
+  Initially we wanted to somehow add coloring to the schedule GUI, but it would be a hassle, where every station entry needs to have yet another UI element (in a GUI which is already not that simple). But we realized that a much more natural approach is available.
+&lt;/p&gt;
+
+&lt;p&gt;
+  So we added a simple checkbox (on by default) to the locomotive color widget, to change its color based on the destination.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-389-auto-color.png&#34;&gt;
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;video autoplay muted loop playsinline style=&#34;box-shadow: inset 0px 0px 3px 0px #000000, 0px -2px 2px -1px #000000, -2px 0px 2px -2px #0f0d0c, 2px 0px 2px -2px #0f0d0c, 0px 2px 2px -2px #ebe6e4;&#34;&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-389-auto-color-gif.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    Mp4 playback not supported on your device.
+  &lt;/video&gt;
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;Conclusion&lt;/h3&gt;
+&lt;p&gt;
+  We have been asked to do something like &#39;logistic trains&#39; many times.
+  Schedule interrupts provide a more generic system, where logistic trains is just one of the things you can build from it.
+  For example, you can have a system where you let the stop decide where to send the train using the circuit conditions and interrupts.
+&lt;/p&gt;
+
+&lt;p&gt;
+  It is also more approachable, because you can use interrupts for just refueling or something simple, while still keeping the normal schedules.
+&lt;/p&gt;
+
+&lt;p&gt;
+  We have been playing with this for quite some time, and it is one of the features we couldn&#39;t play without at this point.&lt;br/&gt;
+  To clarify, this is a core engine feature which will be available for everyone with the 2.0 base game update.
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;And more to come...&lt;/h3&gt;
+
+&lt;p&gt;
+  We didn&#39;t stop there, we have more improvements related to trains prepared for 2.0, but we will have to leave them for another day...
+&lt;/p&gt;
+
+&lt;p&gt;
+  Let us know what you think at the usual places.
+&lt;/p&gt;
+</content>
+  </entry>
+  <entry xml:base="https://www.factorio.com/blog/rss">
+    <title type="text">Friday Facts #388 - Smaller things for 2.0</title>
+    <id>https://www.factorio.com/blog/post/fff-388</id>
+    <updated>2023-12-08T00:00:00Z</updated>
+    <link href="https://www.factorio.com/blog/post/fff-388" />
+    <author>
+      <name>kovarex, raiguard, Klonan</name>
+    </author>
+    <content type="html">&lt;p&gt;
+  Hello,&lt;br/&gt;
+  we have shown some bigger things recently, so it is time to also show some smaller things, because the bigger things wouldn&#39;t shine that good without the smaller things working properly!
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;Billions of years&#39; worth of Factorio&lt;author&gt;raiguard&lt;/author&gt;&lt;/h3&gt;
+
+&lt;p&gt;
+We had always thought that having a normal 32-bit unsigned integer to track the number of ticks passed would be enough for everyone.
+You have 60 ticks per second, which makes it 2.2 years of continuous playing on a single game save.
+But Factorio is a game about automation, so it was inevitable that someone would leave their factory running in the background and eventually &lt;a href=&#34;https://forums.factorio.com/107837&#34;&gt;overflow the tick counter&lt;/a&gt;.
+&lt;br/&gt;This obviously will not do!
+&lt;/p&gt;
+
+&lt;p&gt;
+In 1.1, boskid had already unified the usage of the tick type to be encapsulated in a class and semi-prepared for a change in the underlying type.
+This meant that moving to a 64-bit unsigned integer wasn&#39;t as painful as you might imagine, and the new theoretical limit on save file time is &lt;b&gt;9.7 billion years&lt;/b&gt;.
+&lt;/p&gt;
+
+&lt;p&gt;
+This change was relatively straightforward on the game engine side, but it presented some issues with the modding API.
+Factorio uses &lt;a href=&#34;https://www.lua.org/manual/5.2/manual.html&#34;&gt;Lua 5.2&lt;/a&gt;, which has a single &lt;code&gt;number&lt;/code&gt; type implemented as a double-precision floating point number (&lt;code&gt;double&lt;/code&gt;).
+As the value in a floating-point number grows larger, the level of detail that the type is able to contain decreases.
+The maximum integer value that a &lt;code&gt;double&lt;/code&gt; can represent with full accuracy is 2^52, or &lt;b&gt;2.37 million years&#39;&lt;/b&gt; worth of ticks.
+&lt;/p&gt;
+
+&lt;p&gt;
+Newer versions of Lua contain a dedicated &lt;code&gt;integer&lt;/code&gt; type that would allow for full precision, but upgrading Factorio&#39;s Lua version is not feasible due to numerous modifications and bugfixes we have made to the language internally.
+This means that Lua scripts can only specify exact tick values up to 2^52, and can specify &#34;maximum possible tick&#34; using &lt;a href=&#34;https://www.lua.org/manual/5.2/manual.html#pdf-math.huge&#34;&gt;&lt;code&gt;math.huge&lt;/code&gt;&lt;/a&gt;.
+&lt;/p&gt;
+
+&lt;p&gt;
+More than 2 million years seems to be enough for us to not be around any more when the bug reports start appearing.
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;Logistic requests enabled tweak related to recovering corpse&lt;/h3&gt;
+&lt;p&gt;
+  We have this feature, that when you respawn after dying, your personal requests are disabled, to avoid being
+  re-supplied with stuff before finding your corpse.
+  But the annoying problem is, which happened to us many times, is that we just forgot to re-enable the requests again
+  after recovering the corpse, and have to figure out what is going on, and why aren&#39;t we supplied with our stuff.
+&lt;/p&gt;
+
+&lt;p&gt;
+  Since everything annoying needs to be automated, we of course had to fix it. So now when you recover your corpse, the settings you had before dying are reinstated (unless you changed it in the meantime).
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;Smart number format&lt;/h3&gt;
+
+&lt;p&gt;
+  Often times you want to set some constant number, like &#34;I want 7.5 stacks here&#34;, and doing the calculation MANUALLY is of course unacceptable. So we made it that you can type mathematical expressions directly in the textfields.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;video autoplay muted loop playsinline&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-388-signal-math.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    Mp4 playback not supported on your device.
+  &lt;/video&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  It was basically a 1 line change since we already have the code to parse math expressions to define the infinite technology
+  cost. We just needed to define some constants (k for 1000, M for 1 000 000 and so on) and parse the text when confirmed by the
+  player. This means you can do different kind of things:
+&lt;ul&gt;
+  &lt;li&gt;10k&lt;/li&gt;
+  &lt;li&gt;10*50k&lt;/li&gt;
+  &lt;li&gt;10+50&lt;/li&gt;
+  &lt;li&gt;10^6&lt;/li&gt;
+  &lt;li&gt;etc.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;Max range indicator&lt;/h3&gt;
+
+&lt;p&gt;
+  It is the classic underground belt building micro, that you need to go past the max distance to verify to yourself that you are placing the underground at the optimal place. Counting to 4 is easy, but with higher tier belts bringing in more complicated numbers (6 and 8), it is hard to train the visual intuition about how far they reach.
+&lt;/p&gt;
+
+&lt;p&gt;
+  The solution is so simple and so nice, we wonder how we ever lived without it. When the underground connection is at max distance, we tint it to this reassuring green, letting you know immediately you have reached perfection.
+&lt;/p&gt;
+
+&lt;div class=&#34;flex-wrap flex-space-evenly flex-empty-after&#34;&gt;
+  &lt;div class=&#34;w50p panel-inset p8 m8&#34;&gt;
+    &lt;video autoplay muted loop playsinline style=&#34;display: block; margin: 2; padding: 6px&#34;&gt;
+      &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-388-underground-no-color.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    &lt;/video&gt;
+    &lt;p style=&#34;text-align: center&#34;&gt;Before: Have to go past the end and take a step back&lt;/p&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&#34;w50p panel-inset p8 m8&#34;&gt;
+    &lt;video autoplay muted loop playsinline style=&#34;display: block; margin: 2; padding: 6px&#34;&gt;
+      &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-388-underground-with-color.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    &lt;/video&gt;
+    &lt;p style=&#34;text-align: center&#34;&gt;After: Color of the underground connection changes to indicate max distance&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-388-underground-at-max-range.png&#34;&gt;
+  &lt;/br&gt;&lt;i&gt;The underground connection turns green when it is at max range&lt;/i&gt;
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;Chart tags improvements&lt;/h3&gt;
+&lt;p&gt;
+  StrangePan spent some time improving the features of the custom chart tags. We now have the ability to quickly drag them around, copy them (by using the pipette keybinding) and put them down even when zoomed in (so you can get that perfect alignment).
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;video autoplay muted loop playsinline&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-388-map-tag-editing.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    Mp4 playback not supported on your device.
+  &lt;/video&gt;
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;Save sorting&lt;/h3&gt;
+&lt;p&gt;
+  Quite an obvious call as well, we now show the &#39;last time modified&#39; in the load/save game dialog, and have the button to switch sorting between alphabetical and most recent.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-388-save-sorting.png&#34;&gt;
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;Manual lamp colors&lt;/h3&gt;
+&lt;p&gt;
+  It is nice to set the mood in your Factory, or to use a custom color without having to go through the boilerplate of setting up a combinator to set the color.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-388-lamp-color.png&#34;&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  Naturally it also allows many colors not possible with current circuit network, so we&#39;ll see what people do with that :).
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;Color of robots on the map&lt;/h3&gt;
+&lt;p&gt;
+  It can happen from time to time, that some of your poor personal construction robots get left behind and forgotten. They quickly run out of electricity and their low-energy slow mode is often too little to ever catch you again. Such a sad fate.
+&lt;/p&gt;
+
+&lt;p&gt;
+  This is why we added more colors to the robots map visualisation, the green ones are your personal ones. You can relatively easily find the lost souls this way.
+  There are also other colors for other situations, such a logistic bots delivering to you, construction bots of spiders/other players, etc.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-388-robot-color.png&#34;&gt;
+  &lt;/br&gt;&lt;i&gt;Can you guess which robot colors mean what?&lt;/i&gt;
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;Smarter deconstruction planner + force building&lt;/h3&gt;
+&lt;p&gt;
+  Cliff explosives are not unlocked from the start of the game, and with the expansion they are even more delayed.
+  To avoid nonsensical marking of cliffs for deconstruction when you force build on top of them, we changed it so that the cliffs are only marked for deconstruction once the cliff explosives have been researched.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-388-ignoring-cliffs.png&#34;&gt;
+&lt;/br&gt;&lt;i&gt;Cliffs are ignored for deconstruction when you don&#39;t have cliffs explosives unlocked.&lt;/i&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  This also applies to the super force building, whereby it won&#39;t try to place landfill unless you have it unlocked.
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;p&gt;
+  As always, let us know what you think at the usual places.
+&lt;/p&gt;
+</content>
+  </entry>
+  <entry xml:base="https://www.factorio.com/blog/rss">
+    <title type="text">Friday Facts #387 - Swimming in lava</title>
+    <id>https://www.factorio.com/blog/post/fff-387</id>
+    <updated>2023-12-01T00:00:00Z</updated>
+    <link href="https://www.factorio.com/blog/post/fff-387" />
+    <author>
+      <name>V453000</name>
+    </author>
+    <content type="html">&lt;p&gt;
+  Hello,
+  &lt;br/&gt;
+  In the last &lt;a href=&#34;https://factorio.com/blog/post/fff-386&#34;&gt;FFF-386&lt;/a&gt; we covered the natural landscape of Vulcanus which mostly showed the visuals, but as you are probably aware we always put gameplay first. Now it&#39;s time to find out what kind of greater good you can do to the planet...
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;Planet design start&lt;/h3&gt;
+
+&lt;p&gt;
+  Early in 2021 when kovarex and I were trying to make a high-level general plan of what the expansion should be, it was obvious the direction leads upwards to space, which in our eyes kind of automatically meant also visiting other planets. The obvious next question would be, what is a planet, what does it mean, how is it different from Nauvis, and how many of them do we want?
+&lt;/p&gt;
+
+&lt;h4&gt;How many planets?&lt;/h4&gt;
+
+&lt;p&gt;
+  In Factorio, progression has always been linked to science, so it is intuitive that every new planet would yield a new science pack, unlocking more parts of the technology tree. This often means a lot of progress is very linear, with some exceptions that you can choose to progress in a different order (utility/production science), but ultimately you arrive to a single goal at the end. So we knew one planet has to be the last.
+&lt;/p&gt;
+
+&lt;p&gt;
+  Since a significant part of the expansion is the space platform with space logistics, it&#39;s hard to imagine an expansion with only one planet, in fact we think less than 2 or 3 additional planets isn&#39;t quite making good use of the space logistics. This left us with 4 new planets as the sweet spot between satisfying progression and minimal repetition.
+&lt;/p&gt;
+
+&lt;h4&gt;What different recipes/resources?&lt;/h4&gt;
+
+&lt;p&gt;
+  As we&#39;ve already mentioned, while it&#39;s easy to assume that Nauvis would remain to be the location of the main factory for most players, we really wanted to avoid the situation where the new planets become just mining outposts. We wanted the player to build something that feels like a worthy factory on each of the planets.
+&lt;/p&gt;
+
+&lt;p&gt;
+  After you land on a planet, you need to launch rockets again in order to get back into space. At the start this is more of a throwback to again experience the stranded feeling. This time the process is already greatly accelerated since you have all the technologies and your space platform can bring you a lot of construction materials. However, building the rocket infrastructure 4 times starts to feel repetitive, so we definitely aimed to have each of the planet&#39;s recipes simplify or completely skip some parts.
+&lt;/p&gt;
+
+&lt;p&gt;
+  The expansion generally puts a lot more emphasis on the stability of your factory, but it&#39;s Factorio and some things always go wrong. It&#39;s easy to imagine your Nauvis or space platforms aren&#39;t having the best time while you&#39;re on a different planet. To prevent locking your progress if Nauvis gets cut off or completely overrun, we need to include a way to craft pretty much all of the rocket parts on any planet.
+&lt;/p&gt;
+
+&lt;p&gt;
+  All of this combined means that when finding the theme and resources for planets, they should generally slot into some area of Factorio in a nice way, while being fresh and unique too. And because we apparently just love contradictions, we want an experience that feels new without having to learn too many recipes per planet.
+&lt;/p&gt;
+&lt;p&gt;
+  On top of that, adding new recipes was made even more difficult due to the recycler, which was already in the game as a part of the &lt;a href=&#34;https://factorio.com/blog/post/fff-375&#34;&gt;quality&lt;/a&gt; branch before we started work on any of the planets. If an item has alternative recipes, it&#39;s not clear which ingredients should be returned on recycling this item. This makes adding alternative recipes pretty much a no-no.
+&lt;/p&gt;
+
+&lt;p&gt;
+  We had a rough plan on how many planets would we like, some general limitations we knew we needed to follow, and some disconnected ideas for mechanics and features. Then we asked Earendel to attempt to fill these brackets with both visual and gameplay themes which, apart from the planet terrain you&#39;ve already seen, translates into new recipes and machines.
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;The Foundry&lt;/h3&gt;
+
+&lt;p&gt;
+  The main crafting theme of Vulcanus is metallurgy, and this large structure is its main representation.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin: 20px auto 20px auto;
+    box-shadow: inset 0px 0px 3px 0px #000000, 0px -2px 2px -1px #000000, -2px 0px 2px -2px #0f0d0c, 2px 0px 2px -2px #0f0d0c, 0px 2px 2px -2px #ebe6e4;&#34;&gt;
+  &lt;video autoplay muted loop playsinline&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-387-foundry-blockout.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    Mp4 playback not supported on your device.
+  &lt;/video&gt;&lt;img
+    alt=&#34;Tilesets&#34;
+    title=&#34;Tilesets&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-387-foundry-design-final.png&#34;
+    style=&#34;box-shadow:none;&#34;
+  /&gt;
+&lt;/p&gt;
+
+&lt;h4&gt;Visual design of the Foundry&lt;/h4&gt;
+
+&lt;p&gt;
+  Heavy, industrial, powerful. Often it&#39;s enough for Earendel to create concept art &#34;just&#34; by drawing in 2D, but this machine has a lot of massive moving parts with a lot of rotational movement, looping animations, and space restrictions for each part. This made Earendel block out most of the main shapes in 3D, and do so in a lot more detail than usual (left).
+  Later he would do a new drawing over the grey render to figure out the details and textures (right).
+&lt;/p&gt;
+
+&lt;p&gt;
+  From there is was down to Jerzy to build this monster into its final form:
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin: 20px auto 20px auto;&#34;&gt;
+  &lt;video controls playsinline&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-387-foundry-closeup.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    Mp4 playback not supported on your device.
+  &lt;/video&gt;
+  &lt;i&gt;You can probably tell Jerzy had a good time.&lt;/i&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  A lot of work also went into the sound design between Ian creating the sounds and Donione implementing a new system for how entities can play sounds. I&#39;m sure you can expect a FFF about that one beautiful day, for now we can just marvel at how the Foundry looks and sounds.
+&lt;/p&gt;
+
+
+&lt;h4&gt;It is more than just a Vulcanus furnace!&lt;/h4&gt;
+
+&lt;p&gt;
+  From the visuals it is apparent it&#39;s going to require a lot of energy to run, but what do we get for the investment?
+&lt;/p&gt;
+
+&lt;p&gt;
+  The Foundry can handle molten metals or even lava itself. The unique recipes on this planet are about tungsten processing, which eventually leads into the Metallurgic science pack made in this machine.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img style = &#34;box-shadow: none&#34; src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-387-metallurgic-science-pack.png&#34;&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  It&#39;s been mentioned above how alternative recipes are a problem in part due to recycling. This isn&#39;t the case for smelting and chemical processes, as the recycler returning ingredients of these transformative recipes just doesn&#39;t make any sense. So, recycling an iron plate will just return an iron plate, with 25% chance.
+&lt;/p&gt;
+
+&lt;p&gt;
+  This is important because we can have the foundries use different recipes for smelting without any issues. Bringing the Foundry back home to Nauvis or any other place feels very rewarding because it crafts very quickly and you can start distributing molten iron and copper instead of the finished plates.
+&lt;/p&gt;
+
+&lt;p&gt;
+  Better yet, from the molten iron and molten copper we can cast more advanced items like iron gear wheels, copper cables, or even steel directly. Recycling an iron gear wheel will still return iron plates but it&#39;s less efficient than making the iron plates from molten iron straight up.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;video autoplay muted loop playsinline&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-387-foundries.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    Mp4 playback not supported on your device.
+  &lt;/video&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  And because we want to make specifically the rocket part production easier, the Foundry can also craft the normal recipe of Low density structures. Copper and Steel plates for the Low density structure are much easier to craft too.
+&lt;/p&gt;
+
+&lt;p&gt;
+  Perhaps the biggest advantage is that the Foundry has a built-in 50% productivity bonus, which can be further boosted with the machine&#39;s 4 module slots.
+&lt;/p&gt;
+
+&lt;hr/&gt;
+&lt;h3&gt;Big mining drill&lt;/h3&gt;
+
+&lt;p&gt;
+  Tungsten ore is hard to mine and normal mining drills aren&#39;t capable of it. At the start you can find tungsten ore in rocks all over the surface of Vulcanus, but with this mining drill you can start to mine it in large quantities the way we like it.
+&lt;/p&gt;
+
+&lt;p&gt;
+  The new usurper of natural resources, the new exploiter of planet surfaces, the new cause of mass pollution, powerful enough to mine Tungsten ore.
+&lt;/p&gt;
+
+&lt;h4&gt;The visual design of the Big mining drill&lt;/h4&gt;
+
+&lt;p&gt;
+  Mining drills are an essential part of Factorio, I would even argue it&#39;s one of the most important entities. Side by side to the iconic assembling machine for crafting, there is the mining drill for planet exploitation and devastation of environment.
+&lt;/p&gt;
+
+&lt;p&gt;
+  This means we&#39;ve put a lot of thought into the visual design. The keywords for the electric mining drill we &lt;a href = &#34;https://factorio.com/blog/post/fff-350&#34;&gt;redesigned in 2019&lt;/a&gt; were &#34;aggressive ground penetration&#34;, violence and power exerted against the soil. We have followed this direction again, but wanted to exaggerate all of these even more and represent that it can wreck the land faster and in a bigger area.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-387-big-mining-drill-concept.png&#34;&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  Being bigger and more massive tends to invite making the entity taller, but if you remember we have already walked this path before with the Electric mining drill - while we soon after realized we need to attach it to the ground more so we did in the &lt;a href = &#34;https://factorio.com/blog/post/fff-359&#34;&gt;last minute&lt;/a&gt; before 1.0 release.
+&lt;/p&gt;
+
+&lt;p&gt;
+  For the mining mechanism itself we chose a set of four excavating wheels which circulate inwards where the ore is being sucked in by the mechanism above.
+&lt;/p&gt;
+
+&lt;p&gt;
+  We have doubled down on the ground-attached rails that the mining head travels on and we have raised the holding structure in the direction of the output which gives the drill directionality and a taller presence than the Electric mining drill.
+&lt;/p&gt;
+
+&lt;p&gt;
+  Once we had agreed on the design and Earendel finished the concept art, we let Jerzy off the chain again.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin: 20px auto 20px auto;&#34;&gt;
+  &lt;video controls playsinline&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-387-drill-closeup.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    Mp4 playback not supported on your device.
+  &lt;/video&gt;
+&lt;/p&gt;
+
+&lt;h4&gt;It is more than a Vulcanus mining drill!&lt;/h4&gt;
+
+&lt;p&gt;
+  It would be pretty weak if the only use of the Big mining drill was to just get Tungsten, so it is also a direct upgrade from the normal mining drill in several ways:
+  &lt;ul&gt;
+    &lt;li&gt;Much larger mining area of 13x13 tiles (+4 tiles from the drill edge) which is very convenient when placing them in irregular areas like around lava.&lt;/li&gt;
+    &lt;li&gt;Harvests faster, with a speed of 2.5/s compared to 0.5/s of the electric mining drill - almost double speed per occupied tile.&lt;/li&gt;
+    &lt;li&gt;4 module slots, so you can insert three Efficiency modules and one Speed module to keep -80% pollution while boosting their speed.&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  Additionally it has a special unique property, the reduction in resource drain by 50%. This new stat means the resource underneath only gets its richness depleted half of the time. In other words, this directly multiplies with the productivity of the drill and you can imagine how crazy mining productivity can get. Better yet, the resource drain % is affected by quality of the drill, at Legendary quality a Big mining drill only drains the resource 17% of the time. Such a drill is mighty expensive but that resource patch you&#39;re about to place them on sure is going to last for a while.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;video autoplay muted loop playsinline&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-387-big-mining-drills.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    Mp4 playback not supported on your device.
+  &lt;/video&gt;
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;Recipes and resources&lt;/h3&gt;
+
+&lt;p&gt;
+  Apart from these two structures and tungsten processing, Vulcanus has some more differences compared to Nauvis.
+&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Sulfuric acid can be mined directly.&lt;/li&gt;
+  &lt;li&gt;There is no water on Vulcanus. Water is instead created from Sulfuric acid.&lt;/li&gt;
+  &lt;li&gt;There is no oil but coal is plentiful, and we have moved Coal liquefaction to Vulcanus, also adding a simplified version which doesn&#39;t need heavy oil to kickstart it.&lt;/li&gt;
+  &lt;li&gt;There is no uranium at all.&lt;/li&gt;
+  &lt;li&gt;Lava is used as a resource, and processed in the Foundry into molten iron and copper, with stone as a byproduct. The planet has no natural stone/iron ore/copper ore deposits as a result.&lt;/li&gt;
+  &lt;li&gt;Calcite is a new resource used as a cleaning/purifying ingredient in various recipes like sulfuric acid neutralization, lava processing, or melting iron/copper ore.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;Conclusion&lt;/h3&gt;
+
+&lt;p&gt;
+  Most of the initial rules and ideas, together with Earendel&#39;s great work on the first prototype version still remain on Vulcanus to this day, we have just refined the experience over time.
+&lt;/p&gt;
+
+&lt;p&gt;
+  When you&#39;re focused on designing individual systems you always aim to get a sophisticated result with intricacies and cool complexities. A small amount of increased complexity was one of our early objectives, but we found that after adding alternate resource sources, new sciences, and new gadgets, then it was already complicated enough. When you play the game as a whole you need to automate and take care of so many things which can quickly become overwhelming.
+&lt;/p&gt;
+
+&lt;p&gt;
+  The initial gameplay prototype included more intermediate items and mechanics than we have now, like tungsten would first need to be turned into powder before being processed, any kind of melting and casting recipe would also output slag which was used for nothing but reprocessing (back then we couldn&#39;t void items in lava). If an intermediate is only ever used for one thing then perhaps it should be more useful or be removed. Both of these items ended up in a situation where they only slowed down progression, so they were removed.
+&lt;/p&gt;
+
+&lt;p&gt;
+  On the other hand, the idea to extract iron and copper ore from lava was something the first prototype did include and we discarded it. After some time, we have realized that just mining iron and copper ore again the same way as on Nauvis isn&#39;t very appealing, so it eventually made it back in.
+&lt;/p&gt;
+
+&lt;p&gt;
+  If you have to build multiple bases then it&#39;s important to reduce points of repetition between planets so that nothing feels stale. Over time we have consistently tried to simplify and cut excessive things. If something is repetitive but can&#39;t be cut, then we can add a new twist or a new shortcut instead. This has been the case since Earendel&#39;s initial version and every iteration since, so now we can get through all the planets while keeping the gameplay fresh.
+&lt;/p&gt;
+
+&lt;p&gt;
+  Everything presented above is obtained from &lt;a href=&#34;https://factorio.com/blog/post/fff-376&#34;&gt;trigger technologies&lt;/a&gt; which ask the player to craft some item specific to Vulcanus. While the Foundry and Big mining drill are very exciting when you start using them on planets other than Vulcanus, we still haven&#39;t shown what you could unlock with the Metallurgic science pack... Perhaps some other time!
+&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;
+  Please feel welcome to come melt our hearts with your beliefs that only children use the word &#34;Big&#34; for machine names, you won&#39;t be wrong.
+&lt;/p&gt;
+</content>
+  </entry>
+  <entry xml:base="https://www.factorio.com/blog/rss">
+    <title type="text">Friday Facts #386 - Vulcanus</title>
+    <id>https://www.factorio.com/blog/post/fff-386</id>
+    <updated>2023-11-24T00:00:00Z</updated>
+    <link href="https://www.factorio.com/blog/post/fff-386" />
+    <author>
+      <name>Earendel</name>
+    </author>
+    <content type="html">&lt;p&gt;
+  Hello there,
+  &lt;br/&gt;
+  I know a lot of you have been eagerly awaiting some solid information on the new planets, if so this blog is for you. Get comfy because it&#39;s a long one.
+&lt;/p&gt;
+
+&lt;p&gt;
+  As you already know, there are 4 new planets in the expansion.  We will take an in-depth look at each planet&#39;s terrain, challenges, processes, technologies, and new gear, but not all at once.  In some cases the planet content will be split into multiple parts.  To kick things off I&#39;ll cover the terrain and natural aspects of the planet that is closest to being finished.
+&lt;/p&gt;
+
+&lt;p&gt;
+  I&#39;ll need to be in &lt;i&gt;games master mode&lt;/i&gt; for this:
+&lt;/p&gt;
+
+&lt;hr/&gt;
+
+&lt;h3&gt;
+  Welcome to Vulcanus
+&lt;/h3&gt;
+
+&lt;p&gt;
+  Allow me to introduce this toasty volcanic wonderland, conveniently sandwiched between idyllic Nauvis and the sizzling sun. Vulcanus is closer to the sun than most would dare to venture but trust me, it&#39;s a splendid place to start your interplanetary travels.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin: 20px auto 20px auto;&#34;&gt;
+  &lt;img
+    alt=&#34;Vulcanus planet icon&#34;
+    title=&#34;Vulcanus planet icon&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-386-vulcanus-planet-icon.png&#34;
+    style=&#34;box-shadow:none;width:256px;height:256px;&#34;
+  /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  Our journey begins amidst the blazing volcanic mountains, imposing geological landforms that often feature a central lava pit. These fiery crucibles offer a great place to get rid of waste items; just throw them in and poof, they&#39;re gone in a glorious puff of smoke and flame. Outdated gadgets, cursed rings of power, maybe even unwanted company.
+&lt;/p&gt;
+
+&lt;p&gt;
+  The highpoints of the mountains are the desolate ridges that surround the lava pits. This would be a good vantage point if it weren&#39;t for the thick yellow fog that burns your lungs and etches your eyes.
+&lt;/p&gt;
+
+&lt;p&gt;
+  Further down the mountainside sulfuric acid geysers billow thick yellow smoke from fissures. The surrounding area is pitted by dried sulfur puddles while sulphur-stained rock covers a larger area.
+&lt;/p&gt;
+
+&lt;p&gt;
+  Feel the rock crunch under your footsteps, this area has calcite deposits leaching out of the rock. It can be mined easily by your trusty mining drills but the many cliffs, valleys, and rocky protrusions render this terrain unsuitable for anything larger than a small mining outpost.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin: 20px auto 20px auto;&#34;&gt;
+  &lt;video controls muted playsinline&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-386-tour-mountains.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    Mp4 playback not supported on your device.
+  &lt;/video&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  In the shadow of the mountains, the ashlands offer some semblance of tranquillity in this turbulent landscape. The thick plains of insulating ash are like cool comforting blankets that keep the worst of the heat at bay. Ashlands are the most habitable areas, but on this planet that&#39;s not saying much. It&#39;s mostly a desert but clusters of vegetation defy the harsh conditions to claim a precarious existence here.
+&lt;/p&gt;
+
+&lt;p&gt;
+  The only resource here is coal; vegetation that was buried in ash long ago, compressed, heated, and exposed once again.
+&lt;/p&gt;
+
+&lt;p&gt;
+  With flat terrain and sparse vegetation, if you&#39;re looking for a good location for a base you won&#39;t do much better than the ashlands.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin: 20px auto 20px auto;&#34;&gt;
+  &lt;video controls muted playsinline&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-386-tour-ashlands.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    Mp4 playback not supported on your device.
+  &lt;/video&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  Descending further, we reach the basalt basins where vast lava lakes and rivers have etched a labyrinthine network. There are many safe paths through but the routes tend to be circuitous. It&#39;s faster to go around, or over with elevated rails if you can. The lava, aside from being a formidable obstacle, is also a resource abundant with iron, copper, and stone.
+&lt;/p&gt;
+
+&lt;p&gt;
+  Finally, the pursuit of tungsten beckons exploration deeper within the lava maze. That&#39;s why you&#39;re really here, right? With unyielding toughness, that little drill you brought won&#39;t do you much good. I&#39;m sure nothing will mind if you mine a little...
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin: 20px auto 20px auto;&#34;&gt;
+  &lt;video controls muted playsinline&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-386-tour-basalts.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    Mp4 playback not supported on your device.
+  &lt;/video&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  ...but who knows what might awaken in the depths of Vulcanus.
+&lt;/p&gt;
+
+&lt;hr/&gt;
+
+&lt;h3&gt;
+  Designing the planet
+&lt;/h3&gt;
+
+&lt;p&gt;
+  When designing planets (or bodies) for a solar system, unless they are all moons then you&#39;d expect different planets to be different temperatures with hotter planets closer to the sun and colder planets further away. Of all the planets you visit, there should be a hottest, and a coldest, and it didn&#39;t feel right for either of those to be Nauvis. (So as expected we have at least one planet hotter and at least one planet colder than Nauvis.)
+&lt;/p&gt;
+
+&lt;p&gt;
+  Vulcanus is the hottest planet, named after Vulcan, the Roman god of fire, volcanoes, deserts, metalworking and the forge. The name is appropriate for both this planet&#39;s terrain and the planet-specific technology.
+&lt;/p&gt;
+
+&lt;p&gt;
+  Being the hottest planet, I wanted Vulcanus to have lava. I got some pushback on this on the basis that &amp;ldquo;lava worlds are too cliche&amp;rdquo; in games. It&#39;s not untrue, planet uniqueness is certainly a high priority, but I had some counter arguments:
+&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    That would only be true if the planet was 1 dimensional and only about being lava-ry.
+  &lt;/li&gt;
+  &lt;li&gt;
+    If we don&#39;t have parts of the landscape hotter than earth then as our hot planet, many people would find it underwhelming. The lava would be notable by its absence.
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;
+  As long as the planet would still be interesting even if the lava were removed then it is still a strong design. Adding lava doesn&#39;t have to detract from the other features of the planet as long as it is done right.
+&lt;/p&gt;
+
+&lt;p&gt;
+  So we have a volcanic planet, but it&#39;s more about the ashy plains, the mountains, and the sulfuric acid geysers than the lava rivers and volcano tops. Also it&#39;s worth noting that earlier in the planet&#39;s development there were some additional forms of vegetation, but those were later moved to a different planet so that we could amplify the specific desolate and scorched atmosphere that makes this planet unique and distinct from the others.
+&lt;/p&gt;
+
+&lt;p&gt;
+  On this planet, I wanted the different areas to be useful for different things so that you treat them differently and adapt to the landscape. You can&#39;t just pave over everything (until ultra late game), so initially each area has a role.
+&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    The ashlands are a great place to build because they are flat and can easily be cleared of the sparse vegetation.
+  &lt;/li&gt;
+  &lt;li&gt;
+    The mountains have 2 critical resources you need immediately, but they are difficult to build on until you get cliff explosives.
+  &lt;/li&gt;
+  &lt;li&gt;
+    The lava rivers area starts as an obstacle but later transitions to be the most important area to mine.
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;
+  On the map you can see the mountains as the large circular structures, lava basins and the areas with many lava rivers, and ashlands are the remaining flatter areas with green specks (trees).
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin: 20px auto 20px auto;&#34;&gt;
+  &lt;img
+    alt=&#34;A map of vulcanus&#34;
+    title=&#34;The current vulcanus map generation.&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-386-map-1.png&#34;
+  /&gt;
+&lt;/p&gt;
+
+
+&lt;p&gt;
+  Over time, the lava has become more of a pivotal part of the gameplay because it provides a lot of new opportunities: It is a new obstacle that you can&#39;t landfill (for a long time), a new resource, and a new way to void items.
+&lt;/p&gt;
+
+&lt;p&gt;
+  So including lava, here&#39;s a breakdown of the resources you have available:
+&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    Lava gives you Iron, Copper, and Stone. The excess can be thrown back in.
+  &lt;/li&gt;
+  &lt;li&gt;
+    Coal gives you coal, but with liquefaction you can get the secondary oils too.
+  &lt;/li&gt;
+  &lt;li&gt;
+    Sulfuric acid geysers give you Sulfuric acid directly.
+  &lt;/li&gt;
+  &lt;li&gt;
+    Calcite is a new resource which is only useful when combined with other things, such as sulfuric acid.
+  &lt;/li&gt;
+  &lt;li&gt;
+    Tungsten is an ore that requires some special smelting methods compared to iron and copper.
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr/&gt;
+
+&lt;h3&gt;
+  Forging the planet
+&lt;/h3&gt;
+
+&lt;p&gt;
+  The map generation (landscapes, biome distributions, etc) was the hardest part of this whole process. I&#39;m sure that I spent a lot more time designing and building the landscape itself than any single thing that goes on it. The task is a unique blend of maths, code and artistry. I&#39;ll cover more on how this was designed and made in a future FFF, trying to explain it now will make this post far too technical.
+&lt;/p&gt;
+
+&lt;p&gt;
+  One area I can explain quickly though is the starting area: Vulcanus has a very predictable starting area compared to Nauvis and this is required not just to give you access to convenient starting resources but primarily to show you what sort of terrains that these resources appear on. Knowing the terrain associations is important here because, for example, if you want to find more sulfuric acid then you should be exploring mountains to find it.
+&lt;/p&gt;
+
+&lt;p&gt;
+  The starting area has 3 distorted circles representing a mountain, basalt basin, and an ashland plateau. These circles have guaranteed resource patches of sulfuric acid, calcite, coal, and tungsten. The whole arrangement can be rotated and flipped to not look too repetitive across different game seeds. All of this is done with basic maths and trigonometry (plus a bit of distortion that we will ignore for now). If you&#39;re learning trigonometry and wondering if it is ever useful, yes, yes it is, this is just one of many ways.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin: 20px auto 20px auto;&#34;&gt;
+  &lt;img
+    alt=&#34;The circles of the Vulcanus starting area&#34;
+    title=&#34;Starting area regions&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-386-starting-circles.png&#34;
+  /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  For the tilesets within each landscape, the nature of the setting steered us in particular directions; rock, ash, lava, etc, but there was still a lot of creative freedom within that. With volcanic rock for example, there are a lot of different ways it can look ranging from sponge-like pumice to folded glassy rock that almost looks like melted black plastic. We used a lot of reference photos to start the tilesets and gradually shifted them to something more purposefully alien. Factorio is a stylised game, but I try to make sure that when we diverge from reality we do it intentionally and not out of ignorance.
+&lt;/p&gt;
+
+&lt;p&gt;
+  The typical workflow is that I&#39;d either make a sketch of a tileset or gather some reference images, Fearghall would make the textures in Substance Designer and Blender, then we&#39;d go through many rounds of me painting over sections of the tileset and Fearghall making adjustments. When things were close to finished then I&#39;d do a colour-correction pass so that all the tilesets integrate correctly into their respective biomes.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin: 20px auto 20px auto;&#34;&gt;
+  &lt;img
+    alt=&#34;Tilesets&#34;
+    title=&#34;Tilesets&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-386-assets-tilesets.png&#34;
+  /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  The lava requires some special attention. I&#39;ve made glowing lava in the 1.1 version of the game engine a couple of times now but I had to choose between something that has motion but looks like orange water, or something that looks like lava but has no motion to it. For the 2.0 engine lava, Fearghall made a prototype lava shader outside of the game and got something looking good using a multitude of texture layers and distortion.
+&lt;/p&gt;
+
+&lt;p&gt;
+  Doing it this way round was good because then when the shader was implemented in-game by him and Posila, it was already known how many layers we&#39;d need, what gets distorted by what, and so on. A more typical approach might be that the shader was coded by a programmer first and then the artists would try to work within the constraints of the system, but I&#39;m sure giving the artist some say in the initial constraints saved a lot of time. That&#39;s not to say that there weren&#39;t revisions, there were many, but we have a lot to do and saving time with a good workflow where we can certainly helps.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin: 20px auto 20px auto;&#34;&gt;
+  &lt;video autoplay muted loop playsinline&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-386-assets-lava-shader.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    Mp4 playback not supported on your device.
+  &lt;/video&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  As many of you noticed from a previous FFF deconstruction planner icon we have some new cliffs. We tried using darker versions of Nauvis cliffs but that just wasn&#39;t good enough. Cliffs for this planet and others are made by Lucas. On this planet the particular challenge with cliffs is making them visible enough. They&#39;re dark objects on a dark background, and for the north direction especially, the first versions were very difficult to see. I found that if I added a large fake shadow below the north-facing cliff and a top edge highlight on all the cliffs, then it would get them into a state where they are readable and still integrate well with the terrain. The trade-off is a bit of unrealistic light &amp; shadow but usability is far more important here.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin: 20px auto 20px auto;&#34;&gt;
+  &lt;img
+    alt=&#34;Vulcanus cliffs&#34;
+    title=&#34;Vulcanus cliffs&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-386-assets-cliffs.png&#34;
+  /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  You can see a lot of small and medium craters on the terrain and they are just decorative meaning there&#39;s no collision or interaction. They&#39;re flat enough to build on without it looking weird. If we tried to make larger craters this way it wouldn&#39;t work because they&#39;d either have to look too flat to look natural, or they&#39;d look steep enough but placing a machine on the edge would look wrong.
+&lt;/p&gt;
+
+&lt;p&gt;
+  The solution is to make the craters collidable but then there are 2 more problems, the collision boxes are always rectangles so hitting invisible corners is annoying, and there&#39;s a flat part in the middle that looks buildable but isn&#39;t. We also wanted some partial craters which would mean even more special collision rules. The solution we came up with is more like a ring of special cliffs where sections of the ring can randomly be removed. Unlike normal cliffs we don&#39;t have special start and end sections, Fearghall has made sure that all of the cliff sections can visually overlap to make a full circle but still look right if they are on the edge of a broken crater. If I find a full circle crater I like to put turrets in the middle, like a little fort.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin: 20px auto 20px auto;&#34;&gt;
+  &lt;img
+    alt=&#34;Vulcanus crater cliffs&#34;
+    title=&#34;Vulcanus crater cliffs&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-386-assets-crater-cliffs.png&#34;
+  /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  Sulfuric acid geysers are both a regional point of interest and a resource. I designed these areas to look almost like a subregion in their own right. These areas aren&#39;t huge because they are resource indicators and if the region is too big then it&#39;s harder to find the right spots to place your equipment. Finding the right spots is also made easier by these resource nodes having yellow smoke (yes, we can have animated resources now). Jerzy has made the acid puddles of this section in a couple of ways, earlier on we had puddles filled with liquid acid, but we moved to dried up puddles to keep the planet feeling drier (also building on shallow liquid acid puddles didn&#39;t look right).
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin: 20px auto 20px auto;&#34;&gt;
+  &lt;video autoplay muted loop playsinline&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-386-assets-sulfuric-acid-geysers.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    Mp4 playback not supported on your device.
+  &lt;/video&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  These thermal vent chimneys are one of the areas we diverge more from a typical Earth volcano. They add a lot of verticality to the terrain when you are exploring and help it feel a bit more alien instead of just an extreme part of Earth. The young chimneys are small, the medium ones are tall, and the old ones have crumbled back to their bases. The landscape doesn&#39;t change on its own but these little touches help it feel like it is a changing world.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin: 20px auto 20px auto;&#34;&gt;
+  &lt;video autoplay muted loop playsinline&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-386-assets-chimneys.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    Mp4 playback not supported on your device.
+  &lt;/video&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  I wanted the ashlands to look like a spectral burnt forest with dark leafless shapes looming over you. The &#39;trees&#39; if that is even the right word for them, are alive but we didn&#39;t want them to look leafy or anything like actual healthy trees. Presumably they get most of their energy by breaking down chemicals instead of photosynthesis, or perhaps they exploit the temperature gradient between the bottom and the top of the ash. From that point of view they are maybe more of an endolith fungus, but they have trunk-like shapes and have a tree-like role, so for now we call them trees.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin: 20px auto 20px auto;&#34;&gt;
+  &lt;video autoplay muted loop playsinline&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-386-assets-trees.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    Mp4 playback not supported on your device.
+  &lt;/video&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  A lot of work has been done so far but there are still a few remaining placeholders. The obvious ones for now are the tungsten and calcite resource graphics, those will be replaced soon. Hopefully the others don&#39;t stand out too much like the hand-painted decoratives in the ash-sand area because it may take longer to replace those.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin: 20px auto 20px auto;&#34;&gt;
+  &lt;img
+    alt=&#34;Vulcanus decals&#34;
+    title=&#34;Vulcanus decals&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-386-assets-decals.png&#34;
+  /&gt;
+&lt;/p&gt;
+
+&lt;hr/&gt;
+
+&lt;h3&gt;
+  Conclusion
+&lt;/h3&gt;
+
+&lt;p&gt;
+  The path tears through ashy barrens and burning trees, winds around lava rivers and up jagged foothills, crunches through dusty calcite and splashes through sulfuric acid geysers to the top of a mountainous volcano. Just being here feels epic.
+&lt;/p&gt;
+
+&lt;p&gt;
+  Vulcanus is the most developed new planet so far and getting to this state has been a big team effort involving most of the art team. When we return to Vulcanus you&#39;ll get to see some of the new processes of the planet and how the new resources are used. We&#39;ll also show off a couple of new structures, one that we&#39;ve teased before. Can you guess which one it is and what it does?
+&lt;/p&gt;
+
+&lt;hr/&gt;
+
+&lt;p&gt;
+  As always, erupt your thoughts to the usual places.
+&lt;/p&gt;
+</content>
+  </entry>
+  <entry xml:base="https://www.factorio.com/blog/rss">
+    <title type="text">Friday Facts #385 - Asteroid Collector</title>
+    <id>https://www.factorio.com/blog/post/fff-385</id>
+    <updated>2023-11-17T00:00:00Z</updated>
+    <link href="https://www.factorio.com/blog/post/fff-385" />
+    <author>
+      <name>Earendel, Hrusa</name>
+    </author>
+    <content type="html">&lt;p&gt;Hello,&lt;br/&gt;
+  we&#39;ve already shown the space platform processing cycle in &lt;a href=&#34;https://factorio.com/blog/post/fff-381&#34;&gt;FFF-380&lt;/a&gt;. Let&#39;s talk a little bit more about the machine
+  which makes it all possible - the asteroid collector.
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3 id=&#34;graphics&#34;&gt;Origin of tentacles&lt;author&gt;Earendel&lt;/author&gt;&lt;/h3&gt;
+
+&lt;p&gt;
+  When I was working on the early space platform concepts trying to figure out how movable ships would look, we knew that we wanted some way of getting parts of asteroids onto the ship but hadn&#39;t decided how that would be done. At this early stage all of the new structures had very simple placeholder graphics.
+&lt;/p&gt;
+
+&lt;p&gt;
+  Although we start with grey boxes, it&#39;s best to get those replaced with something that looks more appropriate as soon as possible. The earliest placeholders are usually a quick sketch of something in the right general shape, something kitbashed (patched together from existing graphics), or something grabbed from my mods. For the asteroid collector, a fairly generic side-mounted structure was used as the placeholder. If we stuck with something like this then presumably it would use some sort of tractor beam to pull in asteroid chunks. Tractor beams (or electro-grapples, etc) are the easy fallback option for this sort of situation because it&#39;s a simple concept to animate and code.
+&lt;/p&gt;
+
+
+&lt;p style=&#34;text-align: center; margin: 20px auto 20px auto;&#34;&gt;
+  &lt;img
+    alt=&#34;An early sketch of the asteroid collector with a tractor beam&#34;
+    title=&#34;An early sketch of the asteroid collector with a tractor beam&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-385-sketch-tractor.png&#34;
+  /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  A tractor beam just didn&#39;t feel very Factorio. It&#39;s too far into the magic-ethereal-sci-fi direction and it&#39;s used all the time. I wanted something more mechanical and Albert agreed, tractor beams were out. It&#39;s not that Factorio doesn&#39;t have high tech stuff, it&#39;s just better to do it in a way that&#39;s more tangible and industrial when we can.
+&lt;/p&gt;
+
+&lt;p&gt;
+  I invented a lot of alternative options but here are 5, along with some proof-of-concept sketches.
+&lt;/p&gt;
+
+&lt;p&gt;
+  &lt;b&gt;1: Rocket-guided harpoon or bag&lt;/b&gt;&lt;br/&gt;
+  Small rockets that would wrap the asteroid chunk in a bag on impact, then pull it to the collector mouth using a tow line.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin: 10px auto 30px auto;&#34;&gt;
+  &lt;img
+    alt=&#34;An early sketch of the asteroid collector with a rocket guided harpoon&#34;
+    title=&#34;An early sketch of the asteroid collector with a rocket guided harpoon&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-385-sketch-harpoon.png&#34;
+  /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  &lt;b&gt;2. A loooong inserter-like arm&lt;/b&gt;&lt;br/&gt;
+  Like an inserter but dedicated to grabbing asteroid chunks. It would put the chunk into the machine &amp;ldquo;mouth&amp;rdquo; or directly on to a belt behind.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin: 10px auto 30px auto;&#34;&gt;
+  &lt;img
+    alt=&#34;An early sketch of the asteroid collector with a long grabbing arm&#34;
+    title=&#34;An early sketch of the asteroid collector with a long grabbing arm&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-385-sketch-arm.png&#34;
+  /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  &lt;b&gt;3. A paddle&lt;/b&gt;&lt;br/&gt;
+  Like the inserter arm except that it doesn&#39;t need to grab the chunk, it just needs to bat it into the direction of the collector mouth.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin: 10px auto 30px auto;&#34;&gt;
+  &lt;img
+    alt=&#34;An early sketch of the asteroid collector with a redirection paddle&#34;
+    title=&#34;An early sketch of the asteroid collector with a redirection paddle&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-385-sketch-paddle.png&#34;
+  /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  &lt;b&gt;4. Scoops&lt;/b&gt;&lt;br/&gt;
+  The collector itself would just be a hole in the platform side that only collects chunks that happen to fall into it. This would be paired with a set of wedge-shaped blocks you could add to the front of platforms so that if you are moving and a chunk hits the wedge it glances off, and this way you could guide chunks to the collector hole. This idea sounds fun initially because it makes the front shape of the ship important, but the downside is that most ships would just end up as V, W, or WWW shapes.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin: 10px auto 30px auto;&#34;&gt;
+  &lt;img
+    alt=&#34;A mockup asteroid collector as a collection hole with angled panels directing chunks to the middle&#34;
+    title=&#34;Chunks bounce into the hole as you move forward&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-385-scoop.png&#34;
+  /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  &lt;b&gt;5. A flexible snake arm&lt;/b&gt;&lt;br/&gt;
+  Unlike the inserter-style arm this would act on the same ground plane as the asteroid chunks and the platform itself, meaning it would need to snake around any protruding defences. This is an interesting option to build with as the platform shape affects interception time.
+&lt;/p&gt;
+
+&lt;p&gt;
+  I thought I could do something pretty cool with the flexible arm idea. I started with a set of sketches trying different machine structures and collector mouth shapes. The arm itself is most similar to the design of real-world snake robots, but with it being anchored at one end, it quickly became known as &amp;ldquo;the tentacle&amp;rdquo;. It is also worth noting that I moved the crushing function out of the asteroid collector to a dedicated machine. This lets the crusher be used again by some late game advanced recipes and expand the middle of the platform.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin: 10px auto 30px auto;&#34;&gt;
+  &lt;img
+    alt=&#34;Early line-sketches of snake-based asteroid collectors.&#34;
+    title=&#34;Early line-sketches of snake-based asteroid collectors.&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-385-snake-early.png&#34;
+  /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  Below is the concept art I presented to Kovarex. Up to this point people were skeptical about the snake or tentacle idea so it was down to the concept art to win people over otherwise we might be back to square one. Fortunately as soon as Kovarex saw this he was on board and other people were convinced too. Hrusa stepped in to make it a reality, so he can take it from here.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img
+    alt=&#34;The final asteroid collector design&#34;
+    title=&#34;The final asteroid collector design&#34;
+    src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-385-snake-final.png&#34;
+  /&gt;
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;From concept to reality&lt;author&gt;Hrusa&lt;/author&gt;&lt;/h3&gt;
+
+&lt;p&gt;
+  Taking a step back in time now, let&#39;s talk about how the gameplay side of things unfolded in the meantime.
+&lt;/p&gt;
+
+&lt;p&gt;
+  As a keystone feature of the platform production cycle, the collector started its life under Earendel&#39;s hands as a gray box. It was a simpler time. Asteroids were not even a thing back then! So the machine was just an assembler which continuously crafted chunks out of thin air.
+&lt;/p&gt;
+&lt;p&gt;
+  Once we had asteroids in the game, the first version that actually collected them cast a simple rectangle around it. Any entering chunks would immediately get teleported into the collector&#39;s inventory. Nothing flashy, but enough for playtesting.
+&lt;/p&gt;
+
+&lt;p&gt;
+  The next advancement was to collect asteroids mechanically. Rseding kicked things off by implementing Earendel&#39;s earlier harpoon idea:
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;video autoplay muted loop playsinline&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-385-harpoons-masked.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    Mp4 playback not supported on your device.
+  &lt;/video&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  At this point the collector could be placed anywhere on the platform. Requiring it to touch the edge (similar to an offshore pump) was considered, but no conclusions had been made yet. Testing with self-imposed limitations took place and quickly exposed a crucial problem.
+&lt;/p&gt;
+
+&lt;p&gt;
+  Since the effective reach was relatively long, the optimal strategy was to always inset the collectors away from the lucrative platform edge. Such setup invited little decision-making from the player. The entire edge could be dedicated to turrets while the interior provided plenty of room to unload and process chunks. On top of all that, the visuals of harpoons or arms reaching over other buildings for chunks at platform-level were dubious at best.
+&lt;/p&gt;
+
+&lt;p&gt;
+  The logical conclusion was that the collectors should require access to open space. This happens to create an interesting dynamic between defenses and resource collection and rewards efficient belt usage. That was at the time when Earendel was putting together the concept for a more organic-feeling bendable arm, which ultimately made it into the game.
+&lt;/p&gt;
+
+&lt;h4&gt;Day of the Tentacle&lt;/h4&gt;
+
+&lt;p&gt;
+  Now it was up to me to figure out how to make it all happen. With the expected behavior laid out, I could separate the task into a multiple individual features&amp;mdash;quite like you do while playing Factorio itself. You want to move at increments which can work on their own.
+&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Drawing the arm&amp;mdash;just that, no other behavior or function.&lt;/li&gt;
+  &lt;li&gt;Moving the arm between poses.&lt;/li&gt;
+  &lt;li&gt;Weaving the arm around the platform without clipping or colliding. Is it even possible in all cases?&lt;/li&gt;
+  &lt;li&gt;Making the collectors not waste time by fighting over the same chunks.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;
+  For reasons that will be helpful later I&#39;ve decided to express a particular pose as a segmented line&amp;mdash;a series of angles starting from the base. Additionally, each pose includes an extension value. This way, the arm can slide up and down along the length of the curve without calculating any new points.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px;&#34;&gt;
+  &lt;img style=&#34;max-width: 550px;&#34; src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-385-arm-pose.png&#34;&gt;
+  &lt;img style=&#34;max-width: 550px;&#34; src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-385-links.png&#34;&gt;
+&lt;/p&gt;
+
+&lt;div style=&#34;margin-bottom: 20px;&#34;&gt;
+  &lt;div style=&#34;display: inline-block; text-align: center; width: 550px;&#34;&gt;&lt;i&gt;Arm pose expressed as a list of angles and extension amount.&lt;/i&gt;&lt;/div&gt;
+  &lt;div style=&#34;display: inline-block; text-align: center; width: 560px;&#34;&gt;&lt;i&gt;Link rotations used to draw the collector arm.&lt;/i&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;
+  Next I tried adding a control curve which put some swing into the arm movement, but it turned out a little...
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;video autoplay muted loop playsinline&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-385-funky-arms.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    Mp4 playback not supported on your device.
+  &lt;/video&gt;
+&lt;/p&gt;
+
+&lt;h4&gt;Change of plans&lt;/h4&gt;
+
+&lt;p&gt;
+  While thinking about the collector, we&#39;ve decided it needs to be able to harvest additional chunks after it has been extended. Since the arm is represented as a series of angles, we can blend between the starting and desired pose by simply blending each individual one.
+&lt;/p&gt;
+&lt;p&gt;
+  Ideally we would want the claw to move at a consistent speed. However, because we are blending angles, said speed varies greatly. Depending on whether the arm is extended to 10 or 20 units, turning the base by 5&amp;deg; will lead to vastly different results. Even though the arc of the traveling collector appears circular, it is in fact a complex shape which cannot be easily measured.
+&lt;/p&gt;
+&lt;p&gt;
+  So instead, I found a way to weight all the individual angles together quickly and project the arm position onto a circle. Then I measure the distance between two arm poses on a circle to get a good consistent estimate of the traveling distance.
+&lt;/p&gt;
+
+&lt;p&gt;
+  &lt;div class=&#34;panel-inset p0 m0&#34;&gt;
+    &lt;video autoplay muted loop playsinline style=&#34;display: block;&#34;&gt;
+        &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-385-arm-demo.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+      Mp4 playback not supported on your device.
+    &lt;/video&gt;
+  &lt;/div&gt;
+  &lt;p style=&#34;text-align: center; font-style: italic;&#34;&gt;Simulation of the arm blend I&#39;ve made to test my calculations. The arms are projected onto the teal circle to estimate the arc travel distance.&lt;/p&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  The final design problem is that there is a lot of different ways for the arm to travel between two poses. That is because of the angular speed relationship mentioned above. The shorter the arm is, the faster it can turn. But it also takes some time to retract and extend to reach the optimal traveling distance.
+&lt;/p&gt;
+
+&lt;p&gt;
+  Just like with the arc distance, I&#39;ve spent some time trying to express the mathematical problem and do a true solution. Then I realized that I can get really close with much less effort. Instead of searching for the absolute best extension to swing at, I choose extensions at some fixed interval, compute the distance traveled for each and select the best one. In practice you can&#39;t even tell whether the path is &amp;PlusMinus;0.5 units from the absolute best arc there is to take.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-385-blending.png&#34;&gt;
+  &lt;/br&gt;&lt;i&gt;Showing three of the paths considered for movement. Increments at which the turning radius is considered are highlighted.&lt;/i&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  Around this time, we started debating the performance cost. Kovarex liked the feel of the arms a lot, but wanted to ensure that all the links being simulated would not impact large factories with dozens of platforms. To that effect, we could use the previous step. Since we&#39;ve ensured that the claw travels at a predictable speed, we do not need to update its position every tick. Once the desired path is found, we store its distance. Then we increment a single internal number which tracks how far along this path the claw has traveled. Only if the arm is visible to the player, do we evaluate the actual intermediate arm pose.
+&lt;/p&gt;
+
+&lt;h4&gt;Going Around the Block&lt;/h4&gt;
+
+&lt;p&gt;
+  With the arm motion covered I moved over to the pathfinding problem. The initial idea was to pull a classic &lt;a href=&#34;https://www.geeksforgeeks.org/a-search-algorithm/&#34;&gt;A*&lt;/a&gt; and map out all adjacent tiles to find the shortest path to the collector from each one. However, the records of each tile took up a lot of space and the resulting paths ended up being very jagged which looked terrible and required further processing. Furthermore, the collectors often sit around wide open areas. Traversing those tile-by-tile every time a chunk floats by is an absolute overkill.
+&lt;/p&gt;
+&lt;p&gt;
+  In the light of this observation, I&#39;ve decided to implement a navigation mesh. A navmesh covers the open areas with large rectangles. Then it casts rays to find all direct connections between significant corners of those rectangles. The construction and maintenance of the navmesh takes some computational power whenever the player builds platform tiles, but in return the much more frequent pathfinding is greatly sped up. Even better, the paths we find on a navmesh are the shortest and simplest possible.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px;&#34;&gt;
+  &lt;img style=&#34;max-width: 550px;&#34; src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-385-old-navmesh.png&#34;&gt;
+  &lt;video autoplay muted loop playsinline style=&#34;max-width: 560px;&#34;&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-385-navmesh.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+  Mp4 playback not supported on your device.
+  &lt;/video&gt;
+&lt;/p&gt;
+&lt;div style=&#34;margin-bottom: 20px;&#34;&gt;
+  &lt;div style=&#34;display: inline-block; text-align: center; width: 550px;&#34;&gt;&lt;i&gt;The old tile navigation. Notice the jagged path.&lt;/i&gt;&lt;/div&gt;
+  &lt;div style=&#34;display: inline-block; text-align: center; width: 560px;&#34;&gt;&lt;i&gt;The final navmesh system.&lt;/i&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;p&gt;
+  To make the polygonal navmesh path more palatable, I approximate it using a &lt;a href=&#34;https://en.wikipedia.org/wiki/Non-uniform_rational_B-spline&#34;&gt;Non-uniform rational B-spline (NURBS)&lt;/a&gt;, which smooths out the sharp corners.
+  The nice property of NURBS is that it quite reliably hugs the guiding points. That makes it very popular in 3D modeling applications.
+&lt;/p&gt;
+&lt;p&gt;
+  Besides smoothing, there is a few other minor tricks I use to enhance the look:
+&lt;/p&gt;
+
+&lt;p&gt;
+  &lt;ul&gt;
+    &lt;li&gt;Having a minimal retraction distance between each collected chunk (to prevent &lt;i&gt;&#34;vacuum cleaner&#34;&lt;/i&gt; collecting).&lt;/li&gt;
+    &lt;li&gt;Giving the claw horizontal wind up and landing when the targets are in line (to prevent &lt;i&gt;&#34;pogo&#34;&lt;/i&gt; collecting).&lt;/li&gt;
+    &lt;li&gt;Wiggling each arm slightly at random to stop them turning a corner in unison.&lt;/li&gt;
+    &lt;li&gt;Leading swings with the base of the arm to make the front appear to be dragged.&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;video autoplay muted loop playsinline&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-385-collector-feeding.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    Mp4 playback not supported on your device.
+  &lt;/video&gt;
+&lt;/p&gt;
+
+&lt;h4&gt;Predictors&lt;/h4&gt;
+
+&lt;p&gt;
+  One known issue around the time I was starting out with the collector was platform speed. With high quality thrusters, the platform could eventually move so quickly that turrets could not turn fast enough to shoot incoming asteroids in time. I knew this could be a big problem for the collector as well.
+&lt;/p&gt;
+
+&lt;p&gt;
+  The collectors cannot just constantly test every chunk every frame. It was necessary to narrow down the selection. To that effect, every time a new chunk spawns, it will cast a line forward and register with all collectors along the way.
+&lt;/p&gt;
+
+&lt;p&gt;
+  Since the limiting factor is availability of arms, it is the arm which checks for incoming chunks whenever it finishes its previous task. This design gives us room to project the chunk position forward based on how long it will take the given arm to get to it and arrange a punctual rendezvous. Additionally, super fast chunks no longer pose a problem, because even those will be registered in advance. The arms move into position and intercepts the chunks the moment they touch the collection area.
+&lt;/p&gt;
+
+&lt;p&gt;
+  &lt;div class=&#34;panel-inset p0 m0&#34;&gt;
+    &lt;video autoplay muted loop playsinline style=&#34;display: block;&#34;&gt;
+        &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-385-predictors.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+      Mp4 playback not supported on your device.
+    &lt;/video&gt;
+  &lt;/div&gt;
+  &lt;p style=&#34;text-align: center; font-style: italic;&#34;&gt;Predicted chunk movement with connections to registered collectors (sped up).&lt;/p&gt;
+&lt;/p&gt;
+
+&lt;h4&gt;Conclusion&lt;/h4&gt;
+
+&lt;p&gt;
+  Once all the major work was wrapped up, it was just a matter of finishing off the smaller details before the collector was ready to go in to the master branch. This is things like the building restriction, blueprint support, copy paste, etc. Since the Navmesh and NURBS system were all new code, there was a lot of writing tests, chasing down edge cases, and fine-tuning the performance.
+&lt;/p&gt;
+
+&lt;p&gt;
+  Overall in our playtesting we&#39;re happy to say that the Asteroid collector works really well to give the platforms the unique look and gameplay that we were hoping for.
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;p&gt;
+  As always, we look forward to collecting your opinion chunks at the usual places.
+&lt;/p&gt;
+</content>
+  </entry>
+  <entry xml:base="https://www.factorio.com/blog/rss">
+    <title type="text">Friday Facts #384 - Combinators 2.0</title>
+    <id>https://www.factorio.com/blog/post/fff-384</id>
+    <updated>2023-11-10T00:00:00Z</updated>
+    <link href="https://www.factorio.com/blog/post/fff-384" />
+    <author>
+      <name>kovarex, Klonan</name>
+    </author>
+    <content type="html">&lt;p&gt;
+  Hello,&lt;/br&gt;
+  we are going to focus on the general improvements of the way circuit network is used in the game.
+&lt;/p&gt;
+
+&lt;p&gt;
+
+  I wasn&#39;t using it often, because all the problems combined made it too big of a hassle most of the time, which was an indication of problems.&lt;br/&gt;
+  So we improved each part of the process of using it a little, from UI, to feedback of what is going on, to stronger/more accessible combinator functionality.&lt;br/&gt;
+  I can say that it worked, at least for me. Once these changes were available, I used the circuit network way more in my latest playthrough, and it felt good, so lets hope it won&#39;t be just me :)
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;Circuit GUIs rework&lt;/h3&gt;
+
+&lt;p&gt;
+  We learned over the years that it is always better to use disabled/enabled state on control elements which can be turned on or off, compared to making them just disappear.&lt;br/&gt;
+  Circuit control GUI was one of the last places in the game where we didn&#39;t apply it properly:
+&lt;/p&gt;
+
+&lt;p&gt;
+  &lt;div style=&#34;display: flex; justify-content: space-between;&#34;&gt;
+    &lt;div style=&#34;text-align: center;&#34; class=&#34;panel-inset p0 m0&#34;&gt;
+      &lt;img style=&#34;box-shadow: none;&#34; src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-384-circuit-gui-old.gif&#34;&gt;
+      &lt;p style=&#34;margin-bottom: 20px;&#34;&gt;&lt;i&gt;1.1 - Things magically popping out of thin air.&lt;/i&gt;&lt;/p&gt;
+    &lt;/div&gt;
+    &lt;div style=&#34;text-align: center;&#34; class=&#34;panel-inset p0 m0&#34;&gt;
+      &lt;img style=&#34;box-shadow: none;&#34; src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-384-circuit-gui-new.gif&#34;&gt;
+      &lt;p style=&#34;margin-bottom: 20px;&#34;&gt;&lt;i&gt;2.0 - All elements present and enabled/disabled when needed.&lt;/i&gt;&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  You can see the functionality even before connecting the wire or activating the individual modes.&lt;br/&gt;
+  With the current version in mind, it is hard to understand our previous design with the checkboxes being disconnected from their parameters,
+  it makes the UI not only more chaotic, but also bigger.
+&lt;/p&gt;
+
+&lt;p&gt;
+  Well, we learn from our mistakes!
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;
+  Circuit slots show the values
+&lt;/h3&gt;
+
+&lt;p&gt;
+  This is one of those features that we just can&#39;t imagine living without anymore, and it is so simple we wonder why we never did it before.
+&lt;/p&gt;
+
+&lt;p&gt;
+  In short, the signals in the slots of the Circuit GUIs, will show the current signal value directly in the slot.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-384-circuit-slots.png&#34;&gt;
+  &lt;/br&gt;&lt;i&gt;The slots showing the values&lt;/i&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  This makes it super simple when setting up a condition to know what ballpark of value you need to set.
+  It gives immediate feedback during the process of setting up the connection/condition without having to close the GUI and hunt for the information in a nearby power pole tooltip.
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;Decider combinator 2.0&lt;/h3&gt;
+
+&lt;p&gt;
+  The decider combinators function is to help make logical decisions, for instance if iron plate is greater than 10, turn on a lamp. It can only process a single condition, which is touted as a feature for the simplicity and eloquence of design, that you build up a complex machine from many simple parts.
+&lt;/p&gt;
+
+&lt;p&gt;
+  However in practice, it made its use in even slightly more complex situations cumbersome. For example if you want to enable a lamp when your chest has 100 steel, 200 copper, 10 coal, you would need quite a few decider combinators. What was a funny realization, is that using train schedules with the circuit conditions, you could make yourself a much more powerful decider combinator.
+&lt;/p&gt;
+
+&lt;p&gt;
+  So it felt that, while simplicity is good, it was too simple and was making basic setups more complicated than they needed to be. It was also awkward trying to troubleshoot some circuit setup, opening all the different deciders to see what is happening and where it went wrong.
+&lt;/p&gt;
+
+&lt;p&gt;
+  So we decided on a few key features of what we called &#39;Decider combinator 2.0&#39;:
+  &lt;ul&gt;
+    &lt;li&gt;Multiple conditions with and/or combinations.&lt;/li&gt;
+    &lt;li&gt;Quick visual representation of the signal state.&lt;/li&gt;
+    &lt;li&gt;Selection of input between red and green wires.&lt;/li&gt;
+    &lt;li&gt;Multiple outputs.&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-384-decider-combinator.png&#34;&gt;
+  &lt;/br&gt;&lt;i&gt;The GUI of the Decider combinator 2.0&lt;/i&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  With these changes, the usage of the combinator became so much easier, intuitive, and transparent. You can easily see by opening the GUI what is the state of the signals, how the logic is constructed, and what the end-goal of the decision is.
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;
+  Description for all combinators
+&lt;/h3&gt;
+
+&lt;p&gt;
+  You may have noticed it in a few previous FFF images, we now added a custom description field to all the combinators.
+  This will make it easy to remember what the combinator is doing, how it works, or such. It is stored in blueprints and
+  so will be invaluable for copying in someone elses insane contraptions.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-384-combinator-description.png&#34;&gt;
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;Input/Output on Arithmetic combinator&lt;/h3&gt;
+
+&lt;p&gt;
+  Once we got used to the input output slots of the new decider, we started to miss it when using the arithmetic
+  combinator, so we added it there too, and made it a side-by-side layout.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-384-arithmetic-combinator.png&#34;&gt;
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;The Selector combinator&lt;/h3&gt;
+
+&lt;p&gt;
+  We hinted a new combinator type few times before, and it was certainly interesting to &lt;a href=&#34;https://www.reddit.com/r/factorio/comments/17iib54/new_combinator/&#34;&gt;read about the different guesses people made&lt;/a&gt;.
+  This &lt;a href=&#34; https://www.reddit.com/r/factorio/comments/17iib54/comment/k6v5oth/?utm_source=share&amp;utm_medium=web2x&amp;context=3&#34;&gt;post&lt;/a&gt; from Kulinda from Reddit seems to be the closest guess, so congratulations to winning the guessing game :)
+&lt;/p&gt;
+
+&lt;p&gt;
+  This is selector combinator. The primary function of it was motivated by a specific operation, which was very cumbersome to do, and practically impossible to do in a generic way.&lt;br/&gt;
+  The function is indexing signals to process them one by one in some additional logic.&lt;br/&gt;
+  For example if you have a list of needed materials, you can use the Selector combinator to index the 1st item, another to index the 2nd item, etc.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-384-selector-combinator.png&#34;&gt;
+  &lt;/br&gt;&lt;i&gt;The new selector combinator&lt;/i&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  It has some specific uses and modes (which is still subject to change):
+&lt;ul&gt;
+  &lt;li&gt;Output the signal at the given index (sorted from biggest to smallest or vice versa).&lt;/li&gt;
+  &lt;li&gt;Output the count of input signals.&lt;/li&gt;
+  &lt;li&gt;Output a random signal from the inputs (with a custom update interval).&lt;/li&gt;
+  &lt;li&gt;Output the stack size of the input item.&lt;/li&gt;
+  &lt;li&gt;Output the rocket capacity of the input item (useful for Space Age logistics).&lt;/li&gt;
+  &lt;li&gt;Transfer the quality of an input signal (more on that another day perhaps).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  Some of these could have been solved with custom signals in other places, like a &#39;stack size&#39; signal for
+  arithmetic combinator to output the stack size of items. But we decided to go this way for cleanliness of design and
+  better discoverability.
+&lt;/p&gt;
+
+&lt;p&gt;
+  Since the scope of the Selector combinator is quite broad, there is also room for further functions we could give it, if you have some ideas, we would welcome them.
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;p&gt;
+  This is not the last post about circuit network.&lt;br/&gt;
+  Since the decider combinators ability to specify from which wire(s) it should read is very nice, we plan to make more improvements in this direction also on other places.&lt;br/&gt;
+  There are new things entities do with circuit network, but it is for another time.
+&lt;/p&gt;
+
+&lt;p&gt;
+  As always, let us know what you think at the usual places.
+&lt;/p&gt;
+</content>
+  </entry>
+  <entry xml:base="https://www.factorio.com/blog/rss">
+    <title type="text">Friday Facts #383 - Super force building</title>
+    <id>https://www.factorio.com/blog/post/fff-383</id>
+    <updated>2023-11-03T00:00:00Z</updated>
+    <link href="https://www.factorio.com/blog/post/fff-383" />
+    <author>
+      <name>kovarex, Klonan</name>
+    </author>
+    <content type="html">&lt;p&gt;Hello, welcome, take a seat...&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;Update from last time&lt;/h3&gt;
+&lt;p&gt;
+  The tile building animation showcased in the previous FFF is now integrated in the game, and this is how it looks:
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;div class=&#34;panel-inset p0 m0&#34;&gt;
+  &lt;video autoplay muted loop playsinline style=&#34;display: block;&#34;&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-383-platform-tile-building.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    Mp4 playback not supported on your device.
+  &lt;/video&gt;
+&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  Of course being in the engine doesn&#39;t mean it&#39;s completely done. It is still quite WIP and we have things we would like to improve with it, but showing a bit of progress week-by-week is also part of the fun.
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3 id=&#34;super-force-building&#34;&gt;Super force building&lt;author&gt;kovarex&lt;/author&gt;&lt;/h3&gt;
+
+&lt;p&gt;
+  In the recent &lt;a href=&#34;https://www.factorio.com/blog/post/fff-380&#34;&gt;FFF-380&lt;/a&gt; we talked about the possibility of building ghost entities on the top of ghost tiles, so you don&#39;t have to wait until landfill or space platform tiles are finished to build on top of them.
+&lt;/p&gt;
+
+&lt;p&gt;
+  This is nice, but this obviously was just a preparation for the main feature we all missed so much, the super forced building.
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;div class=&#34;panel-inset p0 m0&#34;&gt;
+  &lt;video autoplay muted loop playsinline style=&#34;display: block;&#34;&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-383-super-force-building-example.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    Mp4 playback not supported on your device.
+  &lt;/video&gt;
+&lt;/div&gt;
+&lt;p style=&#34;text-align: center; font-style: italic;&#34;&gt;
+  CTRL + SHIFT + CLICK = Super forced building
+&lt;/p&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  In the beginning, we had just the normal way to build blueprints, and anything in the way blocked the blueprint from being built.&lt;br/&gt;
+  Soon after, we realized that we need an automated way to get rid of all the trees, rocks, and cliffs in the way, so we added the forced build mode (shift +  click by default) to do that.
+&lt;/p&gt;
+
+&lt;p&gt;
+  Since that time, it happened frequently here and there, that we felt it still isn&#39;t enough. Space platform building was the last push where we just couldn&#39;t ignore this anymore and had to implement it. With landfill, it is an occasional problem as water is not everywhere, but with space platform building, it is always a problem.
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;div class=&#34;panel-inset p0 m0&#34;&gt;
+  &lt;video autoplay muted loop playsinline style=&#34;display: block;&#34;&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-383-space-platform-super-force.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    Mp4 playback not supported on your device.
+  &lt;/video&gt;
+&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  Once we already had the super forced building mode, it was natural to include the other properties of it.&lt;br/&gt;
+  The mindset behind super force building, is that you want to force the full blueprint no matter what, like building rails through a solar field, so this is how we made it behave.
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;div class=&#34;panel-inset p0 m0&#34;&gt;
+  &lt;video autoplay muted loop playsinline style=&#34;display: block;&#34;&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-383-super-force-rails.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    Mp4 playback not supported on your device.
+  &lt;/video&gt;
+&lt;/div&gt;
+&lt;p style=&#34;text-align: center; font-style: italic;&#34;&gt;
+  Super force building will mark anything in the way for deconstruction.
+&lt;/p&gt;
+&lt;/p&gt;
+
+&lt;h4&gt;Manual super forced building&lt;/h4&gt;
+&lt;p&gt;
+  We were only speaking about blueprints up to this point, but once the super force building worked its way into our muscle memory, we started to try to use it when building entities manually. It is similar to how you can build ghosts manually with the shift modifier, and get rid of trees in the way automatically.
+&lt;/p&gt;
+
+&lt;p&gt;
+  So we added the super force building as a direct build shortcut, not just a specialized blueprint building modifier.
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;div class=&#34;panel-inset p0 m0&#34;&gt;
+  &lt;video autoplay muted loop playsinline style=&#34;display: block;&#34;&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-383-manual-super-force-building.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    Mp4 playback not supported on your device.
+  &lt;/video&gt;
+&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;h4&gt;Belt interaction&lt;/h4&gt;
+
+&lt;p&gt;
+  Once we got used to this, there was a pattern that started to emerge. We would super force build over belts, and then have to manually fix them right after.
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;div class=&#34;panel-inset p0 m0&#34;&gt;
+  &lt;video autoplay muted loop playsinline style=&#34;display: block;&#34;&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-383-building-over-belts-annoyance.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    Mp4 playback not supported on your device.
+  &lt;/video&gt;
+&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  If you are a regular reader, you know that the word manually is always an indication of change.
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;div class=&#34;panel-inset p0 m0&#34;&gt;
+  &lt;video autoplay muted loop playsinline style=&#34;display: block;&#34;&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-383-super-force-belts-examples.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    Mp4 playback not supported on your device.
+  &lt;/video&gt;
+&lt;/div&gt;
+&lt;p style=&#34;text-align: center; font-style: italic;&#34;&gt;
+  Super force building over belts automatically places undergrounds
+&lt;/p&gt;
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;Mining landfill&lt;author&gt;Klonan&lt;/author&gt;&lt;/h3&gt;
+
+&lt;p&gt;
+  Landfill has always been a little bit tricky. As it stands it kinda breaks a fundamental symmetry in the base building, in that everything you build can be unbuilt, any mistake erased without judgement. But with landfill, one wrong click and it&#39;s there forever.
+&lt;/p&gt;
+
+&lt;p&gt;
+  It has long been on our wishlist to make mining landfill work, but the code and logic around tile building and mining were not set up effectively for it. One major problem is that tile placement/removal would instantly and uncompromisingly destroy or kill anything that was colliding with it when it was changed. Additionally, mining landfill is a specific case, but making the system generalized for all combinations of placing and mining tiles with varying collision masks (for example a placeable water mod) would involve touching a lot of systems (building, mining, blueprints, upgrades, deconstruction).
+&lt;/p&gt;
+
+&lt;p&gt;
+  With the super force building, the problem of &#39;no way back&#39; when building landfill was even more dangerous and liable to misclicks, so we knew we had to make mining landfill happen.
+&lt;/p&gt;
+
+&lt;p&gt;
+  Through hard work and dedication, Roman was able to clean up all the tile building and mining code, handle all the cases of collisions between entities and tiles, and make it work in a really nice and intuitive way. You can even see some evidence of the groundwork for this back in the 1.1.50 release (December 2021), where we added the TilePrototype &#39;&lt;a href=&#34;https://lua-api.factorio.com/latest/prototypes/TilePrototype.html#check_collision_with_entities&#34;&gt;check_collision_with_entities&lt;/a&gt;&#39; property.
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;div class=&#34;panel-inset p0 m0&#34;&gt;
+  &lt;video autoplay muted loop playsinline style=&#34;display: block;&#34;&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-383-mining-landfill.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    Mp4 playback not supported on your device.
+  &lt;/video&gt;
+&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  You can notice that the landfill underneath the player wasn&#39;t marked for deconstruction. In general, landfill can&#39;t be mined if there is something on top, but typically entities on top (machines, furnaces, belts etc.) will also be marked for deconstruction anyway, so they will be removed and allow the landfill to be mined.
+&lt;/p&gt;
+
+&lt;p&gt;
+  And with the new super force building, it is only natural that we make the interaction with landfill work in the opposite direction.
+&lt;/p&gt;
+
+&lt;p&gt;
+&lt;div class=&#34;panel-inset p0 m0&#34;&gt;
+  &lt;video autoplay muted loop playsinline style=&#34;display: block;&#34;&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-383-force-building-offshore-pump.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    Mp4 playback not supported on your device.
+  &lt;/video&gt;
+&lt;/div&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  These both put together make stamping down steam engine or reactor setups so much nicer and less worrisome.
+&lt;/p&gt;
+
+&lt;hr&gt;
+
+&lt;p&gt;
+  As always, super force your thoughts to us at the usual places.
+&lt;/p&gt;
+</content>
+  </entry>
+  <entry xml:base="https://www.factorio.com/blog/rss">
+    <title type="text">Friday Facts #382 - Logistic groups</title>
+    <id>https://www.factorio.com/blog/post/fff-382</id>
+    <updated>2023-10-27T00:00:00Z</updated>
+    <link href="https://www.factorio.com/blog/post/fff-382" />
+    <author>
+      <name>kovarex</name>
+    </author>
+    <content type="html">&lt;p&gt;
+Hello, today we will go over some of the details of Space platforms we couldn&#39;t fit into the last FFF, as well as some new features that will tie the whole system together.
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;Space platform clarifications&lt;/h3&gt;
+
+&lt;p&gt;
+  &lt;b&gt;&lt;i&gt;Without construction robots, do the things just magically appear on the platform?&lt;/i&gt;&lt;/b&gt;&lt;br/&gt;
+  Many things we show in FFFs these days are work in progress, including the space platform building visualizations.&lt;br/&gt;
+  Let me present the tiles building animation preview.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;video autoplay muted loop playsinline&gt;
+    &lt;source src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-382-platform-tiles-building-animation.mp4&#34; type=&#39;video/mp4&#39; /&gt;
+    Mp4 playback not supported on your device.
+  &lt;/video&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  We will have something similar for entities too, so things won&#39;t magically appear, but it will be as though the platform is &#39;building&#39; them by itself.
+&lt;/p&gt;
+
+&lt;p&gt;
+  &lt;b&gt;&lt;i&gt;If blue science leads to rockets do we get advanced stuff like low density structure and rocket control unit earlier, or are rockets different?&lt;/i&gt;&lt;/b&gt;&lt;br/&gt;
+  Low density structure is blue science. Rocket control units were removed and processing units are used instead.
+&lt;/p&gt;
+
+&lt;p&gt;
+  On top that, we lowered the cost of the rocket by 20 times. This is to lower the focus on rockets, because you will have to produce rockets on every planet eventually, send quite a lot of rockets to build your platforms, and to move stuff between planets.
+&lt;/p&gt;
+
+&lt;p&gt;
+  This results in thousands of rockets being sent in the expansion at least.
+&lt;/p&gt;
+
+&lt;p&gt;
+  &lt;b&gt;&lt;i&gt;We only see gun turrets on the platforms, are laser turrets ineffective against asteroids?&lt;/i&gt;&lt;/b&gt;&lt;br/&gt;
+  Each asteroid size has a different preferred weapon. Laser turrets are only efficient against the small asteroids, and the medium ones need at least a gun turret.&lt;br/&gt;
+  Since energy is quite scarce on the platform, it is usually a better strategy to just use gun turrets for both small and medium asteroids.&lt;br/&gt;
+  There are also going to be big and huge asteroids on some of the more dangerous routes, and these will need even heavier weapons, but more on that later.
+&lt;/p&gt;
+
+&lt;p&gt;
+  &lt;b&gt;&lt;i&gt;With the cargo bay extenders, can&#39;t we use the one big inventory as a teleport?&lt;/i&gt;&lt;/b&gt;&lt;br/&gt;
+  We aren&#39;t noobs :) Why do you think cargo wagon can&#39;t be placed in space. Only the central hub can be used to access the items with inserters. It can be utilised on a small platforms, but it can&#39;t be abused in a scalable way.
+&lt;/p&gt;
+
+&lt;p&gt;
+  &lt;b&gt;&lt;i&gt;Why can space platforms not have holes?&lt;/i&gt;&lt;/b&gt;&lt;br/&gt;
+  The reason is driven by a gameplay motivation. If you could have holes in the space platform, it would basically mean, that you can do a very comfortable spacious setup, and just remove all the unused tiles to reduce the platform weight.&lt;br/&gt;
+  We wanted to push the minigame of building a belt based mini factory in a limited space. So far, it seems to be doing its job as intended.
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;Rocket carry capacity&lt;/h3&gt;
+
+&lt;h4&gt;How to even define the capacity&lt;/h4&gt;
+&lt;p&gt;
+  The first obvious question is how much can a rocket carry.&lt;br/&gt;
+  We surely wanted to make the transport from the surface to the orbit to be expensive.
+  This means that the rocket can carry only a small amount of items, which makes the relative cost of transporting different items quite important.
+&lt;/p&gt;
+
+&lt;p&gt;
+  The obvious choice is to just set the rocket to carry some fixed amount of item stacks (it would be 1), but it just wouldn&#39;t be feasible because:
+  &lt;ul&gt;
+    &lt;li&gt;Some items would be too expensive to transport (science packs, cheap intermediates like circuits, and such).&lt;/li&gt;
+    &lt;li&gt;Some items would be way too cheap if you could transfer a whole stack in one rocket (reactor, rail ramp, etc.).&lt;/li&gt;
+    &lt;li&gt;Some items should be too heavy to even transport as a whole. The idea of transferring a whole rocket silo inside a rocket is too much even for Factorio.&lt;/li&gt;
+    &lt;li&gt;Since we have recycling, it would be more efficient to transfer some resource-dense items, like express underground belts, to be recycled into the iron at the destination, compared to just sending the iron directly.&lt;/li&gt;
+    &lt;li&gt;We could also manipulate the stack sizes to get the wanted ratios, but it would be changing the balance of trains versus belts and more.&lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  This is why we chose the capacity to be weight driven.
+&lt;/p&gt;
+
+&lt;h4&gt;Weight system&lt;/h4&gt;
+&lt;p&gt;
+  We decided the axiom to be that the rocket can carry 1000kgs of goods, and balanced the rest around it. We started by setting ore weight to be 2kg per item, so 500 items/10 stacks can fit in a rocket. Then we created an automated formula to derive the weights of items based on their recipes. Many items also have specific hand-picked weights defined in their prototypes.
+&lt;/p&gt;
+
+&lt;p&gt;
+  This created some kind of rough base for testing, and we then modified many things a lot. Most non-intermediate utility stuff was cut to be at most 1 stack per rocket, many things were rounded up, etc. In some cases, we bent things a lot, science packs are expensive, but they can&#39;t be recycled, so we allowed 1,000 to fit in a rocket. Modules are expensive, but a whole stack can fit a rocket, because recycling modules is just silly.
+&lt;/p&gt;
+
+&lt;h4&gt;Filling the rocket&lt;/h4&gt;
+&lt;p&gt;
+  There are 2 main ways to fill the rocket, manually and automatically.&lt;br/&gt;
+  In the manual mode, you can just put any mix of items you want as long as they fit the limit and press a button to send the rocket to a space platform.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-382-rocket-silo-gui.png&#34;&gt;
+  &lt;/br&gt;&lt;i&gt;Manually filled rocket ready to be launched.&lt;/i&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  In the automatic mode, the rocket silo will request just one type of item, based on the requests from orbiting platforms. By default it always waits until it has a full rockets worth before launching, so as to not waste any rocket capacity.&lt;br/&gt;
+  For special cases, we added the &#39;custom minimal payload&#39; to set a lower launch threshold, which might be useful for very expensive, low throughput items.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-382-orbital-request-gui.png&#34;&gt;
+  &lt;/br&gt;&lt;i&gt;You can select a non-default amount needed to send one rocket. The &#39;import from&#39; selection allows the player to specify which planet is used to fulfill this request, it will be important later.&lt;/i&gt;
+&lt;/p&gt;
+
+&lt;h4&gt;Players traveling to space&lt;/h4&gt;
+
+&lt;p&gt;
+  Launching yourself to space is done with the same rockets as normal cargo, in the GUI you just choose &#39;Travel to space&#39; and pick your destination platform. Upon arrival the character will sit safely strapped into the platform hub.
+&lt;/p&gt;
+
+&lt;p&gt;
+  However the weight system implies that the player can potentially hold tons of rockets worth of items in their inventory, so for traveling to space, you can only carry your armor and your guns, nothing else (not even ammo).
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;Overall logistics&lt;/h3&gt;
+
+&lt;p&gt;
+  The last non-explained piece of the puzzle is the way items are transported from orbit back to the surface.
+&lt;/p&gt;
+
+&lt;p&gt;
+  This is done with the &lt;b&gt;cargo landing pad&lt;/b&gt;, which is a special building that can be extended with cargo bays like the space platform hub, and more importantly, you can have only one per planet!
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-382-rocket-logistics.png&#34;&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  The limitation of only one per planet might sound weird, but we just find it fitting, because otherwise (we tried that) it is too convenient to put them all over the place to have the imported items right where you need them, and in the late game, it is nice to have this one very busy logistic junction in your base.
+&lt;/p&gt;
+
+&lt;p&gt;
+  The landing pad has logistic requests, which are satisfied by platforms in orbit. Inserters can pull items from it directly, and it also works as a provider chest when in a logistic network on the surface.
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;Logistic groups&lt;/h3&gt;
+
+&lt;p&gt;
+  The interplanetary logistic system works nice, but playtesting uncovered one critical problem.&lt;br/&gt;
+  &lt;i&gt;As you can see, this is a recurrent theme now, playtesting and iterative improvement is a required tool to uncover problems and develop something playable.&lt;/i&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  The problem we discovered is that the system has many points where you request the same set of items, and once you need to update it, it is a chore, and leads to chaos.&lt;br/&gt;
+  And this problem is not relevant only to space, as having a group of Spidertrons with logistic requests has the same issue, which leads to the annoying task of going through all the requesting entities one by one, using copy paste just to miss one in the group and introducing chaos.
+&lt;/p&gt;
+
+&lt;p&gt;
+  This is why we developed a solution that solves all these problems and adds some nice benefits as well, which is the &lt;b&gt;logistic groups&lt;/b&gt;.
+&lt;/p&gt;
+
+&lt;p&gt;
+  The solution has three main parts:
+  &lt;ol&gt;
+    &lt;li&gt;You can assign logistic requests to a named group, and then all the places using the same group are automatically synced whenever you change something.&lt;/li&gt;
+    &lt;li&gt;You can have multiple logistic groups on each entity.&lt;/li&gt;
+    &lt;li&gt;You can turn on or off the individual groups at any time.&lt;/li&gt;
+  &lt;/ol&gt;
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-382-logistic-groups-gui.png&#34;&gt;
+  &lt;/br&gt;&lt;i&gt;This is similar to what I actually used during game. I was disabling/enabling different things based on what I
+    was planning to do.&lt;/i&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  The final GUI solution is also the result of quite a few iterations, the main goal was to make it reasonably simple to use if you don&#39;t care about groups at all. In that case, you just have the one unnamed group and use it the same way as in 1.1.
+&lt;/p&gt;
+
+&lt;h4&gt;Trash unrequested&lt;/h4&gt;
+
+&lt;p&gt;
+  There was this annoying problem I had with Spidertrons. As I played, I had to add more and more trash requests for all the things they could pick up.
+  For example wood, stone, ores, basically any kind of mess they encounter when deconstructing.
+&lt;/p&gt;
+
+&lt;p&gt;
+  When I was adding around the 10th item to be trashed, I realized that there will be always that one extra item I forget about, and what I actually want to do is to trash everything that is not requested. At that point, the feature idea was obvious.
+&lt;/p&gt;
+
+&lt;p&gt;
+  So we added the &#39;trash unrequested&#39; checkbox, and when enabled anything that isn&#39;t explicitly requested is put straight to trash.
+  This also has the secondary benefit, that when you change the requests of some group, outdated requests/items don&#39;t accumulate in the storage.
+&lt;/p&gt;
+
+&lt;p&gt;
+  Using the &#39;trash unrequested&#39; in personal logistic can have a few unexpected consequences at times, and it takes a while to become conscious about it.
+  It happened to me many times that I crafted this new item into my inventory, it immediately disappeared into the trash slots, and before I realized what is going on, the robots were happily carrying it away from my reach... But once I got used to it, and turned it on or off based on what I was doing, it became one of the things I couldn&#39;t play without anymore.
+&lt;/p&gt;
+
+&lt;p&gt;
+  Both the logistic groups and trash unrequested features are unified across player, requester chests, spidertrons, roboports, rocket silos, space platform hubs, and landing pads, and will be available in the 2.0 base game.
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;h3&gt;The small bonus on top&lt;/h3&gt;
+&lt;p&gt;
+  I would like to show you my favorite example of beginner/intermediate circuit network usage, to demonstrate a needed change related to the logistic groups.
+&lt;/p&gt;
+
+&lt;h4&gt;The wall resupply system&lt;/h4&gt;
+
+&lt;p&gt;
+  If you know whats up in Factorio, you probably learned that it is not the best idea to spread your logistic network across all your expansions and defensive perimeters. It is generally better to have more smaller logistic networks, so the robot deliveries are faster. You also probably know, that it is a good idea to set up a way to keep your defensive perimeter in good shape automatically, so biters won&#39;t eventually grind it down. This becomes even more useful once you need to ensure that your base is able to survive long enough without your physical presence in the space age expansion before having spidertrons or artillery.
+&lt;/p&gt;
+
+&lt;p&gt;
+  So its useful to set up the wall resupply system, which is basically a train which delivers all the needed materials to the separated smaller logistic networks around the defense perimeters. Just a few combinators are needed to make this work really.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-382-wall-resupply.png&#34;&gt;
+  &lt;/br&gt;&lt;i&gt;Example of the automatic wall resupply setup.&lt;/i&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  The constant combinator defines what is needed at the remote outpost, and we subtract what we have from what we need to get the list of missing materials. This can be used to control the inserter unloading from the train and also to disable/enable the station to call the train only when necessary.
+&lt;/p&gt;
+
+&lt;h4&gt;The problem&lt;/h4&gt;
+&lt;p&gt;
+  Everything is nice and easy, and doable in vanilla just fine, but the system has a problem related to change.
+  You might decide that you want to add new item to your resupply stations, or change the item amounts.
+&lt;/p&gt;
+
+&lt;p&gt;
+  As long, as you don&#39;t want to make a huge, whole-map circuit network, all the constant combinators (one in your main base, and one per remote station) have to be updated manually.&lt;br/&gt;
+  Manually... with no way to automate it... that is unacceptable!
+&lt;/p&gt;
+
+&lt;h4&gt;The solution&lt;/h4&gt;
+&lt;p&gt;
+  Since we just finished the logistic group system, we were also looking for ways to read the contents of the logistic group with the circuit network, the solution felt obvious.
+&lt;/p&gt;
+
+&lt;p&gt;
+  Constant combinators just use the exact same system for its configuration as the request entities, so different combinators in the world can be synced up automatically, and the constant combinator can be even synced up with requesting entities.
+&lt;/p&gt;
+
+&lt;p style=&#34;text-align: center; margin:auto; margin-top:20px; margin-bottom: 20px;&#34;&gt;
+  &lt;img src=&#34;https://cdn.factorio.com/assets/blog-sync/fff-382-constant-combinator-gui.png&#34;&gt;
+&lt;/p&gt;
+
+&lt;p&gt;
+  As you might guess, this is not the last time we will talk about circuit stuff. We have things which both make it more approachable and more powerful,
+  but since this post is starting to be quite long, it will be discussed some other time :)
+&lt;/p&gt;
+
+&lt;hr&gt;
+&lt;p&gt;
+  As always, let us know what you think at the usual places.
+&lt;/p&gt;
+</content>
+  </entry>
+</feed>

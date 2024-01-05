@@ -1,40 +1,41 @@
-use reqwest::{Response, StatusCode};
+use atom_syndication as atom;
+use std::collections::VecDeque;
+use std::iter;
 use std::time::Duration;
 
-#[tokio::main]
-async fn main() {
-    match std::env::args().nth(1).map(|val| val.parse::<u32>()) {
-        Some(Ok(num)) => weekly_loop(num).await,
-        Some(Err(e)) => eprintln!("Could not parse input: {}", e),
-        None => println!("No value to track!"),
-    }
-}
-
-async fn weekly_loop(first: u32) {
-    for num in first.. {
-        let response =
-            wait_for_new_fff(format!("https://www.factorio.com/blog/post/fff-{}", num)).await;
-        println!(
-            "Successful response implies that a new Factorio Friday Facts post has been released."
-        );
-        let text = response.text().await.unwrap();
-    }
-}
-
-async fn wait_for_new_fff(url: String) -> Response {
+fn main() {
+    let mut latest = None;
+    let mut just_saw_new_post = false;
     loop {
-        if let Ok(body) = reqwest::get(&url).await {
-            match body.status() {
-                StatusCode::NOT_FOUND => println!("waiting..."),
-                status if status.is_success() => {
-                    println!("Got succes-response: {}", status);
-                    break body;
-                }
-                other => eprintln!("Unhandled status code returned: {}", other),
+        if let Ok(feed_response) = reqwest::blocking::get("https://www.factorio.com/blog/rss") {
+            let feed_body = feed_response.text().expect("parsable as text");
+            let channel = atom::Feed::read_from(feed_body.as_bytes()).expect("parsable as channel");
+            let mut new_posts = channel
+                .entries
+                .into_iter()
+                .take_while(|item| {
+                    !latest
+                        .as_ref()
+                        .is_some_and(|latest_item| latest_item == item)
+                })
+                .collect::<VecDeque<_>>();
+            if let Some(newest) = new_posts.pop_front() {
+                println!(
+                    "NEW POSTS:\n{}",
+                    iter::once(&newest)
+                        .chain(new_posts.iter())
+                        .map(|post| post.title.value.as_str())
+                        .collect::<String>()
+                );
+                latest = Some(newest);
+                just_saw_new_post = true;
+            } else if just_saw_new_post {
+                eprintln!("Waiting for new posts...");
+                just_saw_new_post = false;
             }
         } else {
-            eprintln!("Could not get response...");
+            eprintln!("No response?");
         }
-        tokio::time::sleep(Duration::from_secs(5)).await;
+        std::thread::sleep(Duration::from_secs(10));
     }
 }
