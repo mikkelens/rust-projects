@@ -1,0 +1,54 @@
+
+10 more bullets inspiration/notes
+- camera shake for significant hits (explosions)
+- explosions make a sound effect
+- there are (gold) ships that are not affected by causal bullets (only direct hits?)
+which makes you wonder how/why to hit them. they are also a direct risk since they can occupy grabbers?
+- small ships have a chance to drop timed effects
+- bigger ships are (basically) guarantees with effect drops
+- you can always see how many bullets you have left so you know what you are trying to conserve
+- grabbers cannot grab everything, makes you wonder if it would be possible to change that
+- ship art while sharp and complex, is easily distinguishable
+- some effect seem to be better than others,
+making you think about prioritizing them if possible
+- the grabbers are cute and small, so you aren't too frustrated,
+even if they stupidly miss important items
+- ship spawning is varied in timing and pattern and not constant,
+meaning that bullet burst are unpredictable
+- every hit directly impacts score, you are working towards that high-score the entire time,
+even if you aren't personally doing anything
+- it isn't clear from the start what upgrades you can get, but you know upgrades may matter a lot,
+and they are a tangible goal to work towards
+- getting more bullets is a very rare, but important event
+- slight environmental effects (clouds moving as fast as ships, rain) along with camera shake,
+helps immerse the game as a less static thing
+- game starts fast and lets you start observing it immediately
+
+things to play with
+- more input on "simulation":
+    - affect bullet trajectories slightly?
+    - affect grabbers slightly?
+    - affect ship spawning rates slightly?
+    this could potentially make the game a lot more stressful, perhaps in a bad way.
+    the game is overstimulating already. the gold ships are perhaps an example of player choice/input,
+    which doesn't stress the player bc it is not crucial to keeping score going or anything like that.
+    player input should perhaps change impact of simulation, rather than modify the simulation directly
+    more input should try not to remove the player's focus on the simulation,
+    since that is the interesting part. a way to achieve this could be to have the input
+    rely a lot on closely observing patterns in the simulation?
+- more immersion
+    - lore/text to help you want to work towards another goal than just high score?
+    - slower new-game-plus-like progression, could take inspiration from rogue-likes
+- more interesting upgrades
+    - instead of speed/quantitative upgrades/effects, game could have expensive upgrades that alter game
+    behaviour in a significant way
+- different rng
+    game seems to use pretty "true"/raw pseudorandom numbers for stuff like ship and effect spawning,
+    which could be changed to use more smoothed or rigged random numbers
+    - ship spawning could vary a little based on active bullets,
+    ships destroyed per second etc
+    - upgrades could spawn in more predictable patterns for the player to memorize,
+    just like certain ship formations
+    - grabbers could alter behaviour to work smarter
+    OBS: these changes could affect the game a lot,
+    slight balancing could improve the tiny important parts
