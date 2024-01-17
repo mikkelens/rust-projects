@@ -37,6 +37,6 @@ fn spawn_single_flyer(mut commands: Commands) {
 fn move_flying(mut query: Query<&mut Flying>) {
     for mut flyer in &mut query {
         flyer.position.x += flyer.horizontal_speed;
-        dbg!(flyer.position);
+        // dbg!(flyer.position);
     }
 }
