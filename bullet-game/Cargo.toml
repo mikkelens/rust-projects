@@ -11,6 +11,9 @@ opt-level = 1
 [profile.dev.package."*"]
 opt-level = 3
 
+[profile.dev.build-override]
+opt-level = 3
+
 [profile.optimized]
 inherits = "release"
 debug = true
@@ -22,7 +25,9 @@ codegen-units = 256
 
 [dependencies]
 bevy = { version = "0.12.1" }
+bevy_pixel_camera = "0.12.1"
+bevy_turborand = "0.7.0"
 itertools = "0.12"
 
 [features]
-default = ["bevy/dynamic_linking"]
+#default = ["bevy/dynamic_linking"]
