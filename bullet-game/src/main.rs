@@ -2,6 +2,7 @@ use bevy::prelude::*;
 use bevy::sprite::Anchor;
 use bevy_pixel_camera::{PixelCameraPlugin, PixelViewport, PixelZoom};
 use bevy_turborand::prelude::*;
+
 use std::num::NonZeroU16;
 use std::ops::RangeInclusive;
 use std::time::Duration;
@@ -112,6 +113,7 @@ fn spawn_spewer(mut commands: Commands, asset_server: Res<AssetServer>) {
     ));
 }
 
+#[allow(unused)]
 trait Interpolated {
     fn lerp(&self, t: f32) -> f32;
     fn inv_lerp(&self, v: f32) -> f32;
@@ -125,6 +127,25 @@ impl Interpolated for RangeInclusive<f32> {
     }
     fn inv_lerp(&self, v: f32) -> f32 {
         (v - self.start()) / (self.end() - self.start())
+    }
+}
+
+#[inline]
+fn ship_spawn_y(rng: &mut GlobalRng) -> f32 {
+    #[cfg(feature = "alt_spawning")]
+    {
+        const MAX_OFFSET: f32 = SCREEN_EDGE_OFFSET.y * SHIP_SPAWN_HEIGHT_VARIANCE;
+        const TOTAL_STEPS: u8 = 5;
+        #[cfg(test)]
+        static_assertions::const_assert!(TOTAL_STEPS > 0);
+
+        let steps = rng.u8(0..TOTAL_STEPS);
+        let height_t = steps as f32 / ((TOTAL_STEPS - 1) as f32); // f32 in range 0..=1
+        MAX_OFFSET - MAX_OFFSET * height_t * 2. // range MAX_OFFSET..=MAX_OFFSET
+    }
+    #[cfg(not(feature = "alt_spawning"))]
+    {
+        SCREEN_EDGE_OFFSET.y * SHIP_SPAWN_HEIGHT_VARIANCE * rng.f32_normalized()
     }
 }
 
@@ -149,7 +170,7 @@ fn spawn_ships(
             let sign = rng.f32_normalized();
             let mut transform = Transform::from_xyz(
                 (SCREEN_EDGE_OFFSET.x + SHIP_SPAWN_EXTRA_CLEARANCE).copysign(sign),
-                SCREEN_EDGE_OFFSET.y * SHIP_SPAWN_HEIGHT_VARIANCE * rng.f32_normalized(),
+                ship_spawn_y(rng.as_mut()),
                 0.,
             );
             let direction = Vec2::new(1.0f32.copysign(-sign), 0.);
@@ -214,9 +235,9 @@ fn spawn_queued_bullets(
     mut rng: ResMut<GlobalRng>,
     asset_server: Res<AssetServer>,
 ) {
-    if !spawner.0.is_empty() {
-        eprintln!("spawned {} bullets!", spawner.0.len())
-    }
+    // if !spawner.0.is_empty() {
+    //     eprintln!("spawned {} bullets this frame", spawner.0.len())
+    // }
     for (mut transform, direction, power) in spawner.0.drain(..) {
         transform.rotation = Quat::from_rotation_z(Vec2::X.angle_between(direction));
         commands.spawn((
@@ -240,6 +261,7 @@ fn spawn_queued_bullets(
     }
 }
 
+#[allow(unused)]
 trait Snapping {
     fn snapped_horizontal(&self) -> Self;
     fn snapped_cardinal(&self) -> Self;

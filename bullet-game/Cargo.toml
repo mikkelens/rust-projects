@@ -3,25 +3,26 @@ name = "bullet-game"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[profile.dev]
-opt-level = 1
-
-[profile.dev.package."*"]
-opt-level = 3
-
-[profile.dev.build-override]
-opt-level = 3
-
-[profile.optimized]
+[profile.optimized] # release optimized, but with debug behaviour
 inherits = "release"
 debug = true
 strip = "none"
 debug-assertions = true
 overflow-checks = true
 incremental = true
-codegen-units = 256
+
+[profile.dev]
+opt-level = 1
+debug = 1
+
+[profile.dev.package."*"] # might as well have max optimization for dependencies since they will only be compiled once
+inherits = "optimized"
+#opt-level = 3 # already specified in inherited profile(s)
+
+# this is how optimized the build scripts should be.
+# build scripts often don't do a lot of heavy work, so the act of building them might as well be as fast as possible.
+#[profile.dev.build-override]
+#opt-level = 0 # already the default
 
 [dependencies]
 bevy = { version = "0.12.1" }
@@ -29,5 +30,9 @@ bevy_pixel_camera = "0.12.1"
 bevy_turborand = "0.7.0"
 itertools = "0.12"
 
+[dev-dependencies]
+static_assertions = "1.1"
+
 [features]
-#default = ["bevy/dynamic_linking"]
+default = ["bevy/dynamic_linking"]
+alt_spawning = []
