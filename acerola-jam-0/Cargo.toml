@@ -1,0 +1,45 @@
+[package]
+name = "acerola-jam-0"
+version = "0.1.0"
+edition = "2021"
+
+# fast iteration
+[profile.dev]
+debug = 0
+strip = "debuginfo"
+opt-level = 1
+
+# full debug info
+[profile.debuggable]
+inherits = "dev"
+debug = 2
+strip = "none"
+opt-level = 0 # opt level can break stepping flow? https://bevy-cheatbook.github.io/pitfalls/performance.html#unoptimized-debug-builds
+
+# fast with debug info (compiled once during development, ideally)
+[profile.fast-dependency]
+inherits = "release"
+incremental = true
+debug = 2
+debug-assertions = true
+overflow-checks = true
+opt-level = 3
+
+[profile.dev.package."*"]
+inherits = "fast-dependency"
+
+[profile.debuggable.package."*"]
+inherits = "fast-dependency"
+
+[dev-dependencies]
+static_assertions = "1.1"
+
+[dependencies]
+bevy = "0.13"
+rand = "0.8"
+ron = "0.8"
+serde = { version = "1", features = ["derive"] }
+itertools = "0.12"
+
+[features]
+default = ["bevy/dynamic_linking"]

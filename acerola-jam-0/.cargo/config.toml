@@ -1,0 +1,4 @@
+[target.x86_64-pc-windows-msvc]
+linker = "rust-lld.exe" # seems to be faster
+# 'threads' is nightly only (idk about share generics, there is conflicting information online)
+rustflags = ["-Zshare-generics=off", "-Zthreads=8"] # shared generics seems to break on windows, threads=8 works and is faster on my machine
