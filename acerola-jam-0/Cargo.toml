@@ -38,8 +38,10 @@ static_assertions = "1.1"
 bevy = "0.13"
 rand = "0.8"
 ron = "0.8"
-serde = { version = "1", features = ["derive"] }
+serde = { version = "1.0", features = ["derive"] }
 itertools = "0.12"
+enumflags2 = { version = "0.7", features = ["serde"] }
+strum = { version = "0.26", features = ["derive"] }
 
 [features]
-default = ["bevy/dynamic_linking"]
+#default = ["bevy/dynamic_linking"]
