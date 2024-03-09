@@ -56,7 +56,7 @@ impl From<&SortedHand> for HandVariants {
             (false, true) => HandVariants::Straight,
             (false, false) => match &hand.duplicate_numbers()[..] { // group assumes suit invariant
                 [1, 4] => HandVariants::FourOfAKind, // could be overshadowed by the "lesser" flush
-                maybe_i_need_this @ [2, 3] => HandVariants::FullHouse, // same as above
+                [2, 3] => HandVariants::FullHouse, // same as above
                 [1, 1, 3] => HandVariants::ThreeOfAKind,
                 [1, 2, 2] => HandVariants::TwoPair,
                 [1, 1, 1, 2] => HandVariants::Pair,
