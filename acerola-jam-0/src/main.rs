@@ -1,3 +1,6 @@
+#![feature(is_sorted)]
+
+mod cards;
 
 use bevy::prelude::*;
 
@@ -7,16 +10,4 @@ use bevy::prelude::*;
 fn main() {
     // test
     App::new().add_plugins(DefaultPlugins).run()
-}
-
-struct Hand([Card; 5]);
-
-struct Card(Rank, Suit);
-
-enum Rank {
-    
-}
-
-enum Suit {
-    
 }
