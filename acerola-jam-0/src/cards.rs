@@ -11,7 +11,7 @@ impl Ord for SortedHand {
     fn cmp(&self, other: &Self) -> Ordering {
         match HandVariants::from(self).cmp(&HandVariants::from(other)) {
             unequal @ Ordering::Less | unequal @ Ordering::Greater => unequal,
-            Ordering::Equal => self.ranks().cmp(&other.ranks())
+            Ordering::Equal => self.ranks().cmp(&other.ranks()),
         }
     }
 }
@@ -54,9 +54,10 @@ impl From<&SortedHand> for HandVariants {
             }
             (true, false) => HandVariants::Flush, // 4-K/F-H + flush is considered impossible
             (false, true) => HandVariants::Straight,
-            (false, false) => match &hand.duplicate_numbers()[..] { // group assumes suit invariant
+            (false, false) => match &hand.duplicate_numbers()[..] {
+                // group assumes suit invariant
                 [1, 4] => HandVariants::FourOfAKind, // could be overshadowed by the "lesser" flush
-                [2, 3] => HandVariants::FullHouse, // same as above
+                [2, 3] => HandVariants::FullHouse,   // same as above
                 [1, 1, 3] => HandVariants::ThreeOfAKind,
                 [1, 2, 2] => HandVariants::TwoPair,
                 [1, 1, 1, 2] => HandVariants::Pair,
@@ -137,7 +138,7 @@ impl Debug for Card {
 
 #[repr(u8)]
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, EnumCount, FromRepr, Debug)]
-enum Rank {
+pub enum Rank {
     Two,
     Three,
     Four,
@@ -167,8 +168,8 @@ impl Rank {
     }
 }
 
-#[derive(Copy, Clone, Eq, PartialEq, Debug, Default, EnumIter)]
-enum Suit {
+#[derive(Copy, Clone, Eq, PartialEq, Debug, Default, EnumIter, EnumCount)]
+pub enum Suit {
     #[default]
     Hearts,
     Spades,
@@ -178,8 +179,8 @@ enum Suit {
 
 #[cfg(test)]
 mod tests {
-    use bevy::prelude::Res;
     use super::*;
+    use bevy::prelude::Res;
     use parsing::*;
 
     #[test]
@@ -212,11 +213,14 @@ mod tests {
 
     mod parsing {
         use super::*;
-        
-        pub(super) fn variant_from_str_fn(s: &str, f: fn(&str) -> Result<Hand, HandParseError>) -> HandVariants {
+
+        pub(super) fn variant_from_str_fn(
+            s: &str,
+            f: fn(&str) -> Result<Hand, HandParseError>,
+        ) -> HandVariants {
             HandVariants::from(&SortedHand::from(f(s).unwrap()))
         }
-        
+
         #[derive(Debug)]
         pub(super) enum HandParseError {
             Slice(TryFromSliceError),
@@ -290,10 +294,7 @@ mod tests {
             ("K5432", HandVariants::HighCard),
         ];
         for (s, result) in cases {
-            assert_eq!(
-                variant_from_str_fn(s, Hand::from_str_mixed),
-                result
-            );
+            assert_eq!(variant_from_str_fn(s, Hand::from_str_mixed), result);
         }
     }
 
@@ -306,13 +307,10 @@ mod tests {
             ("K5432", HandVariants::Flush),
         ];
         for (s, result) in cases {
-            assert_eq!(
-                variant_from_str_fn(s, Hand::from_str_flush),
-                result
-            )
+            assert_eq!(variant_from_str_fn(s, Hand::from_str_flush), result)
         }
     }
-    
+
     #[test]
     fn compare_variants() {
         let cases = [
