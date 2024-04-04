@@ -5,26 +5,17 @@ edition = "2021"
 
 # fast iteration
 [profile.dev]
-debug = 0 # none
+debug = 0           # none
 strip = "debuginfo"
-opt-level = 1 # seemingly *has* to be 1 on windows?
+opt-level = 1       # seemingly *has* to be 1 on windows?
 
 # full debug info
 [profile.debuggable]
 inherits = "dev"
-debug = 2 # full
+debug = 2        # full
 strip = "none"
-opt-level = 0 # opt level can break stepping flow?
+opt-level = 0    # opt level can break stepping flow?
 # https://bevy-cheatbook.github.io/pitfalls/performance.html#unoptimized-debug-builds
-
-# fast with debug info (compiled once during development, ideally)
-[profile.fast-dependency]
-inherits = "release"
-incremental = true
-debug = 2
-debug-assertions = true
-overflow-checks = true
-opt-level = 3
 
 [profile.dev.package."*"]
 inherits = "fast-dependency"

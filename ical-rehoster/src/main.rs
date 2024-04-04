@@ -1,4 +1,5 @@
 use std::env;
+use std::fmt::Display;
 use std::fs::File;
 use std::io::{stdin, Read, Write};
 use std::ops::{Deref, DerefMut};
@@ -7,241 +8,177 @@ use std::time::Duration;
 
 use axum::routing::get;
 use axum::Router;
-use ical::generator::Emitter;
-use ical::parser::ical::component::IcalCalendar;
-use ical::property::Property;
-use ical::LineReader;
-use reqwest::IntoUrl;
-use serde::{Deserialize, Serialize};
+use reqwest::{IntoUrl, Response};
+use tokio::time::Sleep;
+
+use calendar::ComparableCalendar;
+
+mod calendar;
 
 const CALENDAR_ENV_VAR: &str = "CALENDAR_ICAL_URL";
 const ICAL_CACHE_PATH: &str = "latest_processed.ical";
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    let url = env::var(CALENDAR_ENV_VAR).or_else(|_| {
-        let mut s = String::new();
-        println!("Please provide a URL (it was not found in environment ");
-        print!("> ");
-        stdin().read_line(&mut s).map(|_| s)
-    })?;
-
-    let calendar: Arc<Mutex<Option<ComparableCalendar>>> = Arc::new(Mutex::new({
+    // get data handle
+    let calendar_handle: Arc<Mutex<Option<ComparableCalendar>>> = Arc::new(Mutex::new({
         let mut s = String::new();
         match File::open(ICAL_CACHE_PATH) {
             Ok(mut file) => {
+                // use pre-lived calendar data if possible
                 let byte_count = file.read_to_string(&mut s)?;
                 println!("Found previous data, read {} bytes from file.", byte_count);
                 Some(ComparableCalendar::from(
                     ical::IcalParser::new(s.as_bytes())
                         .next()
-                        .ok_or_else(|| anyhow::Error::msg("No first IcalCalendar in file?"))??,
+                        .ok_or_else(|| anyhow::Error::msg("No (first) IcalCalendar in file?"))??,
                 ))
             }
-            Err(_) => None,
+            Err(_) => None, // no previous file
         }
     }));
-    let writer_calendar = calendar.clone();
 
-    let host = tokio::task::spawn(async move {
-        axum::serve(
-            tokio::net::TcpListener::bind("127.0.0.1:3000")
-                .await
-                .unwrap(),
-            Router::new().route(
-                "/",
-                get(|| async move {
-                    println!("GET requested from server. ");
-                    match calendar.lock().unwrap().deref() {
-                        None => "".into(),
-                        Some(val) => val.source.generate(),
-                    }
-                }),
-            ),
-        )
-        .await
-    });
+    println!();
 
-    let writer = tokio::task::spawn(async move {
-        let mut calendar_handle = writer_calendar.clone();
-        loop {
-            match update(&url, &mut calendar_handle).await {
-                Ok(_) => {}
-                e @ Err(_) => break e,
-            };
+    // get the target/update url
+    let url = match env::var(CALENDAR_ENV_VAR) {
+        Ok(s) => {
+            println!("URL `{}` found from environment variable", s);
+            s
         }
-    });
+        Err(_) => {
+            println!(
+                "URL not found in environment variable `{}`... ",
+                CALENDAR_ENV_VAR
+            );
+            match env::args().nth(1 /* skip directory argument */) {
+                Some(s) => {
+                    println!("Found passed argument `{}`, using it as fetch URL.", s);
+                    s
+                }
+                None => {
+                    println!("Please provide a fetch URL.");
+                    print!("> ");
+                    let mut s = String::new();
+                    stdin().read_line(&mut s).map(|_| s)? // read line into string
+                }
+            }
+        }
+    };
 
-    let (a, b) = tokio::try_join!(host, writer)?;
+    println!();
+    // create tasks to poll
+    let (fetch_write_task, rehost_task) = (
+        // fetching
+        tokio::task::spawn({
+            // make copy of handle for writing task (cannot move pre-clone)
+            let calendar_write_handle = calendar_handle.clone();
+            async move {
+                let mut calendar_handle = calendar_write_handle;
+                loop {
+                    match fetch_ical(&url, &mut calendar_handle).await {
+                        Ok(_) => {} // continue
+                        Err(e) => {
+                            eprintln!("Error in fetch task:\n{}", e);
+                            break e;
+                        }
+                    };
+                }
+            }
+        }),
+        // providing
+        tokio::task::spawn(async move {
+            axum::serve(
+                tokio::net::TcpListener::bind("127.0.0.1:1234")
+                    .await
+                    .unwrap(),
+                Router::new().route(
+                    "/",
+                    get(|| async move {
+                        println!("GET requested from server. ");
+                        match calendar_handle.lock().unwrap().deref() {
+                            None => "".into(),
+                            Some(val) => val.filtered.clone(),
+                        }
+                    }),
+                ),
+            )
+            .await
+        }),
+    );
+
+    let (a, b) = tokio::try_join!(rehost_task, fetch_write_task)?;
     a?;
-    b?;
-
-    unreachable!()
+    Err(b)
 }
 
-async fn update(
+async fn fetch_ical(
     url: impl IntoUrl,
     calendar_handle: &mut Arc<Mutex<Option<ComparableCalendar>>>,
 ) -> anyhow::Result<()> {
-    match reqwest::get(url).await?.error_for_status() {
-        Ok(success) => {
-            // println!("Success, code {}.", success.status());
+    match reqwest::get(url)
+        .await
+        .and_then(|response| response.error_for_status())
+    {
+        Ok(valid_response) => {
+            if let Err(e) = try_update(calendar_handle, valid_response).await {
+                eprintln!("Response was valid, but failed update - {}", e)
+            };
 
-            let bytes = success.bytes().await?;
-            let new = ComparableCalendar::from(
-                ical::IcalParser::new(&bytes[..])
-                    .next()
-                    .ok_or_else(|| anyhow::Error::msg("No first IcalCalendar in file?"))??,
-            );
-
-            // File::create_new(format!(
-            //     "timetable_file_{}.ical",
-            //     chrono::Utc::now().format("%F_%H.%M.%S")
-            // ))
-            // .unwrap()
-            // .write_all(&bytes[..])
-            // .unwrap();
-
-            match calendar_handle.lock().unwrap().deref_mut() {
-                // match guard lock may break app
-                Some(prev) if *prev == new => {
-                    println!("Newly fetched ical is identical to previous. No changes needed.")
-                }
-                should_change => {
-                    match should_change {
-                        Some(prev) => {
-                            *prev = new;
-                            println!(
-                                "Updated calendar: Newly parsed ical was different than previous."
-                            );
-                        }
-                        a @ None => {
-                            *a = Some(new);
-                            println!("Added initial calendar from parsed ical.")
-                        }
-                    }
-                    File::create(ICAL_CACHE_PATH)?
-                        .write_all(&bytes[..])
-                        .unwrap();
-                    println!(
-                        "Wrote changes to file of total size: {} bytes.",
-                        bytes.len()
-                    )
-                }
-            }
-
-            let duration = Duration::from_secs(5);
-            println!("Waiting {} seconds...", duration.as_secs());
-            tokio::time::sleep(duration).await;
+            let valid_delay = Duration::from_secs(10);
+            wait_delay("delay before next update...", valid_delay).await;
         }
-        Err(error) => {
-            println!("{}", error);
-            if let Some(code) = error.status() {
-                println!("Status code for request: {}", code)
+        Err(e) => {
+            eprintln!("Request error - {}", e);
+            if let Some(code) = e.status() {
+                eprintln!("Status code for request: {}", code)
             }
-            let duration = Duration::from_secs(5);
-            println!("Trying again in {} seconds...", duration.as_secs());
-            tokio::time::sleep(duration).await;
+            let err_delay = Duration::from_secs(5);
+            wait_delay("delay before trying again...", err_delay).await;
         }
-    }
+    };
     Ok(())
 }
 
-#[derive(Debug, Serialize, Deserialize)]
-struct ComparableCalendar {
-    source: IcalCalendar,
-    built: Option<String>,
+fn wait_delay(msg: impl Display, duration: Duration) -> Sleep {
+    println!("WAIT {} SECONDS: {}", duration.as_secs(), msg);
+    tokio::time::sleep(duration)
 }
-impl From<IcalCalendar> for ComparableCalendar {
-    fn from(source: IcalCalendar) -> Self {
-        Self {
-            source,
-            built: None,
-        }
-    }
-}
-impl PartialEq for ComparableCalendar {
-    fn eq(&self, other: &Self) -> bool {
-        self.cache_relevant_properties()
-            .eq(other.cache_relevant_properties())
-    }
-}
-impl ComparableCalendar {
-    fn cache_relevant_properties(&self) -> impl Iterator<Item = &Property> {
-        // this seems to do what I want
-        self.flattened_properties().filter(|&property| {
-            !matches!(
-                property.name.as_str(),
-                "DTSTAMP" | "CREATED" | "LAST-MODIFIED"
-            )
-        })
-    }
-    fn flattened_properties(&self) -> impl Iterator<Item = &Property> {
-        self.source
-            .properties
-            .iter()
-            .chain(self.source.events.iter().flat_map(|event| {
-                event.properties.iter().chain(
-                    event
-                        .alarms
-                        .iter()
-                        .flat_map(|alarm| alarm.properties.iter()),
-                )
-            }))
-            .chain(self.source.todos.iter().flat_map(|todo| {
-                todo.properties
-                    .iter()
-                    .chain(todo.alarms.iter().flat_map(|alarm| alarm.properties.iter()))
-            }))
-            .chain(
-                self.source
-                    .alarms
-                    .iter()
-                    .flat_map(|alarm| alarm.properties.iter()),
-            )
-            .chain(
-                self.source
-                    .journals
-                    .iter()
-                    .flat_map(|journal| journal.properties.iter()),
-            )
-    }
-    fn get_built(&mut self) -> String {
-        fn prop_filter(property: &&Property) -> bool {
-            property
-                .value
-                .as_ref()
-                .is_some_and(|s| s.as_str() == "Beregnelighed og logik")
-                && property.name == "SUMMARY"
-        }
 
-        match &self.built {
-            None => {
-                let new = IcalCalendar {
-                    properties: self
-                        .source
-                        .properties
-                        .iter()
-                        .filter(prop_filter)
-                        .cloned()
-                        .collect(),
-                    events: self
-                        .source
-                        .events
-                        .iter()
-                        .map(|&event| event.properties.iter().filter(prop_filter).collect())
-                        .collect(),
-                    alarms: vec![],
-                    todos: vec![],
-                    journals: vec![],
-                    free_busys: vec![],
-                    timezones: vec![],
-                };
-                let built = new.generate();
-                self.built = Some(built.clone());
-                built
+async fn try_update(
+    calendar_handle: &mut Arc<Mutex<Option<ComparableCalendar>>>,
+    success: Response,
+) -> anyhow::Result<()> {
+    let bytes = success.bytes().await?;
+    let new = ComparableCalendar::from(
+        ical::IcalParser::new(&bytes[..])
+            .next()
+            .ok_or_else(|| anyhow::Error::msg("No first IcalCalendar in fetched bytes?"))??,
+    );
+
+    // try to add/change calendar
+    match calendar_handle.lock().unwrap().deref_mut() {
+        // match guard lock may break app(?)
+        Some(prev) if *prev == new => {
+            println!("Newly fetched ical is identical to previous, no changes needed.")
+        }
+        should_change => {
+            match should_change {
+                Some(prev) => {
+                    *prev = new;
+                    println!("Updated calendar: Newly parsed ical was different than previous.");
+                }
+                none_ref @ None => {
+                    *none_ref = Some(new);
+                    println!("Added initial calendar from parsed ical.")
+                }
             }
-            Some(val) => val.clone(),
+            File::create(ICAL_CACHE_PATH)?.write_all(&bytes[..])?;
+            println!(
+                "Wrote changes to file of total size: {} bytes.",
+                bytes.len()
+            )
         }
     }
+    Ok(())
 }
