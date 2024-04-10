@@ -1,16 +1,17 @@
 [package]
-name = "arduino-avrdude"
+name = "arduino-rgb"
 version = "0.1.0"
 authors = ["Mikkel <Mikkel123sej@gmail.com>"]
 edition = "2021"
 license = "MIT OR Apache-2.0"
 
 [[bin]]
-name = "arduino-avrdude"
+name = "arduino-rgb"
 test = false
 bench = false
 
 [dependencies]
+avr-device = "0.5.4"
 panic-halt = "0.2.0"
 ufmt = "0.2.0"
 nb = "1.1"
