@@ -1,0 +1,36 @@
+[package]
+name = "arduino-seven-sequence"
+version = "0.1.0"
+authors = ["Mikkel <Mikkel123sej@gmail.com>"]
+edition = "2021"
+license = "MIT OR Apache-2.0"
+
+[[bin]]
+name = "arduino-seven-sequence"
+test = false
+bench = false
+
+[dependencies]
+avr-device = "0.5.4"
+panic-halt = "0.2.0"
+ufmt = "0.2.0"
+nb = "1.1.0"
+embedded-hal = "1.0.0"
+
+[dependencies.arduino-hal]
+git = "https://github.com/rahix/avr-hal"
+rev = "21342dcace7184f01fdc4e9703b01197bd4b4b4f"
+features = ["arduino-uno"]
+
+# Configure the build for minimal size - AVRs have very little program memory
+[profile.dev]
+panic = "abort"
+lto = true
+opt-level = "s"
+
+[profile.release]
+panic = "abort"
+codegen-units = 1
+debug = true
+lto = true
+opt-level = "s"

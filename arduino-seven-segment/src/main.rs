@@ -1,5 +1,6 @@
 #![no_std]
 #![no_main]
+#![feature(abi_avr_interrupt)]
 
 /*
  * For examples (and inspiration), head to
@@ -13,16 +14,28 @@
 
 use arduino_hal::port::mode::OpenDrain;
 use arduino_hal::port::{Pin, PinOps};
-use core::ops::RangeInclusive;
 use embedded_hal::digital::{OutputPin, PinState};
 
-mod panic;
+mod countdown;
+mod cycle;
+
+pub mod console;
+pub mod millis;
+pub mod panic;
+
+#[arduino_hal::entry]
+fn main() -> ! {
+    let dp = arduino_hal::Peripherals::take().unwrap();
+
+    // cycle::run(pins)
+    countdown::run(dp)
+}
 
 /// Representing a physical seven segment LED display.
 /// For diagram of what the labels mean, see link:
 /// https://components101.com/sites/default/files/component_pin/7-segment-display-pin-diagr_0.png
 /// Different generics are needed because each pin is a different concrete type.
-struct SevenSegment<
+pub struct SevenSegment<
     A: PinOps,
     B: PinOps,
     C: PinOps,
@@ -32,18 +45,18 @@ struct SevenSegment<
     G: PinOps,
     DP: PinOps,
 > {
-    a: Pin<OpenDrain, A>,   // top bar
-    b: Pin<OpenDrain, B>,   // upper right
-    c: Pin<OpenDrain, C>,   // lower right
-    d: Pin<OpenDrain, D>,   // bottom bar
-    e: Pin<OpenDrain, E>,   // lower left
-    f: Pin<OpenDrain, F>,   // upper left
-    g: Pin<OpenDrain, G>,   // middle bar
-    dp: Pin<OpenDrain, DP>, // dot in the bottom right corner
-    display_state: PinState,
+    pub a: Pin<OpenDrain, A>,   // top bar
+    pub b: Pin<OpenDrain, B>,   // upper right
+    pub c: Pin<OpenDrain, C>,   // lower right
+    pub d: Pin<OpenDrain, D>,   // bottom bar
+    pub e: Pin<OpenDrain, E>,   // lower left
+    pub f: Pin<OpenDrain, F>,   // upper left
+    pub g: Pin<OpenDrain, G>,   // middle bar
+    pub dp: Pin<OpenDrain, DP>, // dot in the bottom right corner
+    pub display_state: PinState,
 }
 #[derive(Debug)]
-enum DigitError {
+pub enum DigitError {
     ValueTooBig,
 }
 impl<A: PinOps, B: PinOps, C: PinOps, D: PinOps, E: PinOps, F: PinOps, G: PinOps, DP: PinOps>
@@ -51,7 +64,7 @@ impl<A: PinOps, B: PinOps, C: PinOps, D: PinOps, E: PinOps, F: PinOps, G: PinOps
 {
     /// Sets digit to a specific value.
     /// Does not touch the decimal point (`DP`).
-    fn set_digit(&mut self, num: u8) -> Result<(), DigitError> {
+    pub fn set_digit(&mut self, num: u8) -> Result<(), DigitError> {
         let on = self.display_state;
         let off = !on;
         match num {
@@ -149,41 +162,12 @@ impl<A: PinOps, B: PinOps, C: PinOps, D: PinOps, E: PinOps, F: PinOps, G: PinOps
         }
         Ok(())
     }
-}
-
-#[arduino_hal::entry]
-fn main() -> ! {
-    let dp = arduino_hal::Peripherals::take().unwrap();
-    let pins = arduino_hal::pins!(dp);
-
-    let mut display = SevenSegment {
-        // lowest 4
-        b: pins.d4.into_opendrain(),
-        a: pins.d5.into_opendrain(),
-        f: pins.d6.into_opendrain(),
-        g: pins.d7.into_opendrain(),
-        // highest 4
-        dp: pins.d8.into_opendrain(),
-        c: pins.d9.into_opendrain(),
-        d: pins.d10.into_opendrain(),
-        e: pins.d11.into_opendrain(),
-        // important since we light segments by opening for ground from 5V
-        display_state: PinState::Low,
-    };
-
-    let ff_button = pins.d13.into_opendrain();
-
-    let single_digits: RangeInclusive<u8> = 0..=9;
-    let cycle = single_digits.clone().chain(single_digits.rev()).cycle();
-    // back and forth, repeating the end values an extra time
-    for next in cycle {
-        display.set_digit(next).expect("handles all digits 0..=9");
-        if ff_button.is_high() {
-            arduino_hal::delay_ms(70);
+    pub fn show_decimal(&mut self, state: bool) {
+        let desired = if state {
+            self.display_state
         } else {
-            arduino_hal::delay_ms(250);
-        }
+            !self.display_state
+        };
+        self.dp.set_state(desired).unwrap()
     }
-
-    unreachable!("iterator cycles forever")
 }
