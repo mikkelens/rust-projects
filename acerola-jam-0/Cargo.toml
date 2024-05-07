@@ -23,6 +23,7 @@ inherits = "fast-dependency"
 [profile.debuggable.package."*"]
 inherits = "fast-dependency"
 
+
 [dev-dependencies]
 static_assertions = "1.1"
 

@@ -1,0 +1,34 @@
+[package]
+name = "rp-pico-setup"
+version = "0.1.0"
+edition = "2021"
+
+# memory.x is necessary for the pico board... is it different for pico W? https://github.com/mdarrik/pico-w-blinky-rust/blob/main/memory.x
+
+# dependencies added from https://www.hannobraun.com/getting-started/
+[dependencies]
+cortex-m-rt = "0.7.4" # RP2040 is an Arm Cortex-M0+ microcontroller
+defmt = "0.3.5" # normal rust formatting is too heavyweight for microcontrollers
+defmt-rtt = "0.4.0" # send raw data via RTT, lets us do all the formatting on the logging host (probe-rs does the hosting work)
+
+# custom:
+itertools = { version = "0.12.1", default-features = false } # `use_std` removed
+heapless = "0.8.0"
+
+[dependencies.embassy-executor] # async executor
+git = "https://github.com/embassy-rs/embassy.git"
+rev = "c3ef98a"
+features = ["nightly", "arch-cortex-m", "executor-thread", "integrated-timers"]
+
+[dependencies.embassy-rp] # RP2040 HAL
+git = "https://github.com/embassy-rs/embassy.git"
+rev = "c3ef98a"
+features = ["critical-section-impl", "time-driver"]
+
+[dependencies.embassy-time] # how to deal with time on microcontroller
+git = "https://github.com/embassy-rs/embassy.git"
+rev = "c3ef98a"
+
+[dependencies.panic-probe] # send panic to host using defmt, handle with probe-rs
+version = "0.3.1"
+features = ["print-defmt"]
