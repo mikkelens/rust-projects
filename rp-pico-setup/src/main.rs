@@ -38,6 +38,7 @@ async fn main(_spawner: Spawner) {
             Output::new(peripherals.PIN_12.degrade(), Level::Low),
             Output::new(peripherals.PIN_13.degrade(), Level::Low),
         ],
+
         r: [
             Output::new(peripherals.PIN_21.degrade(), Level::Low),
             Output::new(peripherals.PIN_20.degrade(), Level::Low),

@@ -1,14 +1,19 @@
 [package]
-name = "rp-pico-setup"
+name = "rp-pico-8x8-matrix"
 version = "0.1.0"
 edition = "2021"
 
-
 [[bin]]
-name = "rp-pico-setup"
-test = false # necessary to make editor error ("Can't find crate for `test`") go away
+name = "rp-pico-8x8-matrix"
+test = false # necessary to make editor error (`Can't find crate for test`) go away
 
-# memory.x is necessary for the pico board... is it different for pico W? https://github.com/mdarrik/pico-w-blinky-rust/blob/main/memory.x
+[profile.release]
+opt-level = "s"
+
+[profile.dev]
+opt-level = "s"
+
+# memory.x is necessary for the pico board... is the file different for pico W? https://github.com/mdarrik/pico-w-blinky-rust/blob/main/memory.x
 
 # dependencies added from https://www.hannobraun.com/getting-started/
 [dependencies]
