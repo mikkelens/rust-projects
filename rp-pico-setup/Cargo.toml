@@ -10,14 +10,14 @@ test = false # necessary to make editor error ("Can't find crate for `test`") go
 
 # memory.x is necessary for the pico board... is it different for pico W? https://github.com/mdarrik/pico-w-blinky-rust/blob/main/memory.x
 
-# dependencies added from https://www.hannobraun.com/getting-started/
+# dependencies from https://www.hannobraun.com/getting-started/
 [dependencies]
-cortex-m-rt = "0.7.4" # RP2040 is an Arm Cortex-M0+ microcontroller
+cortex-m-rt = "0.7" # RP2040 is an Arm Cortex-M0+ microcontroller. 0.7.4 was yanked
 defmt = "0.3.5" # normal rust formatting is too heavyweight for microcontrollers
 defmt-rtt = "0.4.0" # send raw data via RTT, lets us do all the formatting on the logging host (probe-rs does the hosting work)
 
-# custom:
-itertools = { version = "0.12.1", default-features = false } # `use_std` removed
+# custom/additional:
+itertools = { version = "0.13.0", default-features = false } # `use_std` default feature removed
 heapless = "0.8.0"
 
 [dependencies.embassy-executor] # async executor

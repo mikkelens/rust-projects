@@ -1,103 +1,79 @@
 #![no_std]
 #![no_main]
 #![feature(type_alias_impl_trait)]
+#![feature(iter_repeat_n)]
 
 use embassy_executor::Spawner;
-use embassy_rp::gpio::{AnyPin, Level, Output, Pin};
+use embassy_rp::{
+	pwm,
+	pwm::{Channel, Pwm},
+	Peripheral
+};
 use embassy_time::{Duration, Timer};
-use itertools::Itertools;
-
 // necessary to be able to build: rtt for linking and required panic handler...
 #[allow(unused_imports)] // ...even though we don't use anything from them
 use {defmt_rtt as _, panic_probe as _};
 
 #[embassy_executor::main]
 async fn main(_spawner: Spawner) {
-    defmt::info!("Initializing...");
-    let peripherals = embassy_rp::init(Default::default());
+	defmt::info!("Initializing...");
+	let mut peripherals = embassy_rp::init(Default::default());
 
-    let mut display = MatrixDisplay {
-        // first two pins (0-1) are for debugging (start at PIN-2), and pins 23-25 do not exist (skip) on pico-W
-        v: [
-            Output::new(peripherals.PIN_28.degrade(), Level::High),
-            Output::new(peripherals.PIN_27.degrade(), Level::High),
-            Output::new(peripherals.PIN_26.degrade(), Level::High),
-            Output::new(peripherals.PIN_22.degrade(), Level::High),
-            Output::new(peripherals.PIN_5.degrade(), Level::High), // wraps around
-            Output::new(peripherals.PIN_4.degrade(), Level::High),
-            Output::new(peripherals.PIN_3.degrade(), Level::High),
-            Output::new(peripherals.PIN_2.degrade(), Level::High),
-        ],
-        g: [
-            Output::new(peripherals.PIN_6.degrade(), Level::Low),
-            Output::new(peripherals.PIN_7.degrade(), Level::Low),
-            Output::new(peripherals.PIN_8.degrade(), Level::Low),
-            Output::new(peripherals.PIN_9.degrade(), Level::Low),
-            Output::new(peripherals.PIN_10.degrade(), Level::Low),
-            Output::new(peripherals.PIN_11.degrade(), Level::Low),
-            Output::new(peripherals.PIN_12.degrade(), Level::Low),
-            Output::new(peripherals.PIN_13.degrade(), Level::Low),
-        ],
+	let mut config: pwm::Config = Default::default();
+	config.top = u16::MAX / 2;
+	config.compare_a = 8;
 
-        r: [
-            Output::new(peripherals.PIN_21.degrade(), Level::Low),
-            Output::new(peripherals.PIN_20.degrade(), Level::Low),
-            Output::new(peripherals.PIN_19.degrade(), Level::Low),
-            Output::new(peripherals.PIN_18.degrade(), Level::Low),
-            Output::new(peripherals.PIN_17.degrade(), Level::Low),
-            Output::new(peripherals.PIN_16.degrade(), Level::Low),
-            Output::new(peripherals.PIN_15.degrade(), Level::Low),
-            Output::new(peripherals.PIN_14.degrade(), Level::Low),
-        ],
-    };
+	let mut led = RGBLed {
+		r: Pwm::new_output_a(
+			unsafe { peripherals.PWM_CH1.clone_unchecked() },
+			peripherals.PIN_18,
+			config.clone()
+		),
+		g: Pwm::new_output_b(peripherals.PWM_CH1, peripherals.PIN_19, config.clone()),
+		b: Pwm::new_output_a(peripherals.PWM_CH2, peripherals.PIN_20, config.clone())
+	};
+	defmt::info!("Initialized.");
 
-    defmt::info!("Initialized.");
-
-    display.try_different_pins().await;
-    // loop {}
-    unreachable!("cyclic iter")
+	led.cycle_counter().await;
+	unreachable!("cyclic iter")
 }
 
-struct MatrixDisplay<'d> {
-    // common anode/VCC
-    v: [Output<'d, AnyPin>; 8],
-    // green
-    g: [Output<'d, AnyPin>; 8],
-    // red
-    r: [Output<'d, AnyPin>; 8],
-}
+const PWM_MAX: u16 = u16::MAX / 2;
 
-impl<'d> MatrixDisplay<'d> {
-    async fn try_different_pins(&mut self) {
-        let fmt = |lvl| if lvl == Level::High { "HIGH" } else { "LOW" };
-        let wait = Duration::from_millis(50);
-        let pin_id_range = 0..8;
-        // all (2^2) combinations of turned on/off
-        for (r_level, g_level) in [
-            (Level::Low, Level::High),
-            (Level::High, Level::Low),
-            (Level::Low, Level::Low),
-            (Level::High, Level::High),
-        ]
-        .into_iter()
-        .cycle()
-        {
-            defmt::info!(
-                "Trying combinations of r={} and g={}",
-                fmt(r_level),
-                fmt(g_level)
-            );
-            // all (8^2) combinations of id-s
-            for (r, g) in pin_id_range.clone().tuple_combinations() {
-                let prev_r = self.r[r].get_output_level();
-                let prev_g = self.g[g].get_output_level();
-                self.r[r].set_level(r_level);
-                self.g[g].set_level(g_level);
-                Timer::after(wait).await;
-                self.r[r].set_level(prev_r);
-                self.g[g].set_level(prev_g);
-            }
-            Timer::after(wait * 3).await;
-        }
-    }
+struct RGBLed<'d, R: Channel, G: Channel, B: Channel> {
+	r: Pwm<'d, R>,
+	g: Pwm<'d, G>,
+	b: Pwm<'d, B>
+}
+impl<'d, R: Channel, G: Channel, B: Channel> RGBLed<'d, R, G, B> {
+	fn set_counter_max(&mut self) {
+		self.r.set_counter(PWM_MAX);
+		self.g.set_counter(PWM_MAX);
+		self.b.set_counter(PWM_MAX);
+	}
+
+	#[allow(unused)]
+	async fn cycle_counter(&mut self) {
+		let up_fade = 0..=PWM_MAX;
+		let r_iter = up_fade
+			.clone()
+			.chain(core::iter::repeat_n(*up_fade.end(), up_fade.len()))
+			.chain(up_fade.clone().rev())
+			.chain(core::iter::repeat_n(*up_fade.start(), up_fade.len()));
+		let g_iter = r_iter.clone().skip(up_fade.len());
+		let b_iter = g_iter.clone().skip(up_fade.len());
+		for (r_lvl, (g_lvl, b_lvl)) in r_iter.zip(g_iter.zip(b_iter)).cycle().step_by(50) {
+			todo!("figure out how to change config from within here properly");
+			// let r_config = self.r.config;
+			// self.r.set_config(r_lvl);
+			defmt::info!("r_count = {}", r_lvl);
+			// let g_config = self.g.config;
+			// self.g.set_config(g_lvl);
+			defmt::info!("g_count = {}", g_lvl);
+			// let b_config = self.b.config;
+			// self.b.set_config(b_lvl);
+			defmt::info!("b_count = {}", b_lvl);
+			Timer::after(Duration::from_millis(5)).await
+		}
+	}
 }
