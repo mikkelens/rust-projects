@@ -19,6 +19,7 @@ defmt-rtt = "0.4.0" # send raw data via RTT, lets us do all the formatting on th
 # custom/additional:
 itertools = { version = "0.13.0", default-features = false } # `use_std` default feature removed
 heapless = "0.8.0"
+cordic = "0.1.5"
 
 [dependencies.embassy-executor] # async executor
 git = "https://github.com/embassy-rs/embassy.git"
