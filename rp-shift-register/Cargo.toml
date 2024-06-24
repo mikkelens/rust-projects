@@ -21,11 +21,12 @@ defmt-rtt = "0.4" # send raw data via RTT, lets us do all the formatting on the 
 # custom/additional:
 itertools = { version = "0.13.0", default-features = false } # `use_std` default feature removed
 heapless = "0.8.0"
+bitvec = { version = "1.0.1", default-features = false }
 fixed = "1.27.0"
 fixed_trigonometry = "0.4.3"
-#cordic = "0.1.5"
 embedded-alloc = "0.5.1"
 micromath = "2.1.0"
+either = { version = "1.12.0", default-features = false }
 
 [dependencies.embassy-executor] # async executor
 git = "https://github.com/embassy-rs/embassy.git"
