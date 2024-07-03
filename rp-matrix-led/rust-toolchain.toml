@@ -1,0 +1,4 @@
+# from https://www.hannobraun.com/getting-started/
+[toolchain]
+channel = "nightly-2024-06-12"
+targets = ["thumbv6m-none-eabi"]

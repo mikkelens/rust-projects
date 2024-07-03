@@ -75,6 +75,8 @@ async fn main(spawner: Spawner) {
         .spawn(cycle_numbers_cathode(shift_register))
         .unwrap();
 
+    // todo: implement some rudimentary wire(less?) communications (e.g. remote start, value editing/reset?)
+
     //    let mut config = Config::default();
     //    config.phase_correct = true;
     //    //    config.divider = 10u16.to_fixed();

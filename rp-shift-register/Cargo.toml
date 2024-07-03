@@ -1,14 +1,28 @@
 [package]
-name = "rp-pico-setup"
+name = "rp-shift-register"
 version = "0.1.0"
 edition = "2021"
 
 [[bin]]
-name = "rp-pico-setup"
+name = "rp-shift-register"
 test = false # necessary to make editor error ("Can't find crate for `test`") go away
 
 [profile.dev]
+debug = 2
+opt-level = "s"  # could also be "z"
+
+[profile.dev.package."*"]
+inherits = "dev-dependency"
+debug = 2
 opt-level = "s"
+
+[profile.release]
+debug = false
+strip = true
+lto = true
+opt-level = "s"
+rpath = false        # unsure
+codegen-units = 1    # maybe unnecessary
 
 # memory.x is necessary for the pico board... is it different for pico W? https://github.com/mdarrik/pico-w-blinky-rust/blob/main/memory.x
 
@@ -19,29 +33,32 @@ defmt = "0.3" # normal rust formatting is too heavyweight for microcontrollers
 defmt-rtt = "0.4" # send raw data via RTT, lets us do all the formatting on the logging host (probe-rs does the hosting work)
 
 # custom/additional:
-itertools = { version = "0.13.0", default-features = false } # `use_std` default feature removed
-heapless = "0.8.0"
-bitvec = { version = "1.0.1", default-features = false }
-fixed = "1.27.0"
-fixed_trigonometry = "0.4.3"
-embedded-alloc = "0.5.1"
-micromath = "2.1.0"
-either = { version = "1.12.0", default-features = false }
+itertools = { version = "0.13", default-features = false } # `use_std` default feature removed
+heapless = "0.8"
+bitvec = { version = "1.0", default-features = false }
+fixed = "1.27"
+fixed_trigonometry = "0.4"
+embedded-alloc = "0.5"
+micromath = "2.1"
+either = { version = "1.12", default-features = false }
 
 [dependencies.embassy-executor] # async executor
-git = "https://github.com/embassy-rs/embassy.git"
-rev = "c3ef98a"
+version = "0.5"
+#git = "https://github.com/embassy-rs/embassy.git"
+#rev = "c3ef98a" # some 0.3.0
 features = ["nightly", "arch-cortex-m", "executor-thread", "integrated-timers"]
 
 [dependencies.embassy-rp] # RP2040 HAL
-git = "https://github.com/embassy-rs/embassy.git"
-rev = "c3ef98a"
+version = "0.1"
+#git = "https://github.com/embassy-rs/embassy.git"
+#rev = "c3ef98a" # some 0.1.0
 features = ["critical-section-impl", "time-driver"]
 
 [dependencies.embassy-time] # how to deal with time on microcontroller
-git = "https://github.com/embassy-rs/embassy.git"
-rev = "c3ef98a"
+version = "0.3"
+#git = "https://github.com/embassy-rs/embassy.git"
+#rev = "c3ef98a" # some 0.1.4?
 
 [dependencies.panic-probe] # send panic to host using defmt, handle with probe-rs
-version = "0.3.1"
+version = "0.3"
 features = ["print-defmt"]

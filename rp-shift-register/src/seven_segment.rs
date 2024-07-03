@@ -149,35 +149,37 @@ where
         loop {
             // go up
             defmt::info!("Increasing...");
-            self.spin_animate::<FRAMES>(&a_pattern, false, Off, acceleration, spin_wait)
-                .await;
             let mut count_up_ticker = Ticker::every(segment_display_time);
             for (i, &up) in single_digit_segments.iter().enumerate() {
                 self.display_segments(&SegmentsWithDot(up, (i >= 5).into()));
                 count_up_ticker.next().await;
             }
+            
             // reached up
+            defmt::info!("Waiting TOP...");
             self.spin_animate::<FRAMES>(&a_pattern, false, On, deceleration, spin_wait)
                 .await;
-            defmt::info!("Waiting TOP...");
             self.display_segments(&SegmentsWithDot(Segments::ONLY_G, On));
             Timer::after(wait).await;
+            self.spin_animate::<FRAMES>(&a_pattern, true, On, acceleration, spin_wait)
+                .await;
 
             // go down
             defmt::info!("Decreasing...");
-            self.spin_animate::<FRAMES>(&a_pattern, true, On, acceleration, spin_wait)
-                .await;
             let mut count_down_ticker = Ticker::every(segment_display_time);
             for (i, &down) in single_digit_segments.iter().enumerate().rev() {
                 self.display_segments(&SegmentsWithDot(down, (i >= 5).into()));
                 count_down_ticker.next().await;
             }
+            
             // reached down
+            defmt::info!("Waiting BOT...");
             self.spin_animate::<FRAMES>(&a_pattern, true, Off, deceleration, spin_wait)
                 .await;
-            defmt::info!("Waiting BOT...");
             self.display_segments(&SegmentsWithDot(Segments::ONLY_G, Off));
             Timer::after(wait).await;
+            self.spin_animate::<FRAMES>(&a_pattern, false, Off, acceleration, spin_wait)
+                .await;
         }
     }
     /// Animate a loop from display pin A to F (not including G which is the middle).
