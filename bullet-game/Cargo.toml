@@ -16,12 +16,13 @@ opt-level = 1
 debug = 1
 
 [profile.dev.package."*"] # might as well have max optimization for dependencies since they will only be compiled once
-inherits = "optimized"
+inherits = "fast-dependency"
 #opt-level = 3 # already specified in inherited profile(s)
 
 # this is how optimized the build scripts should be.
 # build scripts often don't do a lot of heavy work, so the act of building them might as well be as fast as possible.
-#[profile.dev.build-override]
+[profile.dev.build-override]
+inherits = "fast-dependency"
 #opt-level = 0 # already the default
 
 [dependencies]

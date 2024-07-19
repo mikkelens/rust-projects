@@ -1,0 +1,19 @@
+# via https://github.com/bevyengine/bevy/blob/latest/.cargo/config_fast_builds.toml
+[target.x86_64-pc-windows-msvc] # should maybe specify target instead of general build?
+#linker = "link.exe"
+linker = "rust-lld.exe" # assume existing? (NOTICE: did not work)
+rustflags = ["-Zshare-generics=n"] # faster compilation and less generic size? NOTE: shared generics breaks with bevy!
+# ^ above may be moved to a specific package only
+
+# NOTE: This doesn't work correctly on Windows.
+## cranelift codegen backend (for much faster codegen)
+# via https://bevyengine.org/learn/quick-start/getting-started/setup/#enable-fast-compiles-optional
+#   & https://github.com/rust-lang/rustc_codegen_cranelift
+# TL;DR: this requires `cargo-clif` (& more?) installed to path on the computer.
+#[unstable]
+#codegen-backend = true
+#[profile.dev.package."*"]
+#codegen-backend = "cranelift"
+## renable llvm for all packages
+#[profile.dev.package."*"]
+#codegen-backend = "llvm"

@@ -1,0 +1,162 @@
+# via https://github.com/rust-lang/rustc_codegen_cranelift
+# This line needs to come before anything else in Cargo.toml
+cargo-features = ["profile-rustflags", "codegen-backend"] # unstable feature
+
+[package]
+name = "gizmo-jam"
+version = "0.1.0"
+edition = "2021"
+
+# profiles etc inspired by:
+# https://bevyengine.org/learn/quick-start/getting-started/setup/#compile-with-performance-optimizations
+
+[profile.dev.package."gizmo-jam"]
+#panic = "unwind"
+opt-level = 1 # should make linking faster (despite giving slightly longer compile times)
+#codegen-backend = "cranelift"
+# notice that panic strategy is unspecified (just like in ~/.cargo/config.toml?)
+# TEMPORARY:
+#opt-level = 0 # faster complete rebuild times (unfortunately necessary rn?)
+debug = "none" # 1, may be needed for bevy dynamic linking? maybe 2? unsure
+strip = "symbols"
+
+[profile.fast-dependency] # idk if I true inheriting, it doesn't look right in `cargo build -v` output
+inherits = "release"
+codegen-backend = "llvm" # idk if this is being applied correctly
+debug-assertions = true
+overflow-checks = true
+#strip = "symbols"
+
+[profile.dev.package."*"]
+inherits = "fast-dependency"
+opt-level = 3
+#strip = "symbols"
+
+[profile.dev.package."bevy_dylib"]
+inherits = "fast-dependency"
+opt-level = 3
+#rustflags = ["-Zshare-generics=n"] # maybe necessary fix?
+#debug = "limited" # may have to be limited
+#strip = "symbols" # maybe should be removed?
+
+[profile.dev.build-override]
+inherits = "fast-dependency"
+opt-level = 3 # compiler only seems to care if its put here
+#strip = "symbols"
+
+[profile.release]
+debug = "none"
+strip = "debuginfo"
+lto = true
+#opt-level = 3
+
+# WASM also mentioned: https://bevyengine.org/learn/quick-start/getting-started/setup/#compile-with-performance-optimizations
+[profile.wasm-release]
+inherits = "release"
+opt-level = "s"
+strip = "debuginfo"
+lto = true
+#panic = "unwind" # ???
+
+
+
+[dependencies]
+bevy = { version = "0.14", default-features = false, features = [
+    # These are the default features:
+    # (re-enable whichever you like)
+    
+    # Bevy functionality:
+    #RENAMED (underscore):
+    "multi_threaded", # Run with multithreading
+    "bevy_asset", # Assets management
+    "bevy_audio", # Builtin audio
+    "bevy_gilrs", # Gamepad input support
+    "bevy_scene", # Scenes management
+    "bevy_winit", # Window management (cross-platform Winit backend)
+    "bevy_render", # Rendering framework core
+    "bevy_color",
+    "bevy_core_pipeline", # Common rendering abstractions
+    "bevy_gizmos", # Support drawing debug lines and shapes
+    "bevy_sprite", # 2D (sprites) rendering
+    #    "bevy_pbr", # 3D (physically-based) rendering
+    "bevy_gltf", # GLTF 3D assets format support
+    "bevy_text", # Text/font rendering
+    "bevy_ui", # UI toolkit
+    #    "animation", # Animation support
+    #    "tonemapping_luts", # Support different camera Tonemapping modes (enables KTX2+zstd)
+    "default_font", # Embed a minimal default font for text/UI
+    
+    # File formats:
+    "png", # PNG image format for simple 2D images
+    "hdr", # HDR images
+    #    "ktx2", # Preferred format for GPU textures
+    #    "zstd", # ZSTD compression support in KTX2 files
+    "vorbis", # Audio: OGG Vorbis
+    
+    # Platform-specific:
+    #    "x11", # Linux: Support X11 windowing system
+    #    "android_shared_stdcxx", # Android: use shared C++ library
+    "webgl2", # Web: use WebGL2 instead of WebGPU
+    #POSSIBLE ADD:
+    #    "webgpu", # Enable support for WebGPU in Wasm. When enabled, this feature will override the webgl2 feature and you won’t be able to run Wasm builds with WebGL2, only with WebGPU.
+    
+    # These are other (non-default) features that may be of interest:
+    # (add any of these that you need)
+    
+    # Bevy functionality:
+    "asset_processor", # Asset processing
+    #DEPRECATED: "filesystem_watcher", # Asset hot-reloading
+    #ADDED:
+    "file_watcher", # Enable animation support, and glTF animation loading
+    #ADDED:
+    "embedded_watcher", # Enables watching in memory asset providers for Bevy Asset hot-reloading
+    #ADDED:
+    "glam_assert", # Enable assertions to check the validity of parameters passed to glam
+    "debug_glam_assert", # Enable assertions in debug builds to check the validity of parameters passed to glam
+    #    "subpixel_glyph_atlas", # Subpixel antialiasing for text/fonts
+    "serialize", # Support for `serde` Serialize/Deserialize
+    #    "async-io", # Make bevy use `async-io` instead of `futures-lite`
+    #    "pbr_transmission_textures", # Enable Transmission textures in PBR materials
+    # (may cause issues on old/lowend GPUs)
+    
+    # File formats:
+    #    "dds", # Alternative DirectX format for GPU textures, instead of KTX2
+    "jpeg", # JPEG lossy format for 2D photos
+    "webp", # WebP image format
+    "bmp", # Uncompressed BMP image format
+    #    "tga", # Truevision Targa image format
+    #    "exr", # OpenEXR advanced image format
+    #    "pnm", # PNM (pam, pbm, pgm, ppm) image format
+    #    "basis-universal", # Basis Universal GPU texture compression format
+    #    "zlib", # zlib compression support in KTX2 files
+    "flac", # Audio: FLAC lossless format
+    "mp3", # Audio: MP3 format (not recommended)
+    "wav", # Audio: Uncompressed WAV
+    #    "symphonia-all", # All Audio formats supported by the Symphonia library
+    "shader_format_glsl", # GLSL shader support
+    "shader_format_spirv", # SPIR-V shader support
+    
+    # Platform-specific:
+    #    "wayland", # (Linux) Support Wayland windowing system
+    #    "accesskit_unix", # (Unix-like) AccessKit integration for UI Accessibility
+    "bevy_dynamic_plugin", # (Desktop) support for loading of `DynamicPlugin`s
+    
+    # Development/Debug features:
+    #FEATURE-GATED: "dynamic_linking", # Dynamic linking for faster compile-times
+    #    "trace", # Enable tracing for performance measurement
+    #    "detailed_trace", # Make traces more verbose
+    #    "trace_tracy", # Tracing using `tracy`
+    #    "trace_tracy_memory", # + memory profiling
+    #    "trace_chrome", # Tracing using the Chrome format
+    #    "wgpu_trace", # WGPU/rendering tracing
+    #    "debug_glam_assert", # Assertions to validate math (glam) usage
+    #    "embedded_watcher", # Hot-reloading for Bevy's internal/builtin assets
+    #ADDED:
+    "bevy_dev_tools", # Provides a collection of developer tools
+] }
+#const-assert = "1.0"
+#itertools = "0.13"
+
+[features]
+# `cargo run` with `--no-default-features` for release
+default = ["bevy/dynamic_linking"] # for dev

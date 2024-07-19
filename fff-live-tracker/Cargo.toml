@@ -1,7 +1,12 @@
+cargo-features = ["codegen-backend"]
+
 [package]
 name = "fff-live-tracker"
 version = "0.1.0"
 edition = "2021"
+
+[profile.dev]
+codegen-backend = '''C:\Users\mikke\Downloads\cg_clif-x86_64-pc-windows-msvc\bin\rustc_codegen_cranelift.dll'''
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
