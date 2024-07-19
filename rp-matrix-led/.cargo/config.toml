@@ -1,0 +1,14 @@
+# from https://www.hannobraun.com/getting-started/
+[build]
+# Compile for thumbv6m-none-eabi, which is the correct target for the RP2040
+target = "thumbv6m-none-eabi"
+
+[target.thumbv6m-none-eabi]
+# Use probe-rs when we call cargo run, instead of trying to run the binary on the host computer
+runner = "probe-rs run --chip=RP2040"
+# Include some linker scripts (link.x, link-rp.x, defmt.x), necessary for microcontrollers
+rustflags = ["-C", "link-args=-Tlink.x -Tlink-rp.x -Tdefmt.x"]
+
+[env]
+# Configure a thing called "defmt"
+DEFMT_LOG = "debug"

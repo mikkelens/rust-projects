@@ -1,0 +1,49 @@
+[package]
+name = "rp-matrix-led"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "rp-matrix-led"
+test = false
+
+# profile
+
+[profile.dev]
+debug = 2
+opt-level = "s"
+
+[profile.dev.package."*"]
+inherits = "dev-dependency"
+debug = 2
+opt-level = "s"
+
+[profile.release]
+debug = false
+strip = true
+lto = true
+opt-level = "s"
+rpath = false        # unsure
+codegen-units = 1    # maybe unnecessary
+
+# dependencies, originally taken from rp-shift-register project
+
+[dependencies]
+# core
+cortex-m-rt = "0.7"
+defmt = "0.3"
+defmt-rtt = "0.4"
+panic-probe = { version = "0.3", features = ["print-defmt"] }
+# embassy
+embassy-executor = { version = "0.5", features = ["nightly", "arch-cortex-m", "executor-thread", "integrated-timers"] }
+embassy-rp = { version = "0.1", features = ["critical-section-impl", "time-driver"] }
+embassy-time = "0.3"
+# tools
+itertools = { version = "0.13", default-features = false }
+heapless = "0.8"
+bitvec = { version = "1.0", default-features = false }
+fixed = "1.27"
+fixed_trigonometry = "0.4"
+embedded-alloc = "0.5"
+micromath = "2.1"
+####either = { version = "1.12", default-features = false }
