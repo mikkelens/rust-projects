@@ -86,56 +86,46 @@ use embassy_rp::gpio::{AnyPin, Level, Output};
 #[allow(non_snake_case)]
 pub(crate) struct SerialOutput<'d> {
     pub SER: Output<'d, AnyPin>,
-    pub SRCLK: Output<'d, AnyPin>,
+    pub SRCLK: Output<'d, AnyPin>, // assumed to be low until triggered
 }
-/// Single Input, Parallel Output
-trait Sipo {
-    fn push_bit(&mut self, level: Level);
-}
-impl<'d> Sipo for SerialOutput<'d> {
+impl<'d> SerialOutput<'d> {
     fn push_bit(&mut self, level: Level) {
-        // order unsure
         self.SRCLK.set_low();
         self.SER.set_level(level);
         self.SRCLK.set_high();
         self.SRCLK.set_low();
     }
 }
-trait WriteSingle: Sipo {
-    fn write_next(&mut self, level: Level) {
-        self.push_bit(level); // non-latched
+#[allow(non_snake_case)]
+pub(crate) struct ShiftRegister<'d, const LEN: usize> {
+    pub(crate) data: SerialOutput<'d>,
+    pub(crate) RCLK: Output<'d, AnyPin>, // assumed to be low until triggered
+}
+impl<'d, const LEN: usize> ShiftRegister<'d, LEN> {
+    /// Push a bit to the internal shift register, no
+    pub(crate) fn push_bit_no_latch(&mut self, level: Level) {
+        self.data.push_bit(level);
     }
-}
-impl<'d> WriteSingle for SerialOutput<'d> {}
-trait WriteFull<const LEN: usize>: Sipo {
-    fn write_full(&mut self, levels: [Level; LEN]) {
-        for level in levels {
-            self.push_bit(level);
-        }
+    /// Update output ("storage") of shift register
+    pub(crate) fn latch(&mut self) {
+        self.RCLK.set_low();
+        self.RCLK.set_high();
+        self.RCLK.set_low();
     }
-}
-impl<'d, const LEN: usize> WriteFull<LEN> for SerialOutput<'d> {}
-
-/// Latched write implementation
-trait Latched {
-    fn latch(&mut self);
-}
-impl<T: Sipo + Latched> WriteSingle for T {
-    fn write_next(&mut self, level: Level) {
-        self.push_bit(level);
+    pub(crate) fn write_bit(&mut self, level: Level) {
+        self.data.push_bit(level);
         self.latch();
     }
-}
-impl<T: Sipo + Latched, const LEN: usize> WriteFull<LEN> for T {
-    fn write_full(&mut self, levels: [Level; LEN]) {
+    pub(crate) fn write_arbitrary(&mut self, levels: &[Level]) {
+        for &level in levels {
+            self.data.push_bit(level);
+        }
+        self.latch()
+    }
+    pub(crate) fn write_full(&mut self, levels: [Level; LEN]) {
         for level in levels {
-            self.push_bit(level);
+            self.data.push_bit(level);
         }
         self.latch();
     }
-}
-
-// The ability to turn something on/off
-trait Toggleable {
-    fn toggle(&mut self);
 }
