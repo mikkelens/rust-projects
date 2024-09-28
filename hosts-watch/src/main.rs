@@ -1,5 +1,8 @@
 #![feature(assert_matches)]
 
+use itertools::Itertools;
+use std::collections::HashMap;
+use std::path::PathBuf;
 use std::{
     collections::HashSet,
     fmt::{Display, Formatter},
@@ -13,12 +16,39 @@ use url::Host;
 // note: it might be possible to look for a network signal instead of continuously looking for
 // changes
 const DEFAULT_URL: &str = "https://hackeve.haaukins.dk/hosts";
+const WINDOWS_HOST_FILE_LOCATION: &str = "C:\\Windows\\System32\\drivers\\etc\\hosts";
 const MIN_WAIT_MS: u64 = 50;
 const MID_WAIT_MS: u64 = MIN_WAIT_MS * 2_u64.pow(6);
 const MAX_WAIT_MS: u64 = MIN_WAIT_MS * 2_u64.pow(8);
 
 const DEFAULT_TARGET_PATTERN_BEGIN: &str = "/// ctf_top ///";
 const DEFAULT_TARGET_PATTERN_END: &str = "/// ctf_bottom ///";
+
+#[derive(Debug)]
+struct Config {
+    url: url::Url,
+    host_file_path: PathBuf,
+}
+impl Config {
+    fn parse_from_args() -> Self {
+        let mut flag_map = HashMap::new();
+        for (flag, new_value) in std::env::args().tuples() {
+            match flag.split_once("--") {
+                Some((empty, key)) if empty.is_empty() => {
+                    let prev = flag_map.insert(key, new_value.clone());
+                    if let Some(prev_value) = prev {
+                        eprintln!("Flag '{}' already had a value of '{}', replacing with ", flag,
+                                  prev_value)
+                    }
+                }
+                _ => eprintln!("Could not parse flag '{}'", flag),
+            }
+        }
+
+        todo!()
+    }
+}
+
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
     println!("Welcome to hosts-watch.\nParams:");
@@ -36,13 +66,13 @@ async fn main() -> std::io::Result<()> {
             let entries: HostFileEntries = scraper::Html::parse_fragment(&s).into();
             if entries.0.is_empty() {
                 println!(
-                    "Could not find any entries at the domain ({}).",
+                    "Could not find any entries at the page/url '{}'.",
                     DEFAULT_URL
                 );
                 ms_to_wait = u64::max(ms_to_wait * 2, MAX_WAIT_MS);
                 println!("Doubling wait time...");
             } else {
-                let mut file = std::fs::File::open("C:\\Windows\\System32\\drivers\\etc\\hosts")?;
+                let mut file = std::fs::File::open(WINDOWS_HOST_FILE_LOCATION)?;
                 let mut reader_lines = BufReader::new(&file).lines().map(|l| l.unwrap());
                 let mut other_content = (&mut reader_lines)
                     .take_while(|l| l != DEFAULT_TARGET_PATTERN_BEGIN)
@@ -201,7 +231,7 @@ mod tests {
         use std::assert_matches::assert_matches;
 
         #[test]
-        fn conversion_works() {
+        fn parsing_works() {
             let ips = [
                 ("192.168.1.255", [192, 168, 1, 255]),
                 ("192.168.1.23", [192, 168, 1, 23]),
@@ -223,7 +253,7 @@ mod tests {
         }
 
         #[test]
-        fn parse_fails() {
+        fn parsing_fails() {
             assert_matches!(
                 "192.168.255".parse::<IPv4>(),
                 Err(IPv4ParseErr::IncorrectLength)
@@ -241,7 +271,7 @@ mod tests {
         use std::assert_matches::assert_matches;
         use url::Host;
         #[test]
-        fn works() {
+        fn parsing_works() {
             let string = "192.168.1.255 test.haaukins.hkn";
             let entry = Entry(
                 IPv4([192, 168, 1, 255]),
@@ -251,7 +281,7 @@ mod tests {
             assert_eq!(string.parse(), Ok(entry));
         }
         #[test]
-        fn fails() {
+        fn parsing_fails() {
             assert_eq!(
                 "192.168.1.255test.haaukins.hkn".parse::<Entry>(),
                 Err(EntryParseErr::SplitError)
