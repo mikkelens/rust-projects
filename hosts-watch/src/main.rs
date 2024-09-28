@@ -1,25 +1,113 @@
-use std::str::FromStr;
-use std::time::Duration;
+#![feature(assert_matches)]
 
-// note: it might be possible to look for a signal instead of naively continuously looking for
+use std::{
+    collections::HashSet,
+    fmt::{Display, Formatter},
+    io::{BufRead, BufReader, Write},
+    str::FromStr,
+    time::Duration,
+};
+use tokio::{self, io::AsyncBufReadExt};
+use url::Host;
+
+// note: it might be possible to look for a network signal instead of continuously looking for
 // changes
-fn main() {
-    let mut seconds_to_wait_for = 1;
+const DEFAULT_URL: &str = "https://hackeve.haaukins.dk/hosts";
+const MIN_WAIT_MS: u64 = 50;
+const MID_WAIT_MS: u64 = MIN_WAIT_MS * 2_u64.pow(6);
+const MAX_WAIT_MS: u64 = MIN_WAIT_MS * 2_u64.pow(8);
+
+const DEFAULT_TARGET_PATTERN_BEGIN: &str = "/// ctf_top ///";
+const DEFAULT_TARGET_PATTERN_END: &str = "/// ctf_bottom ///";
+#[tokio::main]
+async fn main() -> std::io::Result<()> {
+    println!("Welcome to hosts-watch.\nParams:");
+    println!("* Target URL: '{}'...", DEFAULT_URL);
+    println!("* Target begin: '{}'", DEFAULT_TARGET_PATTERN_BEGIN);
+    println!("* Target end: '{}'", DEFAULT_TARGET_PATTERN_END);
+    let mut ms_to_wait = MIN_WAIT_MS;
     loop {
-        let html = reqwest::blocking::get("https://hackeve.haaukins.dk/hosts");
+        let html = reqwest::get(DEFAULT_URL).await;
         if let Ok(response) = html {
-            seconds_to_wait_for = 1;
-            let s = response.text().unwrap();
+            let s = response
+                .text()
+                .await
+                .expect("idk why a response wouldn't have text here");
             let entries: HostFileEntries = scraper::Html::parse_fragment(&s).into();
-            // todo: manipulate hosts file
+            if entries.0.is_empty() {
+                println!(
+                    "Could not find any entries at the domain ({}).",
+                    DEFAULT_URL
+                );
+                ms_to_wait = u64::max(ms_to_wait * 2, MAX_WAIT_MS);
+                println!("Doubling wait time...");
+            } else {
+                let mut file = std::fs::File::open("C:\\Windows\\System32\\drivers\\etc\\hosts")?;
+                let mut reader_lines = BufReader::new(&file).lines().map(|l| l.unwrap());
+                let mut other_content = (&mut reader_lines)
+                    .take_while(|l| l != DEFAULT_TARGET_PATTERN_BEGIN)
+                    .collect::<HashSet<_>>();
+                let prev_entries = HostFileEntries(
+                    (&mut reader_lines)
+                        .take_while(|l| l != DEFAULT_TARGET_PATTERN_END)
+                        .filter_map(|l| l.parse::<Entry>().ok())
+                        .collect(),
+                );
+                other_content.extend(reader_lines);
+
+                if entries != prev_entries {
+                    ms_to_wait = MIN_WAIT_MS; // reset
+                    other_content.extend(entries.0.iter().map(|entry| entry.to_string()));
+                    file.write(
+                        other_content
+                            .into_iter()
+                            .collect::<Vec<_>>()
+                            .join("\n")
+                            .as_bytes(),
+                    )?;
+                    println!("Updated hosts file:");
+                    for entry in entries.0.difference(&prev_entries.0) {
+                        println!("+ '{}'", entry);
+                    }
+                } else {
+                    ms_to_wait = MID_WAIT_MS;
+                    println!("No difference between last check.");
+                }
+            }
+        } else {
+            ms_to_wait = u64::max(ms_to_wait * 2, MAX_WAIT_MS);
+            println!("Doubling wait time...");
         }
-        std::thread::sleep(Duration::from_secs(seconds_to_wait_for));
-        seconds_to_wait_for *= 2;
+        let duration = Duration::from_millis(ms_to_wait);
+        println!(
+            "Waiting for {} seconds unless interrupted ('r').",
+            duration.as_secs_f32()
+        );
+        let sleep_task = tokio::time::sleep(duration);
+        tokio::pin!(sleep_task);
+        let interrupt_task = reset_action();
+        tokio::pin!(interrupt_task);
+        tokio::select! {
+            _ = &mut interrupt_task => {}
+            _ = &mut sleep_task => {}
+        }
     }
 }
 
-#[derive(Debug)]
-struct HostFileEntries(Vec<Entry>);
+async fn reset_action() {
+    let mut reader = tokio::io::BufReader::new(tokio::io::stdin());
+    loop {
+        let mut buffer = String::new();
+        let _fut = reader.read_line(&mut buffer).await;
+        if buffer.contains("r") {
+            println!("Pressed 'r' to continue.");
+            break;
+        }
+    }
+}
+
+#[derive(Debug, Eq, PartialEq)]
+struct HostFileEntries(HashSet<Entry>);
 impl From<scraper::Html> for HostFileEntries {
     fn from(fragment: scraper::Html) -> Self {
         //    let p_selector = Selector::parse("p").unwrap();
@@ -28,7 +116,8 @@ impl From<scraper::Html> for HostFileEntries {
             .select(&li_selector)
             .filter_map(|e_r| {
                 e_r.text()
-                    .try_into()
+                    .next()? // ?: idk if this is the best solution
+                    .parse()
                     .inspect_err(|e| {
                         eprintln!("Tried and failed to parse element reference:\n{:?}\n", e)
                     })
@@ -40,43 +129,43 @@ impl From<scraper::Html> for HostFileEntries {
 }
 
 // found in https://hackeve.haaukins.dk/hosts as "127.0.0.1 sanity-checks.hkn"
-#[derive(Debug)]
-struct Entry(IPv4, url::Url);
-#[derive(Debug)]
+#[derive(Debug, Eq, PartialEq, Hash)]
+struct Entry(IPv4, Host);
+#[derive(Debug, Eq, PartialEq)]
 enum EntryParseErr {
-    NoTextElements,
     SplitError,
     IPv4(IPv4ParseErr),
     Url(url::ParseError),
     Both {
         ipv4_e: IPv4ParseErr,
-        url_e: url::ParseError,
+        host_e: url::ParseError,
     },
 }
-impl<'a> TryFrom<scraper::element_ref::Text<'a>> for Entry {
-    type Error = EntryParseErr;
+impl FromStr for Entry {
+    type Err = EntryParseErr;
 
-    fn try_from(mut text: scraper::element_ref::Text) -> Result<Self, Self::Error> {
-        match text.next() {
-            None => Err(Self::Error::NoTextElements),
-            Some(s) => match s.split_once(' ') {
-                None => Err(Self::Error::SplitError),
-                Some((ipv4_s, url_s)) => {
-                    match (ipv4_s.parse::<IPv4>(), reqwest::Url::parse(url_s)) {
-                        (Ok(ipv4), Ok(url)) => Ok(Entry(ipv4, url)),
-                        (Ok(ipv4), Err(url_e)) => Err(Self::Error::Url(url_e)),
-                        (Err(ipv4_e), Ok(url)) => Err(Self::Error::IPv4(ipv4_e)),
-                        (Err(ipv4_e), Err(url_e)) => Err(Self::Error::Both { ipv4_e, url_e }),
-                    }
-                }
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s.split_once(' ') {
+            None => Err(Self::Err::SplitError),
+            Some((ipv4_s, url_s)) => match (ipv4_s.parse::<IPv4>(), Host::parse(url_s)) {
+                (Ok(ipv4), Ok(host)) => Ok(Entry(ipv4, host)),
+                (Ok(_), Err(host_e)) => Err(Self::Err::Url(host_e)),
+                (Err(ipv4_e), Ok(_)) => Err(Self::Err::IPv4(ipv4_e)),
+                (Err(ipv4_e), Err(host_e)) => Err(Self::Err::Both { ipv4_e, host_e }),
             },
         }
     }
 }
+impl Display for Entry {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{} {}", self.0, self.1)
+    }
+}
+
 // e.g. 192.168.1.255
-#[derive(Debug)]
+#[derive(Copy, Clone, Debug, Eq, PartialEq, Hash)]
 struct IPv4([u8; 4]);
-#[derive(Debug)]
+#[derive(Debug, Eq, PartialEq)]
 enum IPv4ParseErr {
     ByteParseError(std::num::ParseIntError),
     IncorrectLength,
@@ -95,6 +184,97 @@ impl FromStr for IPv4 {
                 Err(_) => Err(IPv4ParseErr::IncorrectLength),
             },
             Err(int_e) => Err(Self::Err::ByteParseError(int_e)),
+        }
+    }
+}
+impl Display for IPv4 {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}.{}.{}.{}", self.0[0], self.0[1], self.0[2], self.0[3])
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{Entry, EntryParseErr, IPv4, IPv4ParseErr};
+    mod ipv4 {
+        use super::{IPv4, IPv4ParseErr};
+        use std::assert_matches::assert_matches;
+
+        #[test]
+        fn conversion_works() {
+            let ips = [
+                ("192.168.1.255", [192, 168, 1, 255]),
+                ("192.168.1.23", [192, 168, 1, 23]),
+                ("127.0.0.1", [127, 0, 0, 1]),
+            ];
+            for (s, bytes) in ips {
+                let ip = IPv4(bytes);
+                // test parsing works
+                assert_eq!(s.parse(), Ok(ip));
+                // display works
+                assert_eq!(ip.to_string(), s);
+                // round-trip
+                assert_eq!(ip.to_string().parse(), Ok(ip));
+                assert_eq!(
+                    s.parse::<IPv4>().map(|ipv4| ipv4.to_string()),
+                    Ok(s.to_owned())
+                );
+            }
+        }
+
+        #[test]
+        fn parse_fails() {
+            assert_matches!(
+                "192.168.255".parse::<IPv4>(),
+                Err(IPv4ParseErr::IncorrectLength)
+            );
+            assert_matches!(
+                "192.168.1.256".parse::<IPv4>(),
+                Err(IPv4ParseErr::ByteParseError(_))
+            );
+        }
+    }
+
+    mod entry {
+        use super::{Entry, EntryParseErr};
+        use crate::{IPv4, IPv4ParseErr};
+        use std::assert_matches::assert_matches;
+        use url::Host;
+        #[test]
+        fn works() {
+            let string = "192.168.1.255 test.haaukins.hkn";
+            let entry = Entry(
+                IPv4([192, 168, 1, 255]),
+                Host::parse("test.haaukins.hkn").unwrap(),
+            );
+            assert_eq!(entry.to_string(), string);
+            assert_eq!(string.parse(), Ok(entry));
+        }
+        #[test]
+        fn fails() {
+            assert_eq!(
+                "192.168.1.255test.haaukins.hkn".parse::<Entry>(),
+                Err(EntryParseErr::SplitError)
+            );
+            assert_matches!(
+                "192.168.1. test.haaukins.hkn".parse::<Entry>(),
+                Err(EntryParseErr::IPv4(IPv4ParseErr::ByteParseError(_)))
+            );
+            assert_matches!(
+                "192.168.1 1test.haaukins.hkn".parse::<Entry>(),
+                Err(EntryParseErr::IPv4(IPv4ParseErr::IncorrectLength))
+            );
+            assert_matches!(
+                "192.168.1.255 test:hkn".parse::<Entry>(),
+                Err(EntryParseErr::Url(_))
+            );
+            assert_matches!(
+                "192.168.125 haaukins<test.hkn".parse::<Entry>(),
+                Err(EntryParseErr::Both {
+                    ipv4_e: IPv4ParseErr::IncorrectLength,
+                    host_e: _
+                })
+            );
         }
     }
 }
