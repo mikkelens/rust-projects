@@ -1,8 +1,8 @@
 #![feature(assert_matches)]
 
-use itertools::Itertools;
-use std::collections::HashMap;
-use std::path::PathBuf;
+mod config;
+
+use crate::config::Config;
 use std::{
     collections::HashSet,
     fmt::{Display, Formatter},
@@ -13,101 +13,17 @@ use std::{
 use tokio::{self, io::AsyncBufReadExt};
 use url::Host;
 
-// note: it might be possible to look for a network signal instead of continuously looking for
-// changes
-const DEFAULT_URL: &str = "https://hackeve.haaukins.dk/hosts";
-const WINDOWS_HOST_FILE_LOCATION: &str = "C:\\Windows\\System32\\drivers\\etc\\hosts";
-const MIN_WAIT_MS: u64 = 50;
-const MID_WAIT_MS: u64 = MIN_WAIT_MS * 2_u64.pow(6);
-const MAX_WAIT_MS: u64 = MIN_WAIT_MS * 2_u64.pow(8);
-
-const DEFAULT_TARGET_PATTERN_BEGIN: &str = "/// ctf_top ///";
-const DEFAULT_TARGET_PATTERN_END: &str = "/// ctf_bottom ///";
-
-#[derive(Debug)]
-struct Config {
-    url: url::Url,
-    host_file_path: PathBuf,
-}
-impl Config {
-    fn parse_from_args() -> Self {
-        let mut flag_map = HashMap::new();
-        for (flag, new_value) in std::env::args().tuples() {
-            match flag.split_once("--") {
-                Some((empty, key)) if empty.is_empty() => {
-                    let prev = flag_map.insert(key, new_value.clone());
-                    if let Some(prev_value) = prev {
-                        eprintln!("Flag '{}' already had a value of '{}', replacing with ", flag,
-                                  prev_value)
-                    }
-                }
-                _ => eprintln!("Could not parse flag '{}'", flag),
-            }
-        }
-
-        todo!()
-    }
-}
-
+#[expect(clippy::needless_return)] // macro expansion
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
+    let config = Config::try_from(std::env::args()).expect("Parameters must be valid.");
     println!("Welcome to hosts-watch.\nParams:");
-    println!("* Target URL: '{}'...", DEFAULT_URL);
-    println!("* Target begin: '{}'", DEFAULT_TARGET_PATTERN_BEGIN);
-    println!("* Target end: '{}'", DEFAULT_TARGET_PATTERN_END);
-    let mut ms_to_wait = MIN_WAIT_MS;
+    println!("* Target URL: '{}'...", &config.url);
+    println!("* Target hosts path: '{:?}'...", &config.hosts_path);
+    let mut ms_to_wait = config.min_wait_ms;
     loop {
-        let html = reqwest::get(DEFAULT_URL).await;
-        if let Ok(response) = html {
-            let s = response
-                .text()
-                .await
-                .expect("idk why a response wouldn't have text here");
-            let entries: HostFileEntries = scraper::Html::parse_fragment(&s).into();
-            if entries.0.is_empty() {
-                println!(
-                    "Could not find any entries at the page/url '{}'.",
-                    DEFAULT_URL
-                );
-                ms_to_wait = u64::max(ms_to_wait * 2, MAX_WAIT_MS);
-                println!("Doubling wait time...");
-            } else {
-                let mut file = std::fs::File::open(WINDOWS_HOST_FILE_LOCATION)?;
-                let mut reader_lines = BufReader::new(&file).lines().map(|l| l.unwrap());
-                let mut other_content = (&mut reader_lines)
-                    .take_while(|l| l != DEFAULT_TARGET_PATTERN_BEGIN)
-                    .collect::<HashSet<_>>();
-                let prev_entries = HostFileEntries(
-                    (&mut reader_lines)
-                        .take_while(|l| l != DEFAULT_TARGET_PATTERN_END)
-                        .filter_map(|l| l.parse::<Entry>().ok())
-                        .collect(),
-                );
-                other_content.extend(reader_lines);
-
-                if entries != prev_entries {
-                    ms_to_wait = MIN_WAIT_MS; // reset
-                    other_content.extend(entries.0.iter().map(|entry| entry.to_string()));
-                    file.write(
-                        other_content
-                            .into_iter()
-                            .collect::<Vec<_>>()
-                            .join("\n")
-                            .as_bytes(),
-                    )?;
-                    println!("Updated hosts file:");
-                    for entry in entries.0.difference(&prev_entries.0) {
-                        println!("+ '{}'", entry);
-                    }
-                } else {
-                    ms_to_wait = MID_WAIT_MS;
-                    println!("No difference between last check.");
-                }
-            }
-        } else {
-            ms_to_wait = u64::max(ms_to_wait * 2, MAX_WAIT_MS);
-            println!("Doubling wait time...");
-        }
+        println!();
+        update_state(&config, &mut ms_to_wait).await?;
         let duration = Duration::from_millis(ms_to_wait);
         println!(
             "Waiting for {} seconds unless interrupted ('r').",
@@ -122,6 +38,63 @@ async fn main() -> std::io::Result<()> {
             _ = &mut sleep_task => {}
         }
     }
+}
+
+async fn update_state(config: &Config, ms_to_wait: &mut u64) -> std::io::Result<()> {
+    match reqwest::get(config.url.as_str()).await {
+        Ok(response) => {
+            let s = response
+                .text()
+                .await
+                .expect("idk why a response wouldn't have text here");
+            let entries: HostFileEntries = scraper::Html::parse_fragment(&s).into();
+            if entries.0.is_empty() {
+                println!(
+                    "Could not find any entries at the page/url '{}'.",
+                    &config.url
+                );
+                *ms_to_wait = u64::max(*ms_to_wait * 2, config.max_wait_ms);
+                println!("Doubling wait time...");
+            } else {
+                let mut file = std::fs::File::open(&config.hosts_path)?;
+                let mut reader_lines = BufReader::new(&file).lines().map(|l| l.unwrap());
+                let mut other_content = (&mut reader_lines)
+                    .take_while(|l| *l != config.target_begin)
+                    .collect::<HashSet<_>>();
+                let prev_entries = HostFileEntries(
+                    (&mut reader_lines)
+                        .take_while(|l| *l != config.target_end)
+                        .filter_map(|l| l.parse::<Entry>().ok())
+                        .collect(),
+                );
+                other_content.extend(reader_lines);
+
+                if entries != prev_entries {
+                    *ms_to_wait = config.min_wait_ms; // reset
+                    other_content.extend(entries.0.iter().map(|entry| entry.to_string()));
+                    file.write_all(
+                        other_content
+                            .into_iter()
+                            .collect::<Vec<_>>()
+                            .join("\n")
+                            .as_bytes(),
+                    )?;
+                    println!("Updated hosts file:");
+                    for entry in entries.0.difference(&prev_entries.0) {
+                        println!("+ '{}'", entry);
+                    }
+                } else {
+                    *ms_to_wait = config.mid_wait_ms;
+                    println!("No difference between last check.");
+                }
+            }
+        }
+        _ => {
+            *ms_to_wait = u64::max(*ms_to_wait * 2, config.max_wait_ms);
+            println!("Doubling wait time...");
+        }
+    }
+    Ok(())
 }
 
 async fn reset_action() {
