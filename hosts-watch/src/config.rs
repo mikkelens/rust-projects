@@ -14,9 +14,7 @@ pub struct Config {
     pub target_begin: String,
     pub target_end: String,
 }
-/// unknown values and flags are allowed, ignored as defaults?
 #[derive(Debug)]
-#[allow(unused)]
 pub enum ConfigErr {
     InvalidOS(String),
     InvalidUrl(String, url::ParseError),
@@ -191,7 +189,6 @@ impl ConfigFlag {
     const TARGET_END_FLAG: &'static str = "target_end";
 }
 #[derive(Debug)]
-#[allow(unused)]
 pub enum FlagParseErr {
     AlreadySet(String),
     ExpectedFlag(String),

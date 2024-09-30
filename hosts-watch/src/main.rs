@@ -14,7 +14,6 @@ use std::{
 use tokio::{self, io::AsyncBufReadExt};
 use url::Host;
 
-//#[derive(Debug)]
 enum ProgramErr {
     Init(ConfigErr),
     FileSystem(std::io::Error),
@@ -28,7 +27,6 @@ async fn main() -> std::process::ExitCode {
         "Program error occurred, {}",
         match res {
             ProgramErr::Init(config_err) => {
-                // todo: implement display instead
                 format!("failed to initialize:\n{}", config_err)
             }
             ProgramErr::FileSystem(io_err) => {
@@ -145,7 +143,7 @@ impl From<scraper::Html> for HostFileEntries {
             .select(&li_selector)
             .filter_map(|e_r| {
                 e_r.text()
-                    .next()? // ?: idk if this is the best solution
+                    .next()? // ?: idk if this is the best solution, needs testing
                     .parse()
                     .inspect_err(|e| {
                         eprintln!("Tried and failed to parse element reference:\n{:?}\n", e)
@@ -157,7 +155,7 @@ impl From<scraper::Html> for HostFileEntries {
     }
 }
 
-// found in https://hackeve.haaukins.dk/hosts as "127.0.0.1 sanity-checks.hkn"
+/// Found in https://hackeve.haaukins.dk/hosts as `127.0.0.1 sanity-checks.hkn`
 #[derive(Debug, Eq, PartialEq, Hash)]
 struct Entry(IPv4, Host);
 #[derive(Debug, Eq, PartialEq)]
