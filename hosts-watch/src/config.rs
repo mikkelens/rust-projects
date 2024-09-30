@@ -1,5 +1,6 @@
 use itertools::Itertools;
 use std::env::Args;
+use std::fmt::{Display, Formatter};
 use std::num::ParseIntError;
 use std::path::PathBuf;
 
@@ -17,9 +18,23 @@ pub struct Config {
 #[derive(Debug)]
 #[allow(unused)]
 pub enum ConfigErr {
-    InvalidOS,
-    InvalidUrl(url::ParseError),
+    InvalidOS(String),
+    InvalidUrl(String, url::ParseError),
     InvalidFlag(FlagParseErr),
+}
+impl Display for ConfigErr {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ConfigErr::InvalidOS(name) => write!(f, "Operating System '{}' is unsupported.", name),
+            ConfigErr::InvalidUrl(s, e) => write!(f, "'{}' could not be parsed as URL: {}", s, e),
+            ConfigErr::InvalidFlag(s) => match s {
+                FlagParseErr::AlreadySet(s) => write!(f, "The flag '{}' was already set.", s),
+                FlagParseErr::ExpectedFlag(s) => write!(f, "Expected flag, found '{}'.", s),
+                FlagParseErr::InvalidFlag(s) => write!(f, "'{}' is not recognized as a flag.", s),
+                FlagParseErr::InvalidNum(e) => e.fmt(f),
+            },
+        }
+    }
 }
 impl TryFrom<Args> for Config {
     type Error = ConfigErr;
@@ -27,9 +42,9 @@ impl TryFrom<Args> for Config {
         let mut args = args.skip(1);
 
         let url = match args.next() {
-            Some(url) => match url.parse::<url::Url>() {
-                Ok(a) => a,
-                Err(e) => Err(Self::Error::InvalidUrl(e))?,
+            Some(maybe_url) => match maybe_url.parse::<url::Url>() {
+                Ok(valid) => valid,
+                Err(e) => Err(Self::Error::InvalidUrl(maybe_url, e))?,
             },
             None => {
                 eprintln!(
@@ -51,7 +66,7 @@ impl TryFrom<Args> for Config {
         let hosts_path = match std::env::consts::OS {
             "linux" => Self::LINUX_HOST_FILE_LOCATION,
             "windows" => Self::WINDOWS_HOST_FILE_LOCATION,
-            _ => Err(Self::Error::InvalidOS)?,
+            other => Err(Self::Error::InvalidOS(other.to_string()))?,
         }
         .parse()
         .expect("OS constants are valid paths");
@@ -126,21 +141,31 @@ impl ConfigOptions {
                     }
                 }
                 match flag {
-                    ConfigFlag::MinWait(num) => {
-                        assign_none_or(&mut acc.min_wait_ms, num, FlagParseErr::AlreadySet)?
-                    }
-                    ConfigFlag::MidWait(num) => {
-                        assign_none_or(&mut acc.mid_wait_ms, num, FlagParseErr::AlreadySet)?
-                    }
-                    ConfigFlag::MaxWait(num) => {
-                        assign_none_or(&mut acc.max_wait_ms, num, FlagParseErr::AlreadySet)?
-                    }
-                    ConfigFlag::TargetBegin(pat) => {
-                        assign_none_or(&mut acc.target_begin, pat, FlagParseErr::AlreadySet)?
-                    }
-                    ConfigFlag::TargetEnd(pat) => {
-                        assign_none_or(&mut acc.target_end, pat, FlagParseErr::AlreadySet)?
-                    }
+                    ConfigFlag::MinWait(num) => assign_none_or(
+                        &mut acc.min_wait_ms,
+                        num,
+                        FlagParseErr::AlreadySet(ConfigFlag::MIN_WAIT_FLAG.to_string()),
+                    )?,
+                    ConfigFlag::MidWait(num) => assign_none_or(
+                        &mut acc.mid_wait_ms,
+                        num,
+                        FlagParseErr::AlreadySet(ConfigFlag::MID_WAIT_FLAG.to_string()),
+                    )?,
+                    ConfigFlag::MaxWait(num) => assign_none_or(
+                        &mut acc.max_wait_ms,
+                        num,
+                        FlagParseErr::AlreadySet(ConfigFlag::MAX_WAIT_FLAG.to_string()),
+                    )?,
+                    ConfigFlag::TargetBegin(pat) => assign_none_or(
+                        &mut acc.target_begin,
+                        pat,
+                        FlagParseErr::AlreadySet(ConfigFlag::TARGET_BEGIN_FLAG.to_string()),
+                    )?,
+                    ConfigFlag::TargetEnd(pat) => assign_none_or(
+                        &mut acc.target_end,
+                        pat,
+                        FlagParseErr::AlreadySet(ConfigFlag::TARGET_END_FLAG.to_string()),
+                    )?,
                 }
                 Ok(acc)
             },
@@ -168,7 +193,7 @@ impl ConfigFlag {
 #[derive(Debug)]
 #[allow(unused)]
 pub enum FlagParseErr {
-    AlreadySet,
+    AlreadySet(String),
     ExpectedFlag(String),
     InvalidFlag(String),
     InvalidNum(ParseIntError),

@@ -7,5 +7,6 @@ edition = "2021"
 reqwest = { version = "0.12.7" }
 scraper = "0.20.0"
 url = "2.5.2"
+# 1.40.0 has issues on specific versions of nightly
 tokio = { version = "1.39", features = ["rt", "rt-multi-thread", "io-std", "macros"] }
 itertools = "0.13.0"

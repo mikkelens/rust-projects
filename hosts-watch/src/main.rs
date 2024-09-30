@@ -2,7 +2,8 @@
 
 mod config;
 
-use crate::config::Config;
+use crate::config::{Config, ConfigErr};
+use std::convert::Infallible;
 use std::{
     collections::HashSet,
     fmt::{Display, Formatter},
@@ -13,17 +14,42 @@ use std::{
 use tokio::{self, io::AsyncBufReadExt};
 use url::Host;
 
+//#[derive(Debug)]
+enum ProgramErr {
+    Init(ConfigErr),
+    FileSystem(std::io::Error),
+}
+
 #[expect(clippy::needless_return)] // macro expansion
 #[tokio::main]
-async fn main() -> std::io::Result<()> {
-    let config = Config::try_from(std::env::args()).expect("Parameters must be valid.");
+async fn main() -> std::process::ExitCode {
+    let Err(res) = run().await; // infallible
+    println!(
+        "Program error occurred, {}",
+        match res {
+            ProgramErr::Init(config_err) => {
+                // todo: implement display instead
+                format!("failed to initialize:\n{}", config_err)
+            }
+            ProgramErr::FileSystem(io_err) => {
+                format!("failed to perform filesystem IO.\n{}", io_err)
+            }
+        }
+    );
+    std::process::ExitCode::FAILURE
+}
+
+async fn run() -> Result<Infallible, ProgramErr> {
+    let config = Config::try_from(std::env::args()).map_err(ProgramErr::Init)?;
     println!("Welcome to hosts-watch.\nParams:");
     println!("* Target URL: '{}'...", &config.url);
     println!("* Target hosts path: '{:?}'...", &config.hosts_path);
     let mut ms_to_wait = config.min_wait_ms;
     loop {
         println!();
-        update_state(&config, &mut ms_to_wait).await?;
+        update_state(&config, &mut ms_to_wait)
+            .await
+            .map_err(ProgramErr::FileSystem)?;
         let duration = Duration::from_millis(ms_to_wait);
         println!(
             "Waiting for {} seconds unless interrupted ('r').",
