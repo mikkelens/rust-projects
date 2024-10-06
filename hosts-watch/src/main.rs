@@ -15,19 +15,21 @@ use tokio::{self, io::AsyncBufReadExt};
 use url::Host;
 
 enum ProgramErr {
-    Init(ConfigErr),
+    Config(ConfigErr),
+    Runtime(std::io::Error),
     FileSystem(std::io::Error),
 }
 
-#[expect(clippy::needless_return)] // macro expansion
-#[tokio::main]
-async fn main() -> std::process::ExitCode {
-    let Err(res) = run().await; // infallible
+fn main() -> std::process::ExitCode {
+    let Err(res) = run(); // infallible
     println!(
         "Program error occurred, {}",
         match res {
-            ProgramErr::Init(config_err) => {
-                format!("failed to initialize:\n{}", config_err)
+            ProgramErr::Config(config_err) => {
+                format!("failed to initialize configuration:\n{}", config_err)
+            }
+            ProgramErr::Runtime(runtime_err) => {
+                format!("failed to initialize tokio runtime:\n{}", runtime_err)
             }
             ProgramErr::FileSystem(io_err) => {
                 format!("failed to perform filesystem IO.\n{}", io_err)
@@ -37,16 +39,16 @@ async fn main() -> std::process::ExitCode {
     std::process::ExitCode::FAILURE
 }
 
-async fn run() -> Result<Infallible, ProgramErr> {
-    let config = Config::try_from(std::env::args()).map_err(ProgramErr::Init)?;
+fn run() -> Result<Infallible, ProgramErr> {
+    let config = Config::try_from(std::env::args()).map_err(ProgramErr::Config)?;
+    let rt = tokio::runtime::Runtime::new().map_err(ProgramErr::Runtime)?;
     println!("Welcome to hosts-watch.\nParams:");
     println!("* Target URL: '{}'...", &config.url);
     println!("* Target hosts path: '{:?}'...", &config.hosts_path);
     let mut ms_to_wait = config.min_wait_ms;
     loop {
         println!();
-        update_state(&config, &mut ms_to_wait)
-            .await
+        rt.block_on(async { refresh_state_from_web(&config, &mut ms_to_wait).await })
             .map_err(ProgramErr::FileSystem)?;
         let duration = Duration::from_millis(ms_to_wait);
         println!(
@@ -57,14 +59,16 @@ async fn run() -> Result<Infallible, ProgramErr> {
         tokio::pin!(sleep_task);
         let interrupt_task = reset_action();
         tokio::pin!(interrupt_task);
-        tokio::select! {
-            _ = &mut interrupt_task => {}
-            _ = &mut sleep_task => {}
-        }
+        rt.block_on(async {
+            tokio::select! { // race each task, skipping wait from keypress
+                _ = &mut interrupt_task => {}
+                _ = &mut sleep_task => {}
+            }
+        })
     }
 }
 
-async fn update_state(config: &Config, ms_to_wait: &mut u64) -> std::io::Result<()> {
+pub async fn refresh_state_from_web(config: &Config, ms_to_wait: &mut u64) -> std::io::Result<()> {
     match reqwest::get(config.url.as_str()).await {
         Ok(response) => {
             let s = response

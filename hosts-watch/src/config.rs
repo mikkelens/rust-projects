@@ -18,7 +18,7 @@ pub struct Config {
 pub enum ConfigErr {
     InvalidOS(String),
     InvalidUrl(String, url::ParseError),
-    InvalidFlag(FlagParseErr),
+    InvalidFlag(FlagAddErr),
 }
 impl Display for ConfigErr {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
@@ -26,10 +26,10 @@ impl Display for ConfigErr {
             ConfigErr::InvalidOS(name) => write!(f, "Operating System '{}' is unsupported.", name),
             ConfigErr::InvalidUrl(s, e) => write!(f, "'{}' could not be parsed as URL: {}", s, e),
             ConfigErr::InvalidFlag(s) => match s {
-                FlagParseErr::AlreadySet(s) => write!(f, "The flag '{}' was already set.", s),
-                FlagParseErr::ExpectedFlag(s) => write!(f, "Expected flag, found '{}'.", s),
-                FlagParseErr::InvalidFlag(s) => write!(f, "'{}' is not recognized as a flag.", s),
-                FlagParseErr::InvalidNum(e) => e.fmt(f),
+                FlagAddErr::AlreadySet(s) => write!(f, "The flag '{}' was already set.", s),
+                FlagAddErr::ExpectedFlag(s) => write!(f, "Expected flag, found '{}'.", s),
+                FlagAddErr::InvalidFlag(s) => write!(f, "'{}' is not recognized as a flag.", s),
+                FlagAddErr::InvalidNum(e) => e.fmt(f),
             },
         }
     }
@@ -39,6 +39,9 @@ impl TryFrom<Args> for Config {
     fn try_from(args: Args) -> Result<Self, Self::Error> {
         let mut args = args.skip(1);
 
+        // if any args are passed, assume that the first is for the target URL
+        // maybe we should just divide arguments up using `--<flag>` syntax for flags
+        // so that order is irrelevant
         let url = match args.next() {
             Some(maybe_url) => match maybe_url.parse::<url::Url>() {
                 Ok(valid) => valid,
@@ -53,11 +56,11 @@ impl TryFrom<Args> for Config {
             }
         };
 
-        // flags
+        // parse flags
         let flags = args
             .tuples()
             .map(|(key, value)| ConfigFlag::try_from((key.as_str(), value.as_str())))
-            .collect::<Result<Vec<ConfigFlag>, FlagParseErr>>()
+            .collect::<Result<Vec<ConfigFlag>, FlagAddErr>>()
             .map_err(Self::Error::InvalidFlag)?;
 
         // windows or linux
@@ -69,11 +72,14 @@ impl TryFrom<Args> for Config {
         .parse()
         .expect("OS constants are valid paths");
 
-        Ok(Self::from(
-            ConfigOptions::new(url, hosts_path, flags).map_err(Self::Error::InvalidFlag)?,
+        Ok(Self::new(
+            url,
+            hosts_path,
+            ConfigOptions::new(flags).map_err(Self::Error::InvalidFlag)?,
         ))
     }
 }
+
 impl Config {
     const DEFAULT_MIN_WAIT_MS: u64 = 50;
     const DEFAULT_MID_WAIT_MS: u64 = Self::DEFAULT_MIN_WAIT_MS * 2_u64.pow(6);
@@ -84,22 +90,11 @@ impl Config {
     const DEFAULT_URL: &'static str = "https://hackeve.haaukins.dk/hosts";
     const LINUX_HOST_FILE_LOCATION: &'static str = "/etc/hosts";
     const WINDOWS_HOST_FILE_LOCATION: &'static str = "C:\\Windows\\System32\\drivers\\etc\\hosts";
-}
 
-struct ConfigOptions {
-    url: url::Url,
-    hosts_path: PathBuf,
-    min_wait_ms: Option<u64>,
-    mid_wait_ms: Option<u64>,
-    max_wait_ms: Option<u64>,
-    target_begin: Option<String>,
-    target_end: Option<String>,
-}
-impl From<ConfigOptions> for Config {
-    fn from(options: ConfigOptions) -> Self {
+    fn new(url: url::Url, hosts_path: PathBuf, options: ConfigOptions) -> Self {
         Self {
-            url: options.url,
-            hosts_path: options.hosts_path,
+            url,
+            hosts_path,
             min_wait_ms: options.min_wait_ms.unwrap_or(Self::DEFAULT_MIN_WAIT_MS),
             mid_wait_ms: options.mid_wait_ms.unwrap_or(Self::DEFAULT_MID_WAIT_MS),
             max_wait_ms: options.max_wait_ms.unwrap_or(Self::DEFAULT_MAX_WAIT_MS),
@@ -113,16 +108,20 @@ impl From<ConfigOptions> for Config {
     }
 }
 
+/// Basically a manually state-checked builder.
+/// Probably should be type-stated and/or generated?
+struct ConfigOptions {
+    min_wait_ms: Option<u64>,
+    mid_wait_ms: Option<u64>,
+    max_wait_ms: Option<u64>,
+    target_begin: Option<String>,
+    target_end: Option<String>,
+}
+
 impl ConfigOptions {
-    pub fn new(
-        url: url::Url,
-        hosts_path: PathBuf,
-        options: impl IntoIterator<Item = ConfigFlag>,
-    ) -> Result<Self, FlagParseErr> {
+    pub fn new(options: impl IntoIterator<Item = ConfigFlag>) -> Result<Self, FlagAddErr> {
         options.into_iter().try_fold(
             Self {
-                url,
-                hosts_path,
                 min_wait_ms: None,
                 mid_wait_ms: None,
                 max_wait_ms: None,
@@ -130,7 +129,7 @@ impl ConfigOptions {
                 target_end: None,
             },
             |mut acc, flag| {
-                fn assign_none_or<T: Eq, E>(prev: &mut Option<T>, new: T, e: E) -> Result<(), E> {
+                fn assign_none_or<T, E>(prev: &mut Option<T>, new: T, e: E) -> Result<(), E> {
                     if prev.is_none() {
                         *prev = Some(new);
                         Ok(())
@@ -138,31 +137,33 @@ impl ConfigOptions {
                         Err(e)
                     }
                 }
+                // assign option if not already present
+                // this could maybe be abstracted/generated as typestates
                 match flag {
                     ConfigFlag::MinWait(num) => assign_none_or(
                         &mut acc.min_wait_ms,
                         num,
-                        FlagParseErr::AlreadySet(ConfigFlag::MIN_WAIT_FLAG.to_string()),
+                        FlagAddErr::AlreadySet(ConfigFlag::MIN_WAIT_FLAG.to_string()),
                     )?,
                     ConfigFlag::MidWait(num) => assign_none_or(
                         &mut acc.mid_wait_ms,
                         num,
-                        FlagParseErr::AlreadySet(ConfigFlag::MID_WAIT_FLAG.to_string()),
+                        FlagAddErr::AlreadySet(ConfigFlag::MID_WAIT_FLAG.to_string()),
                     )?,
                     ConfigFlag::MaxWait(num) => assign_none_or(
                         &mut acc.max_wait_ms,
                         num,
-                        FlagParseErr::AlreadySet(ConfigFlag::MAX_WAIT_FLAG.to_string()),
+                        FlagAddErr::AlreadySet(ConfigFlag::MAX_WAIT_FLAG.to_string()),
                     )?,
                     ConfigFlag::TargetBegin(pat) => assign_none_or(
                         &mut acc.target_begin,
                         pat,
-                        FlagParseErr::AlreadySet(ConfigFlag::TARGET_BEGIN_FLAG.to_string()),
+                        FlagAddErr::AlreadySet(ConfigFlag::TARGET_BEGIN_FLAG.to_string()),
                     )?,
                     ConfigFlag::TargetEnd(pat) => assign_none_or(
                         &mut acc.target_end,
                         pat,
-                        FlagParseErr::AlreadySet(ConfigFlag::TARGET_END_FLAG.to_string()),
+                        FlagAddErr::AlreadySet(ConfigFlag::TARGET_END_FLAG.to_string()),
                     )?,
                 }
                 Ok(acc)
@@ -189,14 +190,14 @@ impl ConfigFlag {
     const TARGET_END_FLAG: &'static str = "target_end";
 }
 #[derive(Debug)]
-pub enum FlagParseErr {
+pub enum FlagAddErr {
     AlreadySet(String),
     ExpectedFlag(String),
     InvalidFlag(String),
     InvalidNum(ParseIntError),
 }
 impl TryFrom<(&str, &str)> for ConfigFlag {
-    type Error = FlagParseErr;
+    type Error = FlagAddErr;
 
     fn try_from((flag_raw, value): (&str, &str)) -> Result<Self, Self::Error> {
         if !flag_raw.starts_with(Self::FLAG_PATTERN) {
