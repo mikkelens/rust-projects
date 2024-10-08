@@ -2,6 +2,7 @@
 name = "hosts-watch"
 version = "0.1.0"
 edition = "2021"
+description = "Watch a static site for new URL to IP-address mappings and add them to your hosts file."
 
 [dependencies]
 reqwest = { version = "0.12.7" }
@@ -10,3 +11,4 @@ url = "2.5.2"
 # 1.40.0 has issues on specific versions of nightly
 tokio = { version = "1.39", features = ["rt", "rt-multi-thread", "io-std", "macros"] }
 itertools = "0.13.0"
+clap = { version = "4.5.20", features = ["derive"] }
