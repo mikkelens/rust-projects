@@ -1,18 +1,10 @@
-use std::{
-	env::Args,
-	fmt::{Display, Formatter},
-	num::ParseIntError,
-	path::PathBuf
-};
+use std::{path::PathBuf, str::FromStr};
 
 use clap;
-use itertools::Itertools;
 
-#[derive(Debug, clap::Parser)]
-#[command(version, about)]
+#[derive(Debug)]
 pub struct AppArgs {
 	pub url_target:   url::Url,
-	#[command(subcommand)]
 	pub file_target:  Option<FileTarget>,
 	pub min_wait_ms:  Option<u64>,
 	pub mid_wait_ms:  Option<u64>,
@@ -40,44 +32,44 @@ impl Config {
 	const DEFAULT_URL: &'static str = "https://hackeve.haaukins.dk/hosts";
 }
 
-impl TryFrom<AppArgs> for Config {
-	type Error = OsSupportErr;
-
-	fn try_from(args: AppArgs) -> Result<Self, Self::Error> {
-		Ok(Self {
-			url:          args.url_target,
-			hosts_path:   args
-				.file_target
-				.unwrap_or(FileTarget::Os(std::env::consts::OS.to_string()))
-				.to_path()?,
-			min_wait_ms:  args.min_wait_ms.unwrap_or(Self::DEFAULT_MIN_WAIT_MS),
-			mid_wait_ms:  args.mid_wait_ms.unwrap_or(Self::DEFAULT_MID_WAIT_MS),
-			max_wait_ms:  args.max_wait_ms.unwrap_or(Self::DEFAULT_MAX_WAIT_MS),
-			target_begin: args
-				.target_begin
-				.unwrap_or(Self::DEFAULT_TARGET_BEGIN.to_string()),
-			target_end:   args
-				.target_end
-				.unwrap_or(Self::DEFAULT_TARGET_END.to_string())
-		})
-	}
-}
-#[derive(Debug, clap::Subcommand)]
-enum FileTarget {
+// impl TryFrom<AppArgs> for Config {
+// 	type Error = OsSupportErr;
+//
+// 	fn try_from(args: AppArgs) -> Result<Self, Self::Error> {
+// 		Ok(Self {
+// 			url:          args.url_target,
+// 			hosts_path:   args
+// 				.file_target
+// 				.unwrap_or(FileTarget::Os(Os::from_str(std::env::consts::OS)?))
+// 				.to_path()?,
+// 			min_wait_ms:  args.min_wait_ms.unwrap_or(Self::DEFAULT_MIN_WAIT_MS),
+// 			mid_wait_ms:  args.mid_wait_ms.unwrap_or(Self::DEFAULT_MID_WAIT_MS),
+// 			max_wait_ms:  args.max_wait_ms.unwrap_or(Self::DEFAULT_MAX_WAIT_MS),
+// 			target_begin: args
+// 				.target_begin
+// 				.unwrap_or(Self::DEFAULT_TARGET_BEGIN.to_string()),
+// 			target_end:   args
+// 				.target_end
+// 				.unwrap_or(Self::DEFAULT_TARGET_END.to_string())
+// 		})
+// 	}
+//}
+#[derive(Debug)]
+pub enum FileTarget {
 	Os(Os),
 	SpecificPath(PathBuf)
 }
 impl FileTarget {
-	fn to_path(self) -> Result<PathBuf, OsSupportErr> {
-		Ok(match self {
+	fn to_path(self) -> PathBuf {
+		match self {
 			FileTarget::Os(os) => os.to_path(),
 			FileTarget::SpecificPath(path) => path
-		})
+		}
 	}
 }
-struct OsSupportErr;
+pub struct OsSupportErr;
 #[derive(Debug, clap::ValueEnum, Copy, Clone)]
-enum Os {
+pub enum Os {
 	Linux,
 	Windows
 }
@@ -90,6 +82,17 @@ impl Os {
 			Os::Linux => PathBuf::from(Self::LINUX_HOST_FILE_LOCATION),
 			Os::Windows => PathBuf::from(Self::WINDOWS_HOST_FILE_LOCATION)
 		}
+	}
+}
+impl FromStr for Os {
+	type Err = OsSupportErr;
+
+	fn from_str(s: &str) -> Result<Self, Self::Err> {
+		Ok(match s {
+			"linux" => Os::Linux,
+			"windows" => Os::Windows,
+			_ => Err(OsSupportErr)?
+		})
 	}
 }
 
