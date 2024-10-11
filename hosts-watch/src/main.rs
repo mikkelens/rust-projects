@@ -11,7 +11,7 @@ use std::{
 	time::Duration
 };
 
-use clap::*;
+use clap::{Args::*, *};
 use tokio::{self, io::AsyncBufReadExt};
 use url::Host;
 
@@ -40,7 +40,27 @@ fn main() -> std::process::ExitCode {
 }
 
 fn run() -> Result<Infallible, ProgramErr> {
-	let args = AppArgs::try_parse().map_err(ProgramErr::Config)?;
+	let command = Command::new("hosts-watch (builder config)")
+		.about("Watching hosts files")
+		// 		.subcommand_required(true)
+		.arg_required_else_help(true)
+		// 		.allow_external_subcommands(true)
+		.arg(Arg::new("url"))
+		.subcommand(
+			Command::new("os")
+				.about("What OS to target(windows/linux)")
+				.arg_required_else_help(true)
+				.args([
+					Arg::new("linux")
+						.short('l')
+						.long("linux")
+						.action(ArgAction::Set),
+					Arg::new("windows")
+						.short('w')
+						.long("windows")
+						.action(ArgAction::Set)
+				])
+		);
 	//    let config =
 	// Config::try_from(std::env::args()).map_err(ProgramErr::Config)?;    let rt =
 	tokio::runtime::Runtime::new().map_err(ProgramErr::Runtime)?;
@@ -64,7 +84,7 @@ fn run() -> Result<Infallible, ProgramErr> {
 		let interrupt_task = reset_action();
 		tokio::pin!(interrupt_task);
 		rt.block_on(async {
-			tokio::select! { // race each task, skipping wait from keypress
+			tokio::select! { // race each task, skipping wait from key-press
 				_ = &mut interrupt_task => {}
 				_ = &mut sleep_task => {}
 			}
