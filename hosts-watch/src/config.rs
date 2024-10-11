@@ -1,96 +1,97 @@
 use std::{
-	env::Args,
-	fmt::{Display, Formatter},
-	num::ParseIntError,
-	path::PathBuf
+    env::Args,
+    fmt::{Display, Formatter},
+    num::ParseIntError,
+    path::PathBuf,
 };
 
 use clap;
+use clap::ValueEnum;
 use itertools::Itertools;
 
 #[derive(Debug, clap::Parser)]
 #[command(version, about)]
 pub struct AppArgs {
-	pub url_target:   url::Url,
-	#[command(subcommand)]
-	pub file_target:  Option<FileTarget>,
-	pub min_wait_ms:  Option<u64>,
-	pub mid_wait_ms:  Option<u64>,
-	pub max_wait_ms:  Option<u64>,
-	pub target_begin: Option<String>,
-	pub target_end:   Option<String>
+    pub url_target: url::Url,
+    #[command(subcommand)]
+    pub file_target: Option<FileTarget>,
+    pub min_wait_ms: Option<u64>,
+    pub mid_wait_ms: Option<u64>,
+    pub max_wait_ms: Option<u64>,
+    pub target_begin: Option<String>,
+    pub target_end: Option<String>,
 }
 
 #[derive(Debug)]
 pub struct Config {
-	pub url:          url::Url,
-	pub hosts_path:   PathBuf,
-	pub min_wait_ms:  u64,
-	pub mid_wait_ms:  u64,
-	pub max_wait_ms:  u64,
-	pub target_begin: String,
-	pub target_end:   String
+    pub url: url::Url,
+    pub hosts_path: PathBuf,
+    pub min_wait_ms: u64,
+    pub mid_wait_ms: u64,
+    pub max_wait_ms: u64,
+    pub target_begin: String,
+    pub target_end: String,
 }
 impl Config {
-	const DEFAULT_MAX_WAIT_MS: u64 = Self::DEFAULT_MIN_WAIT_MS * 2_u64.pow(8);
-	const DEFAULT_MID_WAIT_MS: u64 = Self::DEFAULT_MIN_WAIT_MS * 2_u64.pow(6);
-	const DEFAULT_MIN_WAIT_MS: u64 = 50;
-	const DEFAULT_TARGET_BEGIN: &'static str = "/// ctf_top ///";
-	const DEFAULT_TARGET_END: &'static str = "/// ctf_bottom ///";
-	const DEFAULT_URL: &'static str = "https://hackeve.haaukins.dk/hosts";
+    const DEFAULT_MAX_WAIT_MS: u64 = Self::DEFAULT_MIN_WAIT_MS * 2_u64.pow(8);
+    const DEFAULT_MID_WAIT_MS: u64 = Self::DEFAULT_MIN_WAIT_MS * 2_u64.pow(6);
+    const DEFAULT_MIN_WAIT_MS: u64 = 50;
+    const DEFAULT_TARGET_BEGIN: &'static str = "/// ctf_top ///";
+    const DEFAULT_TARGET_END: &'static str = "/// ctf_bottom ///";
+    const DEFAULT_URL: &'static str = "https://hackeve.haaukins.dk/hosts";
 }
 
 impl TryFrom<AppArgs> for Config {
-	type Error = OsSupportErr;
+    type Error = OsSupportErr;
 
-	fn try_from(args: AppArgs) -> Result<Self, Self::Error> {
-		Ok(Self {
-			url:          args.url_target,
-			hosts_path:   args
-				.file_target
-				.unwrap_or(FileTarget::Os(std::env::consts::OS.to_string()))
-				.to_path()?,
-			min_wait_ms:  args.min_wait_ms.unwrap_or(Self::DEFAULT_MIN_WAIT_MS),
-			mid_wait_ms:  args.mid_wait_ms.unwrap_or(Self::DEFAULT_MID_WAIT_MS),
-			max_wait_ms:  args.max_wait_ms.unwrap_or(Self::DEFAULT_MAX_WAIT_MS),
-			target_begin: args
-				.target_begin
-				.unwrap_or(Self::DEFAULT_TARGET_BEGIN.to_string()),
-			target_end:   args
-				.target_end
-				.unwrap_or(Self::DEFAULT_TARGET_END.to_string())
-		})
-	}
+    fn try_from(args: AppArgs) -> Result<Self, Self::Error> {
+        Ok(Self {
+            url: args.url_target,
+            hosts_path: args
+                .file_target
+                .unwrap_or(FileTarget::Os(std::env::consts::OS.to_string()))
+                .to_path()?,
+            min_wait_ms: args.min_wait_ms.unwrap_or(Self::DEFAULT_MIN_WAIT_MS),
+            mid_wait_ms: args.mid_wait_ms.unwrap_or(Self::DEFAULT_MID_WAIT_MS),
+            max_wait_ms: args.max_wait_ms.unwrap_or(Self::DEFAULT_MAX_WAIT_MS),
+            target_begin: args
+                .target_begin
+                .unwrap_or(Self::DEFAULT_TARGET_BEGIN.to_string()),
+            target_end: args
+                .target_end
+                .unwrap_or(Self::DEFAULT_TARGET_END.to_string()),
+        })
+    }
 }
-#[derive(Debug, clap::Subcommand)]
+#[derive(Debug, ValueEnum, Clone)]
 enum FileTarget {
-	Os(Os),
-	SpecificPath(PathBuf)
+    Os(Os),
+    SpecificPath(PathBuf),
 }
 impl FileTarget {
-	fn to_path(self) -> Result<PathBuf, OsSupportErr> {
-		Ok(match self {
-			FileTarget::Os(os) => os.to_path(),
-			FileTarget::SpecificPath(path) => path
-		})
-	}
+    fn to_path(self) -> Result<PathBuf, OsSupportErr> {
+        Ok(match self {
+            FileTarget::Os(os) => os.to_path(),
+            FileTarget::SpecificPath(path) => path,
+        })
+    }
 }
 struct OsSupportErr;
-#[derive(Debug, clap::ValueEnum, Copy, Clone)]
+#[derive(Debug, ValueEnum, Copy, Clone)]
 enum Os {
-	Linux,
-	Windows
+    Linux,
+    Windows,
 }
 impl Os {
-	const LINUX_HOST_FILE_LOCATION: &'static str = "/etc/hosts";
-	const WINDOWS_HOST_FILE_LOCATION: &'static str = "C:\\Windows\\System32\\drivers\\etc\\hosts";
+    const LINUX_HOST_FILE_LOCATION: &'static str = "/etc/hosts";
+    const WINDOWS_HOST_FILE_LOCATION: &'static str = "C:\\Windows\\System32\\drivers\\etc\\hosts";
 
-	fn to_path(&self) -> PathBuf {
-		match self {
-			Os::Linux => PathBuf::from(Self::LINUX_HOST_FILE_LOCATION),
-			Os::Windows => PathBuf::from(Self::WINDOWS_HOST_FILE_LOCATION)
-		}
-	}
+    fn to_path(&self) -> PathBuf {
+        match self {
+            Os::Linux => PathBuf::from(Self::LINUX_HOST_FILE_LOCATION),
+            Os::Windows => PathBuf::from(Self::WINDOWS_HOST_FILE_LOCATION),
+        }
+    }
 }
 
 //#[derive(Debug)]
