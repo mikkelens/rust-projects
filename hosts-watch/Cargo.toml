@@ -2,6 +2,7 @@
 name = "hosts-watch"
 version = "0.1.0"
 edition = "2021"
+build = "build.rs"
 
 [dependencies]
 #reqwest = { version = "0.12.7" }
@@ -9,5 +10,8 @@ scraper = "0.20.0"
 headless_chrome = "1.0.15"
 url = "2.5.2"
 # 1.40.0 has issues on specific versions of nightly
-tokio = { version = "1.39", features = ["rt", "rt-multi-thread", "io-std", "macros"] }
+tokio = { version = "1.39", features = ["rt", "rt-multi-thread", "io-std", "macros", "time", "io-util"] }
 itertools = "0.13.0"
+
+[build-dependencies]
+winres = "0.1.12"

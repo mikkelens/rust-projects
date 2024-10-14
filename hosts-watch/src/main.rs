@@ -6,12 +6,18 @@ use std::{
 	collections::HashSet,
 	convert::Infallible,
 	fmt::{Display, Formatter},
+	fs::OpenOptions,
 	io::{BufRead, BufReader, Write},
 	str::FromStr,
 	time::Duration
 };
 
-use tokio::{self, io::AsyncBufReadExt};
+use headless_chrome::{
+	protocol::cdp::Network::{CookieParam, CookieSameSite},
+	Browser, LaunchOptions
+};
+use itertools::Itertools;
+use tokio::{self};
 use url::Host;
 
 use crate::config::{Config, ConfigErr};
@@ -45,11 +51,39 @@ async fn run() -> Result<Infallible, ProgramErr> {
 	println!("* Target URL: '{}'...", &config.url);
 	println!("* Target hosts path: '{:?}'...", &config.hosts_path);
 	let mut ms_to_wait = config.min_wait_ms;
+	let browser = &mut Browser::new(LaunchOptions {
+		headless: false,
+		..Default::default()
+	})
+	.unwrap();
+	let tab = {
+		let tab = browser.new_tab().unwrap();
+		// Type "Tab" is effectively a mutable reference, but rust doesn't know that
+		// 		tab.navigate_to("https://prosa.haaukins.dk").unwrap();
+		tab.navigate_to(format!("https://{}", config.url.domain().unwrap()).as_str())
+			.unwrap();
+		tab.wait_until_navigated().unwrap();
+		// Set a value in local storage
+		let set_local_storage_script = format!("localStorage.setItem('token', '{}')", config.token);
+		tab.evaluate(set_local_storage_script.as_str(), false)
+			.unwrap();
+		eprintln!("Configured storage (token=...)");
+		// 		tab.navigate_to(config.url.as_str()).unwrap();
+		// 		tab.reload(true, None).unwrap();
+		tab.navigate_to(config.url.as_str()).unwrap();
+		tab.wait_until_navigated().unwrap();
+		tab
+	};
+
 	loop {
 		println!();
-		refresh_state_from_web(&config, &mut ms_to_wait)
-			.await
-			.map_err(ProgramErr::FileSystem)?;
+		refresh_state_from_web(
+			tab.get_content().unwrap().as_str(),
+			&config,
+			&mut ms_to_wait
+		)
+		.await
+		.map_err(ProgramErr::FileSystem)?;
 		let duration = Duration::from_millis(ms_to_wait);
 		println!(
 			"Waiting for {} seconds unless interrupted ('r').",
@@ -66,74 +100,67 @@ async fn run() -> Result<Infallible, ProgramErr> {
 	}
 }
 
-pub async fn refresh_state_from_web(config: &Config, ms_to_wait: &mut u64) -> std::io::Result<()> {
-	let client = reqwest::Client::new();
-	match client
-		.get(config.url.as_str())
-		.header(reqwest::header::COOKIE, format!("token={}", ""))
-		.send()
-		.await
+pub async fn refresh_state_from_web(
+	fragment: &str,
+	config: &Config,
+	ms_to_wait: &mut u64
+) -> std::io::Result<()> {
 	{
-		Ok(response) => {
-			let s = response
-				.text()
-				.await
-				.expect("idk why a response wouldn't have text here");
-			let entries: HostFileEntries = scraper::Html::parse_fragment(&s).into();
-			if entries.0.is_empty() {
-				println!(
-					"Could not find any entries at the page/url '{}'.",
-					&config.url
-				);
-				*ms_to_wait = u64::max(*ms_to_wait * 2, config.max_wait_ms);
-				println!("Doubling wait time...");
-			} else {
-				let mut file = std::fs::File::open(&config.hosts_path)?;
-				let mut reader_lines = BufReader::new(&file).lines().map(|l| l.unwrap());
-				let mut other_content = (&mut reader_lines)
-					.take_while(|l| *l != config.target_begin)
-					.collect::<HashSet<_>>();
-				let prev_entries = HostFileEntries(
-					(&mut reader_lines)
-						.take_while(|l| *l != config.target_end)
-						.filter_map(|l| l.parse::<Entry>().ok())
-						.collect()
-				);
-				other_content.extend(reader_lines);
-
-				if entries != prev_entries {
-					*ms_to_wait = config.min_wait_ms; // reset
-					other_content.extend(entries.0.iter().map(|entry| entry.to_string()));
-					file.write_all(
-						other_content
-							.into_iter()
-							.collect::<Vec<_>>()
-							.join("\n")
-							.as_bytes()
-					)?;
-					println!("Updated hosts file:");
-					for entry in entries.0.difference(&prev_entries.0) {
-						println!("+ '{}'", entry);
-					}
-				} else {
-					*ms_to_wait = config.mid_wait_ms;
-					println!("No difference between last check.");
-				}
-			}
-		},
-		_ => {
+		let entries: HostFileEntries = scraper::Html::parse_fragment(&fragment).into();
+		if entries.0.is_empty() {
+			println!(
+				"Could not find any entries at the page/url '{}'.",
+				&config.url
+			);
 			*ms_to_wait = u64::max(*ms_to_wait * 2, config.max_wait_ms);
 			println!("Doubling wait time...");
+		} else {
+			let mut file = OpenOptions::new().write(true).open(&config.hosts_path)?;
+			// TODO: below line crashes even with an administrator shell!
+			let mut reader_lines = BufReader::new(&file).lines().map(|l| l.unwrap());
+			let mut other_content = (&mut reader_lines)
+				.take_while(|l| *l != config.target_begin)
+				.collect::<HashSet<_>>();
+			let prev_entries = HostFileEntries(
+				(&mut reader_lines)
+					.take_while(|l| *l != config.target_end)
+					.filter_map(|l| l.parse::<Entry>().ok())
+					.collect()
+			);
+			other_content.extend(reader_lines);
+
+			if entries != prev_entries {
+				*ms_to_wait = config.min_wait_ms; // reset
+				other_content.extend(entries.0.iter().map(|entry| entry.to_string()));
+				file.write_all(
+					other_content
+						.into_iter()
+						.collect::<Vec<_>>()
+						.join("\n")
+						.as_bytes()
+				)?;
+				println!("Updated hosts file:");
+				for entry in entries.0.difference(&prev_entries.0) {
+					println!("+ '{}'", entry);
+				}
+			} else {
+				*ms_to_wait = config.mid_wait_ms;
+				println!("No difference between last check.");
+			}
 		}
+		// 		_ => {
+		// 			*ms_to_wait = u64::max(*ms_to_wait * 2, config.max_wait_ms);
+		// 			println!("Doubling wait time...");
+		// 		}
 	}
 	Ok(())
 }
 
 async fn reset_action() {
-	let mut reader = tokio::io::BufReader::new(tokio::io::stdin());
+	let reader = tokio::io::BufReader::new(tokio::io::stdin());
 	loop {
 		let mut buffer = String::new();
-		let _fut = reader.read_line(&mut buffer).await;
+		let _bytes_count = reader.buffer().read_line(&mut buffer);
 		if buffer.contains("r") {
 			println!("Pressed 'r' to continue.");
 			break;
@@ -151,9 +178,9 @@ impl From<scraper::Html> for HostFileEntries {
 		let vec = fragment
 			.select(&selector)
 			.filter_map(|e_r| {
-				println!("Finding e_r: {:?}", e_r);
-				e_r.text()
-					.next()? // ?: idk if this is the best solution, needs testing
+				let inner = e_r.inner_html();
+				println!("Finding e_r:\n - dbg: {:?}\n - {}", e_r, inner);
+				inner
 					.parse()
 					.inspect_err(|e| {
 						eprintln!("Tried and failed to parse element reference:\n{:?}\n", e)
@@ -161,6 +188,7 @@ impl From<scraper::Html> for HostFileEntries {
 					.ok()
 			})
 			.collect();
+		eprintln!();
 		HostFileEntries(vec)
 	}
 }
@@ -182,7 +210,7 @@ impl FromStr for Entry {
 	type Err = EntryParseErr;
 
 	fn from_str(s: &str) -> Result<Self, Self::Err> {
-		match s.split_once(' ') {
+		match s.split_whitespace().tuples().next() {
 			None => Err(Self::Err::SplitError),
 			Some((ipv4_s, url_s)) => match (ipv4_s.parse::<IPv4>(), Host::parse(url_s)) {
 				(Ok(ipv4), Ok(host)) => Ok(Entry(ipv4, host)),
