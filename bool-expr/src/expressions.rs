@@ -1,97 +1,62 @@
+//! # Example Algebra BNF
+//! expressions are terms that can be OR'd together:
+//! <expression> ::= <term> ( "+" <term> )
+//! terms are factors that can be AND'd together:
+//! <term>       ::= <factor> ( <factor> )
+//! factors are primed factors, bracketed expressions or literals:
+//! <factor>     ::= <factor> "'" | "(" <expression> ")" | Literal
+//! literals are just symbols:
+//! <literal>    ::= [A-Za-z]
+//!
+//! # Design
+//! Appearance of variants is similar to the order of BNF above.
+//! Variants in boxes form a tree.
+use std::{
+	fmt::{Display, Formatter},
+	str::FromStr
+};
+
 use itertools::Itertools;
-use std::fmt::{Display, Formatter};
-use std::num::NonZero;
-use std::str::FromStr;
+use winnow::combinator::todo;
 
-/// Tree of terms
-#[derive(Debug)]
-pub enum ExprNode {
-    Symbol(char),
-    Primed(Box<ExprNode>),
-    /// This allows us to evaluate `Or` before `And` or `Primed`
-    Bracketed(Box<ExprNode>),
-    // the below variants can chain multiple expressions together
-    Or(Vec<ExprNode>),
-    And(Vec<ExprNode>),
-}
-impl Display for ExprNode {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(
-            f,
-            "{}",
-            match self {
-                ExprNode::Symbol(c) => format!("{}", c),
-                ExprNode::Primed(t) => format!("{}'", t),
-                ExprNode::Bracketed(t) => format!("({})", t),
-                ExprNode::Or(v) => v.iter().join("+"),
-                //                ExprNode::Or(a, b) => format!("{}+{}", a, b),
-                //                ExprNode::And(a, b) => format!("{}{}", a, b),
-                ExprNode::And(v) => v.iter().join(""),
-            }
-        )
-    }
-}
-#[derive(Debug)]
-pub enum ExprParseErr {
-    EmptyBrackets,
-    MissingExprBeforePrime,
-    MissingExprBeforeOr,
-    UnmatchedBrackets {
-        /// A positive value means too many `(`, a negative value means too many `)`.
-        tally: NonZero<i32>,
-    },
-    IllegalCharacter(char),
-    DoubleOr,
+enum Expr {
+	And(Box<Expr>, Box<Expr>),
+	Or(Box<Expr>, Box<Expr>),
+	Primed(Box<Expr>),
+	Parenthesised(Box<Expr>),
+	Literal(char)
 }
 
-impl FromStr for ExprNode {
-    type Err = ExprParseErr;
+impl Display for Expr {
+	fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+		write!(f, "{}", match self {
+			Expr::Or(a, b) => format!("{}+{}", a, b),
+			Expr::And(a, b) => format!("{}{}", a, b),
+			Expr::Parenthesised(t) => format!("({})", t),
+			Expr::Primed(t) => format!("{}'", t),
+			Expr::Literal(c) => format!("{}", c)
+		})
+	}
+}
 
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        //        /// Backwards, as in, the provided character iterator needs to go backwards in order to
-        //        /// handle prime targeting properly
-        //        fn backwards_parse(
-        //            chars: &mut impl Iterator<Item = char>,
-        //        ) -> Result<Option<ExprNode>, ExprParseErr> {
-        //            match chars.next() {
-        //                None | Some(')') => Ok(None),
-        //                Some('(') => match backwards_parse(chars)? {
-        //                    None => Err(ExprParseErr::EmptyBrackets),
-        //                    Some(sub_expr) => Ok(Some(ExprNode::Bracketed(Box::new(sub_expr)))),
-        //                },
-        //                Some('\'') => match backwards_parse(chars)? {
-        //                    None => Err(ExprParseErr::MissingExprBeforePrime),
-        //                    Some(sub_expr) => Ok(Some(match sub_expr {
-        //                        // these can be naively wrapped
-        //                        p @ ExprNode::Symbol(_)
-        //                        | p @ ExprNode::Primed(_)
-        //                        | p @ ExprNode::Bracketed(_) => ExprNode::Primed(Box::new(p)),
-        //                        // these can only work because direction is right to left
-        //                        ExprNode::Or(a, b) => ExprNode::Or(Box::new(ExprNode::Primed(a)), b),
-        //                        ExprNode::And(a, b) => ExprNode::And(Box::new(ExprNode::Primed(a)), b),
-        //                    })),
-        //                },
-        //                Some('.') => todo!("explicit AND-operator is not supported"),
-        //                Some(_) => todo!("rest of the valid characters"),
-        //            }
-        //        }
-        //
-        //        match backwards_parse(&mut s.chars().rev()) {
-        //            Ok(Some(expr)) => Ok(expr),
-        //            Ok(None) => Err(ExprParseErr::EmptyBrackets), // this is dumb
-        //            Err(e) => Err(e),
-        //        }
+/// Accepted syntax is similar to a stack based language.
+impl FromStr for Expr {
+	type Err = String;
 
-        /// # Recursive descent
-        /// plan divide parsing into the grammar rules.
-        /// The grammar rules look something like this:
-        /// ```
-        /// Expression ::= Term ( "|" Term )*
-        /// Term       ::= Factor ( "&" Factor )*
-        /// Factor     ::= "!" Factor | "(" Expression ")" | Literal
-        /// Literal    ::= [A-Za-z]
-        /// ```
-        fn _to_impl() {}
-        todo!()
-    }
+	fn from_str(s: &str) -> Result<Self, Self::Err> { 
+        s.chars().try_fold(None, |prev: Option<>, c| {
+            Some(match prev {
+                None => {
+                    match c {
+                        '+' => Err("Early `+`".to_string()),
+                        '\'' => Err("Early `'`".to_string()),
+                        _ => Err("Unsupported symbol".to_string())
+                    }
+                }
+                Some(prev) => {
+                    todo!()
+                }
+            })
+        }).ok_or("No expression to parse.".to_string()).flatten()
+	}
 }
